@@ -21,4 +21,27 @@ public class AccountController : Controller
         // Return the view with validation messages if login fails
         return View(model);
     }
+
+    // GET: Account/Register
+    public ActionResult Register()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public ActionResult Register(RegisterViewModel model)
+    {
+        if (ModelState.IsValid)
+        {
+            // Her kan vi implementere logikk for å registrere brukeren, 
+            // som å lagre brukeren i databasen
+
+            // Hvis registreringen var vellykket, kan brukeren omdirigeres
+            return RedirectToAction("LoggInn");
+        }
+
+        // Returner til registreringssiden hvis det er valideringsfeil
+        return View(model);
+    }
+
 }
