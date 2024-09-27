@@ -17,5 +17,5 @@ public class HomeViewModel
     public int? Number { get; set; }
 
     
-    public string Hidden { get; set; }
+    public string? Hidden { get; set; }
 }
