@@ -16,6 +16,7 @@ public class AccountController : Controller
         {
             // Handle login logic here, e.g., verify user credentials
             // Redirect to another page if successful
+            return new RedirectResult("/MinSide");
         }
 
         // Return the view with validation messages if login fails
