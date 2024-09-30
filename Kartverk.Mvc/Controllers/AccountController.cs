@@ -28,9 +28,9 @@ public class AccountController : Controller
             if (user != null && user.Password == model.Password)
             {
                 // redirect til ønsket side
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Min Side");
             }
-            ModelState.AddModelError(string.Empty, "Ugyldig Innloggin.");
+            ModelState.AddModelError(string.Empty, "Ugyldig Innlogging.");
         }
 
         // Returnerer view med valideringsfeil
