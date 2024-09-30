@@ -1,7 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Kartverk.Mvc.Models;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.AspNetCore.Identity;
+using System.Reflection.Metadata.Ecma335;
 
 public class AccountController : Controller
 {
+    // simulert lagring
+    private static List<IdentityUser> _users = new List<IdentityUser>();
+
     // GET: Account/LoggInn
     public ActionResult LoggInn()
     {
@@ -10,15 +18,20 @@ public class AccountController : Controller
 
     // For post request handling of login
     [HttpPost]
-    public ActionResult LoggInn(LogginnViewModel model)
+    public IActionResult LoggInn(LogginnViewModel model)
     {
         if (ModelState.IsValid)
         {
-            // Handle login logic here, e.g., verify user credentials
-            // Redirect to another page if successful
+            var user = _users.FirstOrDefault(u => u.Email == model.Email);
+            if (user != null && user.Password == model.Password)
+            {
+                // redirect til ønsket side
+                return RedirectToAction("Index", "Home");
+            }
+            ModelState.AddModelError(string.Empty, "Ugyldig Innloggin.");
         }
 
-        // Return the view with validation messages if login fails
+        // Returnerer view med valideringsfeil
         return View(model);
     }
 
@@ -29,18 +42,24 @@ public class AccountController : Controller
     }
 
     [HttpPost]
-    public ActionResult Register(RegisterViewModel model)
+    public IActionResult Register(RegisterViewModel model)
     {
         if (ModelState.IsValid)
         {
-            // Her kan vi implementere logikk for å registrere brukeren, 
-            // som å lagre brukeren i databasen
+            if (_users.Any(u => u.Email == model.Email))
+            {
+                ModelState.AddModelError(string.Empty, "Brukeren eksisterer allerede.");
+                return View(model);
+            }
 
-            // Hvis registreringen var vellykket, kan brukeren omdirigeres
+            // Oppretter ny bruker og legger den til
+            var user = new IdentityUser { UserName = model.Email, Email = model.Email, Password = model.Password };
+            _users.Add(user);
+
+            // brukeren omdirigeres dersom det lykkes
             return RedirectToAction("LoggInn");
         }
-
-        // Returner til registreringssiden hvis det er valideringsfeil
+        // returnerer til registreringssiden hvis det er valideringsfeil
         return View(model);
     }
 
