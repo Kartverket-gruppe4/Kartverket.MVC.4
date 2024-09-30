@@ -22,13 +22,15 @@ public class AccountController : Controller
     {
         if (ModelState.IsValid)
         {
+            // Handle login logic here, e.g., verify user credentials
+            // Redirect to another page if successful
             var user = _users.FirstOrDefault(u => u.Email == model.Email);
             if (user != null && user.Password == model.Password)
             {
                 // redirect til ønsket side
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Min Side");
             }
-            ModelState.AddModelError(string.Empty, "Ugyldig Innloggin.");
+            ModelState.AddModelError(string.Empty, "Ugyldig Innlogging.");
         }
 
         // Returnerer view med valideringsfeil
