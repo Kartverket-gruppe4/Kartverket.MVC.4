@@ -12,7 +12,7 @@
     <div class="row">
         <div class="col-12 d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
-                <span class="ms-2">Velkommen til Din Side:</span>
+                <span class="ms-2">Velkommen til Din Side, @Model.Email!</span>
             </div>
             <!-- Placeholder for user status (like 'No Errors') -->
             <button class="btn btn-success">
@@ -23,6 +23,14 @@
 
     <!-- Divider -->
     <hr />
+
+    <!-- User Information -->
+    <div class="row">
+        <div class="col-12">
+            <h5>Din informasjon:</h5>
+            <p><strong>Email:</strong> @Model.Email</p>
+        </div>
+    </div>
 
     <!-- Sidebar Menu (Links) -->
     <div class="list-group">
@@ -52,3 +60,4 @@
         </a>
     </div>
 </div>
+
