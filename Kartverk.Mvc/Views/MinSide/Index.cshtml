@@ -32,7 +32,7 @@
         </div>
     </div>
 
-    <!-- Sidebar Menu (Links) -->
+    <!-- Menu -->
     <div class="list-group">
         <!-- My Page Link -->
         <a href="#" class="list-group-item list-group-item-action">
@@ -41,21 +41,19 @@
 
         <!-- Submissions Link -->
         <a href="@Url.Action("MineInnmeldinger", "MinSide")" class="list-group-item list-group-item-action">
+
             <i class="bi bi-pencil-square"></i> Mine innmeldinger
         </a>
-
-        <!-- Inbox/Chat Link -->
+        
         <a href="#" class="list-group-item list-group-item-action">
             <i class="bi bi-envelope"></i> Innboks
         </a>
-
-        <!-- Help & Contact Link -->
-        <a href="#" class="list-group-item list-group-item-action">
+        
+        <a href="@Url.Action("Index", "HjelpKontakt")" class="list-group-item list-group-item-action">
             <i class="bi bi-info-circle"></i> Hjelp & Kontakt
         </a>
-
-        <!-- Log out Link -->
-        <a href="#" class="list-group-item list-group-item-action">
+        
+        <a href="@Url.Action("LoggUt", "LoggUt")" class="list-group-item list-group-item-action">
             <i class="bi bi-box-arrow-right"></i> Logg ut
         </a>
     </div>
