@@ -11,16 +11,8 @@
 <div id="map" style="height:680px"></div>
 
 <form asp-controller="Home" asp-action="Index" method="post" id="mapInputForm">
-    @Html.ValidationSummary()
-    @Html.DisplayNameFor(x => x.NewMessage)
-    @Html.ValidationMessageFor(x => x.NewMessage)
-    @Html.TextBoxFor(x => x.NewMessage, new { @class = "form-control" })
-
-    @Html.LabelFor(x => x.Number)
-    @Html.ValidationMessageFor(x => x.Number)
     @Html.HiddenFor(x => x.Hidden, new { @id = "hiddenField" })
-    @Html.TextBoxFor(x => x.Number, new { @class = "form-control" })
-    <input type="button" value="Send" onclick="submitForm()" />
+    <input type="button" class="btn btn-success" value="Neste" onclick="submitForm()" />
 </form>
 
 @section Scripts {
@@ -65,4 +57,4 @@
     </script>
 }
 
-<!-- Du kan senere legge til et skjema her for innmelding av feil -->
+<!-- Under er koden for kartet -->
