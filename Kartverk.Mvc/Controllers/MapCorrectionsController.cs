@@ -1,22 +1,28 @@
 ﻿using Kartverk.Mvc.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Kartverk.Mvc.Controllers;
-
-public class MapCorrectionsController : Controller
+namespace Kartverk.Mvc.Controllers
 {
-    public IActionResult Index()
+    public class MapCorrectionsController : Controller
     {
-        return View();
-    }
-
-    [HttpPost]
-    public IActionResult Save(MapCorrectionModel model)
-    {
-        if (!ModelState.IsValid)
+        public IActionResult Index()
         {
-            return View("Index",model);
+            // Oppretter en ny modell uten nødvendige verdier for Attachment
+            return View(new MapCorrectionModel());
         }
-        return View("Index", model);
+
+        [HttpPost]
+        public IActionResult Save(MapCorrectionModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("Index", model);
+            }
+
+            // Håndter lagring av data her, f.eks. lagre Attachment om det finnes
+
+            return View("Index", model); // Returner modellen til visningen for bekreftelse
+        }
     }
 }
+
