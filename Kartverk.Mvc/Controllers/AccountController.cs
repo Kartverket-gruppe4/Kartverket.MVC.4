@@ -28,7 +28,7 @@ public class AccountController : Controller
             if (user != null && user.Password == model.Password)
             {
                 // redirect til ønsket side
-                return RedirectToAction("Index", "MinSide");
+                return RedirectToAction("Index", "MinSide", new { email = user.Email });
             }
             ModelState.AddModelError(string.Empty, "Ugyldig Innlogging.");
         }
@@ -64,5 +64,12 @@ public class AccountController : Controller
         // returnerer til registreringssiden hvis det er valideringsfeil
         return View(model);
     }
+
+    // Hente bruker etter e-postadresse
+    public static IdentityUser? GetUserByEmail(string email)
+    {
+        return _users.FirstOrDefault(u => u.Email == email);
+    }
+
 
 }
