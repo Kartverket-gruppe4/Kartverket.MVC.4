@@ -56,4 +56,12 @@ public class MinSideController : Controller
     {
         return View(); // Dette blir admin-siden
     }
+
+    // GET: MinSide/MineInnmeldinger
+    [HttpGet]
+    public IActionResult MineInnmeldinger()
+    {
+        // Her kan vi hente innmeldinger fra databasen, for nå er det tomt
+        return View();
+    }
 }
