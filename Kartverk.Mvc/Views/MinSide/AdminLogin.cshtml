@@ -1,0 +1,25 @@
+@{
+    ViewBag.Title = "Admin Login";
+}
+
+<div class="container mt-4">
+    <h3>Admin-innlogging</h3>
+
+    @using (Html.BeginForm("AdminLogin", "MinSide", FormMethod.Post))
+    {
+        <div class="form-group">
+            @Html.Label("Admin Passord")
+            @Html.Password("adminPassword", null, new { @class = "form-control" })
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">Logg inn</button>
+
+        <!-- Vis feilmeldinger -->
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger mt-3">
+                @Html.ValidationSummary()
+            </div>
+        }
+    }
+</div>
