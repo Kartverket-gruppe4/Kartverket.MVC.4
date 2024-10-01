@@ -34,8 +34,14 @@
 
     <!-- Menu -->
     <div class="list-group">
-        
+        <!-- My Page Link -->
         <a href="#" class="list-group-item list-group-item-action">
+            <i class="bi bi-person"></i> Min side
+        </a>
+
+        <!-- Submissions Link -->
+        <a href="@Url.Action("MineInnmeldinger", "MinSide")" class="list-group-item list-group-item-action">
+
             <i class="bi bi-pencil-square"></i> Mine innmeldinger
         </a>
         
@@ -52,4 +58,27 @@
         </a>
     </div>
 </div>
+
+<!-- Admin Link -->
+<a href="@Url.Action("AdminLogin", "MinSide")" class="admin-link">Admin</a>
+
+<!-- Custom CSS to position the admin link -->
+<style>
+    .admin-link {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        color: #28a745; /* Bright green text color */
+        font-size: 16px; /* Font size */
+        text-decoration: none; /* Remove underline */
+        opacity: 1; /* Fully visible */
+        transition: opacity 0.3s, color 0.3s;
+        z-index: 1000; /* Ensure it's on top of other elements */
+    }
+
+        .admin-link:hover {
+            color: #218838; /* Darker green shade on hover */
+            opacity: 0.8; /* Slightly reduce opacity on hover */
+        }
+</style>
 
