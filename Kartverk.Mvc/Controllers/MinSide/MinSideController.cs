@@ -23,7 +23,7 @@ public class MinSideController : Controller
         
         return RedirectToAction("LoggInn", "Account");
     }
-
+    
     // GET: MinSide/AdminLogin
     [HttpGet]
     public IActionResult AdminLogin()
@@ -57,7 +57,7 @@ public class MinSideController : Controller
     [HttpGet]
     public IActionResult MineInnmeldinger()
     {
-        // Her kan vi hente innmeldinger fra databasen, for nå er det tomt
+        // Her kan vi hente innmeldinger fra databasen, for nï¿½ er det tomt
         return View();
     }
 }
