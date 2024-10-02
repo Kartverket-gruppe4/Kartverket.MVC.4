@@ -1,0 +1,79 @@
+@model Kartverk.Mvc.Models.MinSide.MinSideViewModel
+
+@{
+    ViewBag.Title = "Min Side";
+    Layout = "_Layout";
+}
+
+<!-- Main container -->
+<div class="container mt-4">
+
+    <!-- Profile Section -->
+    <div class="row">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <span class="ms-2">Velkommen til Din Side, @Model.Email!</span>
+            </div>
+            <!-- Placeholder for user status (like 'No Errors') -->
+            <a href="@Url.Action("Index", "Feilmelding")" class="btn btn-success">
+                <strong>Meld inn en feil</strong>
+            </a>
+        </div>
+    </div>
+
+    <!-- Divider -->
+    <hr />
+
+    <!-- User Information -->
+    <div class="row">
+        <div class="col-12">
+            <h5>Din informasjon:</h5>
+            <p><strong>Email:</strong> @Model.Email</p>
+        </div>
+    </div>
+
+    <!-- Menu -->
+    <div class="list-group">
+        <!-- Submissions Link -->
+        <a href="@Url.Action("MineInnmeldinger", "MinSide")" class="list-group-item list-group-item-action">
+
+            <i class="bi bi-pencil-square"></i> Mine innmeldinger
+        </a>
+        
+        <a href="#" class="list-group-item list-group-item-action">
+            <i class="bi bi-envelope"></i> Innboks
+        </a>
+        
+        <a href="@Url.Action("Index", "HjelpKontakt")" class="list-group-item list-group-item-action">
+            <i class="bi bi-info-circle"></i> Hjelp & Kontakt
+        </a>
+        
+        <a href="@Url.Action("LoggUt", "LoggUt")" class="list-group-item list-group-item-action">
+            <i class="bi bi-box-arrow-right"></i> Logg ut
+        </a>
+    </div>
+</div>
+
+<!-- Admin Link -->
+<a href="@Url.Action("AdminLogin", "MinSide")" class="admin-link">Admin</a>
+
+<!-- Custom CSS to position the admin link -->
+<style>
+    .admin-link {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        color: #28a745; /* Bright green text color */
+        font-size: 16px; /* Font size */
+        text-decoration: none; /* Remove underline */
+        opacity: 1; /* Fully visible */
+        transition: opacity 0.3s, color 0.3s;
+        z-index: 1000; /* Ensure it's on top of other elements */
+    }
+
+        .admin-link:hover {
+            color: #218838; /* Darker green shade on hover */
+            opacity: 0.8; /* Slightly reduce opacity on hover */
+        }
+</style>
+

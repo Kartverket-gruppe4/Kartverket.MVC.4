@@ -11,8 +11,9 @@
         <div class="form-group">
             @Html.LabelFor(m => m.Password)
             @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+            @Html.ValidationMessage("Password")
         </div>
-        <button type="submit" class="btn btn-primary">Logg inn</button>
+        <button type="submit" class="btn btn-success">Logg inn</button>
     }
     <p>Har du ikke en konto? <a href="@Url.Action("Register", "Account")">Registrer deg</a></p>
 </div>

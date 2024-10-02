@@ -1,0 +1,60 @@
+@model HomeViewModel
+
+@{
+    ViewData["Title"] = "Meld inn en feil";
+}
+
+<h2>Meld inn en feil</h2>
+
+<p>Bruk kartet nedenfor til å markere feilen du har oppdaget:</p>
+
+<div id="map" style="height:680px"></div>
+
+<form asp-controller="Home" asp-action="Index" method="post" id="mapInputForm">
+    @Html.HiddenFor(x => x.Hidden, new { @id = "hiddenField" })
+    <input type="button" class="btn btn-success" value="Neste" onclick="submitForm()" />
+</form>
+
+@section Scripts {
+    <script>
+        //https://leafletjs.com/reference.html
+        //https://www.geoman.io/docs/
+
+          function submitForm() {
+              var responseObject = {
+                  points :[],
+                  lines :[]
+              };
+              var markers = L.PM.Utils.findLayers(map);
+              markers.forEach((x) => {
+                  if (x.options.pane === 'markerPane') {
+                      responseObject.points.push(x._latlng);
+                  }
+                  if (x.options.pane === 'overlayPane') {
+                      responseObject.lines.push(x._latlngs);
+                  }
+              });
+
+              var jsonValue = JSON.stringify(responseObject);
+
+              document.getElementById("hiddenField").value = jsonValue;
+              document.getElementById("mapInputForm").submit();
+          }
+
+          var map = L.map('map').setView([58.164048, 8.004007], 13); //initial location (can this be fetched from device? )
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+              attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          }).addTo(map);
+          map.pm.addControls({
+              position: 'topleft',
+              drawCircleMarker: false,
+              rotateMode: false,
+              cutPolygon: false,
+              drawText: false
+
+          });
+
+    </script>
+}
+
+<!-- Under er koden for kartet -->

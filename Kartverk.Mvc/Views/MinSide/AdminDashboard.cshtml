@@ -1,0 +1,35 @@
+@{
+    ViewBag.Title = "Admin Dashboard";
+}
+
+<div class="container mt-4">
+    <h3>Velkommen til Admin Dashboard</h3>
+    <p>Her kan du utføre admin-oppgaver.</p>
+
+    <!-- Section to display submitted data -->
+    <div id="submitted-data" class="mt-4">
+        <h4>Innmeldinger:</h4>
+        <ul id="submission-list"></ul>
+    </div>
+</div>
+
+<!-- Custom script to handle form submission -->
+<script>
+    document.getElementById('submission-form').addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        // Get form data
+        const email = document.getElementById('email').value;
+        const message = document.getElementById('message').value;
+
+        // Create a new list item
+        const listItem = document.createElement('li');
+        listItem.textContent = `$(${email}): ${message}`;
+
+        // Append the new item to the submission list
+        document.getElementById('submission-list').appendChild(listItem);
+
+        // Clear the form fields
+        document.getElementById('submission-form').reset();
+    });
+</script>
