@@ -1,4 +1,4 @@
-﻿using Kartverk.Mvc.Models;
+using Kartverk.Mvc.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kartverk.Mvc.Controllers
@@ -7,8 +7,9 @@ namespace Kartverk.Mvc.Controllers
     {
         public IActionResult Index()
         {
-            // Oppretter en ny modell uten nødvendige verdier for Attachment
-            return View(new MapCorrectionModel());
+            // Initialiser MapCorrectionModel og send den til visningen
+            var model = new MapCorrectionModel();
+            return View(model);
         }
 
         [HttpPost]
@@ -16,13 +17,18 @@ namespace Kartverk.Mvc.Controllers
         {
             if (!ModelState.IsValid)
             {
+                // Hvis valideringen feiler, returner skjemaet med feilmeldinger
                 return View("Index", model);
             }
 
-            // Håndter lagring av data her, f.eks. lagre Attachment om det finnes
+            // Logikk for å håndtere innsendte data
+            // Eksempel: Logge data for testing, eller lagre til database
+            Console.WriteLine($"Kategori: {model.Category}, Beskrivelse: {model.Description}, Koordinater: {model.X}, {model.Y}");
 
-            return View("Index", model); // Returner modellen til visningen for bekreftelse
+            // Etter suksessfull lagring, kan man returnere en bekreftelsesside eller lignende
+            return View("Success");
         }
     }
 }
+
 
