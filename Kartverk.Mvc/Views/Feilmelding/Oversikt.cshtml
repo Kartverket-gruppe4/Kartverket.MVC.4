@@ -1,0 +1,38 @@
+@model IEnumerable<Kartverk.Mvc.Models.Feilmelding>
+
+@{
+    ViewData["Title"] = "Oversikt over feilmeldinger";
+}
+
+<h2>Oversikt over feilmeldinger</h2>
+
+<table class="table table-striped table-bordered">
+    <thead class="thead-dark">
+    <tr>
+        <th>ID</th>
+        <th>E-post</th>
+        <th>Beskrivelse</th>
+        <th>Dato</th>
+    </tr>
+    </thead>
+    <tbody>
+    @if (Model.Any()) // Sjekker om det er noen feilmeldinger i listen
+    {
+        foreach (var feilmelding in Model)
+        {
+            <tr>
+                <td>@feilmelding.Id</td>
+                <td>@feilmelding.Epost</td>
+                <td>@feilmelding.Beskrivelse</td>
+                <td>@feilmelding.Dato.ToString("dd.MM.yyyy HH:mm:ss")</td> <!-- Formaterer datoen -->
+            </tr>
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="4" class="text-center">Ingen feilmeldinger funnet.</td>
+        </tr>
+    }
+    </tbody>
+</table>

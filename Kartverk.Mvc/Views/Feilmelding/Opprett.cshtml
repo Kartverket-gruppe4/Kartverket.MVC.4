@@ -1,0 +1,13 @@
+@model Kartverk.Mvc.Models.Feilmelding
+
+@{
+    ViewData["Title"] = "Meld inn en feil";
+}
+
+<h2>Meld inn en feil</h2>
+
+<form asp-controller="Feilmelding" asp-action="Opprett" method="post">
+    <input type="email" class="form-control" name="Epost" placeholder="Din e-post" required />
+    <input type="text" class="form-control" name="Beskrivelse" placeholder="Beskrivelse av feilen" required />
+    <button type="submit" class="btn btn-success">Send inn</button>
+</form>
