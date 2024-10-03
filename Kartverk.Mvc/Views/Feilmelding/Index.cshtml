@@ -1,4 +1,4 @@
-@model HomeViewModel
+@model Kartverk.Mvc.Models.MapCorrectionModel
 
 @{
     ViewData["Title"] = "Meld inn en feil";
@@ -8,42 +8,68 @@
 
 <p>Bruk kartet nedenfor til å markere feilen du har oppdaget:</p>
 
-<div id="map" style="height:680px"></div>
+<div id="map" style="height: 680px;"></div>
 
-<!-- Her er skjemaet for å sende inn feilmeldingen -->
-<form asp-controller="Feilmelding" asp-action="Opprett" method="post" id="mapInputForm">
-    @Html.HiddenFor(x => x.Hidden, new { @id = "hiddenField" })
-    <input type="email" class="form-control" name="Epost" placeholder="Din e-post" required />
-    <input type="text" class="form-control" name="Beskrivelse" placeholder="Beskrivelse av feilen" required />
-    <input type="button" class="btn btn-success" value="Neste" onclick="submitForm()" />
+<!-- "Neste" knapp for å åpne pop-up form -->
+<form asp-controller="MapCorrections" asp-action="Save" method="post" id="mapInputForm">
+    @Html.HiddenFor(x => x.X, new { @id = "xCoord" })
+    @Html.HiddenFor(x => x.Y, new { @id = "yCoord" })
+    <input type="button" class="btn btn-success" value="Neste" onclick="openPopup()" />
 </form>
+
+<!-- Pop-up feilmeldingsskjema -->
+<div id="popupForm" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closePopup()">&times;</span>
+
+        <h3>Feilmeldingsskjema</h3>
+
+        <form asp-action="Save" method="post" enctype="multipart/form-data">
+            @Html.ValidationSummary()
+
+            <!-- Kategori -->
+            <div class="form-group">
+                <label asp-for="Category" class="form-label">Kategori</label>
+                <select asp-for="Category" class="form-control">
+                    <option value="Tursti">Tursti</option>
+                    <option value="Vei">Vei</option>
+                    <option value="Sjø">Sjø</option>
+                    <option value="Stedsnavn">Stedsnavn</option>
+                    <option value="Annet">Annet/Vet ikke</option>
+                </select>
+            </div>
+
+            <!-- Beskrivelse -->
+            <div class="form-group">
+                <label asp-for="Description" class="form-label">Beskrivelse</label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <!-- Vedlegg -->
+            <div class="form-group">
+                <label asp-for="Attachment" class="form-label">Vedlegg</label>
+                <input asp-for="Attachment" type="file" class="form-control" />
+                <span asp-validation-for="Attachment" class="text-danger"></span>
+            </div>
+
+            <!-- Send-knapp -->
+            <div class="form-group">
+                <input type="submit" class="btn btn-primary" value="Send" />
+            </div>
+        </form>
+    </div>
+</div>
 
 @section Scripts {
     <script>
-        function submitForm() {
-            var responseObject = {
-                points: [],
-                lines: []
-            };
-            var markers = L.PM.Utils.findLayers(map);
-            markers.forEach((x) => {
-                if (x.options.pane === 'markerPane') {
-                    responseObject.points.push(x._latlng);
-                }
-                if (x.options.pane === 'overlayPane') {
-                    responseObject.lines.push(x._latlngs);
-                }
-            });
-
-            var jsonValue = JSON.stringify(responseObject);
-            document.getElementById("hiddenField").value = jsonValue;
-            document.getElementById("mapInputForm").submit(); // Send skjemaet
-        }
-
-        var map = L.map('map').setView([58.164048, 8.004007], 13); // Initial location
+        // Opprett kartet
+        var map = L.map('map').setView([58.164048, 8.004007], 13);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
+
+        // Geoman for å tegne på kartet
         map.pm.addControls({
             position: 'topleft',
             drawCircleMarker: false,
@@ -51,5 +77,30 @@
             cutPolygon: false,
             drawText: false
         });
+
+        // Funksjon for å hente koordinater og åpne pop-up skjemaet
+        function openPopup() {
+            var markers = L.PM.Utils.findLayers(map);
+            var coordinates = markers.length > 0 ? markers[0]._latlng : { lat: '', lng: '' };
+
+            document.getElementById("xCoord").value = coordinates.lat;
+            document.getElementById("yCoord").value = coordinates.lng;
+
+            // Åpne modal pop-up
+            document.getElementById("popupForm").style.display = "block";
+        }
+
+        // Funksjon for å lukke pop-up skjemaet
+        function closePopup() {
+            document.getElementById("popupForm").style.display = "none";
+        }
+
+        // Lukk pop-up ved å klikke utenfor modal
+        window.onclick = function (event) {
+            var modal = document.getElementById("popupForm");
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
     </script>
 }

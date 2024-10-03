@@ -1,22 +1,34 @@
-﻿using Kartverk.Mvc.Models;
+using Kartverk.Mvc.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Kartverk.Mvc.Controllers;
-
-public class MapCorrectionsController : Controller
+namespace Kartverk.Mvc.Controllers
 {
-    public IActionResult Index()
+    public class MapCorrectionsController : Controller
     {
-        return View();
-    }
-
-    [HttpPost]
-    public IActionResult Save(MapCorrectionModel model)
-    {
-        if (!ModelState.IsValid)
+        public IActionResult Index()
         {
-            return View("Index",model);
+            // Initialiser MapCorrectionModel og send den til visningen
+            var model = new MapCorrectionModel();
+            return View(model);
         }
-        return View("Index", model);
+
+        [HttpPost]
+        public IActionResult Save(MapCorrectionModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Hvis valideringen feiler, returner skjemaet med feilmeldinger
+                return View("Index", model);
+            }
+
+            // Logikk for å håndtere innsendte data
+            // Eksempel: Logge data for testing, eller lagre til database
+            Console.WriteLine($"Kategori: {model.Category}, Beskrivelse: {model.Description}, Koordinater: {model.X}, {model.Y}");
+
+            // Etter suksessfull lagring, kan man returnere en bekreftelsesside eller lignende
+            return View("Success");
+        }
     }
 }
+
+
