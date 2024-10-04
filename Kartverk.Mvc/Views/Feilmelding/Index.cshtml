@@ -24,6 +24,13 @@
 
         <h3>Feilmeldingsskjema</h3>
 
+        <!-- Viser koordinatene -->
+        <div class="form-group">
+            <label>Koordinater:</label>
+            <p>X: <span id="displayXCoord"></span></p>
+            <p>Y: <span id="displayYCoord"></span></p>
+        </div>
+
         <form asp-action="Save" method="post" enctype="multipart/form-data">
             @Html.ValidationSummary()
 
@@ -80,21 +87,32 @@
 
         // Funksjon for å hente koordinater og åpne pop-up skjemaet
         function openPopup() {
-            var markers = L.PM.Utils.findLayers(map);
-            var coordinates = markers.length > 0 ? markers[0]._latlng : { lat: '', lng: '' };
+            var layers = L.PM.Utils.findLayers(map);
+            if (layers.length > 0) {
+                var layer = layers[0]; // For nå, tar vi kun det første laget
+                var coordinates;
 
-            document.getElementById("xCoord").value = coordinates.lat;
-            document.getElementById("yCoord").value = coordinates.lng;
+                // Sjekker om det er en markør
+                if (layer instanceof L.Marker) {
+                    coordinates = layer.getLatLng();
+                }
+                // Sjekker om det er et polygon eller linje og henter midtpunktet
+                else if (layer instanceof L.Polygon || layer instanceof L.Polyline) {
+                    coordinates = layer.getBounds().getCenter();
+                }
+
+                if (coordinates) {
+                    document.getElementById("xCoord").value = coordinates.lat;
+                    document.getElementById("yCoord").value = coordinates.lng;
+
+                    document.getElementById("displayXCoord").innerText = coordinates.lat.toFixed(6); 
+                    document.getElementById("displayYCoord").innerText = coordinates.lng.toFixed(6);
+                }
+            }
 
             // Åpne modal pop-up
             document.getElementById("popupForm").style.display = "block";
         }
-
-        // Funksjon for å lukke pop-up skjemaet
-        function closePopup() {
-            document.getElementById("popupForm").style.display = "none";
-        }
-
         // Lukk pop-up ved å klikke utenfor modal
         window.onclick = function (event) {
             var modal = document.getElementById("popupForm");
