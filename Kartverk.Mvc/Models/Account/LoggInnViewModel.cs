@@ -4,9 +4,9 @@ public class LogginnViewModel
 {
     [Required]
     [EmailAddress]
-    public string? Email { get; set; }
+    public string? Epost { get; set; }
 
     [Required]
     [DataType(DataType.Password)]
-    public string? Password { get; set; }
+    public string? Passord { get; set; }
 }

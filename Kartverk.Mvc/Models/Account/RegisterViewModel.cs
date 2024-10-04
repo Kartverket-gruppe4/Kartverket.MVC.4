@@ -4,14 +4,14 @@ public class RegisterViewModel
 {
     [Required]
     [EmailAddress]
-    public string? Email { get; set; }
+    public string? Epost { get; set; }
 
     [Required]
     [DataType(DataType.Password)]
-    public string? Password { get; set; }
+    public string? Passord { get; set; }
 
     [DataType(DataType.Password)]
-    [Display(Name = "Confirm password")]
-    [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-    public string? ConfirmPassword { get; set; }
+    [Display(Name = "Bekreft Passord")]
+    [Compare("Passord", ErrorMessage = "Passordet og bekreftelsespassordet stemmer ikke overens.")]
+    public string? BekreftPassord { get; set; }
 }

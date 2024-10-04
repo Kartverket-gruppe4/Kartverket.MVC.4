@@ -15,7 +15,7 @@ public class MinSideController : Controller
         {
             var model = new MinSideViewModel
             {
-                Email = user.Email
+                Email = user.Epost
             };
             
             return View(model);
@@ -33,10 +33,10 @@ public class MinSideController : Controller
 
     // POST: MinSide/AdminLogin
     [HttpPost]
-    public IActionResult AdminLogin(string adminPassword)
+    public IActionResult AdminLogin(string adminPassord)
     {
         const string predefinedPassword = "admin123"; // Predefinert passord for admin
-        if (adminPassword == predefinedPassword)
+        if (adminPassord == predefinedPassword)
         {
             // Hvis passordet er riktig, omdiriger til admin-siden
             return RedirectToAction("AdminDashboard");

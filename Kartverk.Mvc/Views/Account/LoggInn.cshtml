@@ -5,13 +5,13 @@
     @using (Html.BeginForm("LoggInn", "Account", FormMethod.Post))
     {
         <div class="form-group">
-            @Html.LabelFor(m => m.Email)
-            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+            @Html.LabelFor(m => m.Epost)
+            @Html.TextBoxFor(m => m.Epost, new { @class = "form-control" })
         </div>
         <div class="form-group" style="margin-bottom: 10px;">
-            @Html.LabelFor(m => m.Password)
-            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-            @Html.ValidationMessage("Password")
+            @Html.LabelFor(m => m.Passord)
+            @Html.PasswordFor(m => m.Passord, new { @class = "form-control" })
+            @Html.ValidationMessage("Passord")
         </div>
         <button type="submit" class="btn btn-success" style="margin-bottom: 10px;">Logg inn</button>
     }
