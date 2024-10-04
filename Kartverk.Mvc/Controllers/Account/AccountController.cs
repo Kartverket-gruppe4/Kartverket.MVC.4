@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using System.Reflection.Metadata.Ecma335;
+using Microsoft.EntityFrameworkCore.Storage;
 
 public class AccountController : Controller
 {
@@ -24,11 +25,11 @@ public class AccountController : Controller
         {
             // Handle login logic here, e.g., verify user credentials
             // Redirect to another page if successful
-            var user = _users.FirstOrDefault(u => u.Email == model.Email);
-            if (user != null && user.Password == model.Password)
+            var user = _users.FirstOrDefault(u => u.Epost == model.Epost);
+            if (user != null && user.Passord == model.Passord)
             {
                 // redirect til ønsket side
-                return RedirectToAction("Index", "MinSide", new { email = user.Email });
+                return RedirectToAction("Index", "MinSide", new { epost = user.Epost });
             }
             ModelState.AddModelError(string.Empty, "Ugyldig Innlogging.");
         }
@@ -48,14 +49,14 @@ public class AccountController : Controller
     {
         if (ModelState.IsValid)
         {
-            if (_users.Any(u => u.Email == model.Email))
+            if (_users.Any(u => u.Epost == model.Epost))
             {
                 ModelState.AddModelError(string.Empty, "Brukeren eksisterer allerede.");
                 return View(model);
             }
 
             // Oppretter ny bruker og legger den til
-            var user = new IdentityUser { UserName = model.Email, Email = model.Email, Password = model.Password };
+            var user = new IdentityUser { UserName = model.Epost, Epost = model.Epost, Passord = model.Passord };
             _users.Add(user);
 
             // brukeren omdirigeres dersom det lykkes
@@ -68,7 +69,7 @@ public class AccountController : Controller
     // Hente bruker etter e-postadresse
     public static IdentityUser? GetUserByEmail(string email)
     {
-        return _users.FirstOrDefault(u => u.Email == email);
+        return _users.FirstOrDefault(u => u.Epost == email);
     }
 
 
