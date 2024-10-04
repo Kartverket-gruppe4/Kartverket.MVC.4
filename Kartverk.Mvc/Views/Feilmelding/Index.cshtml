@@ -8,13 +8,13 @@
 
 <p>Bruk kartet nedenfor til å markere feilen du har oppdaget:</p>
 
-<div id="map" style="height: 680px;"></div>
+<div id="map" style="height: 600px; margin-bottom: 10px;"></div>
 
 <!-- "Neste" knapp for å åpne pop-up form -->
 <form asp-controller="MapCorrections" asp-action="Save" method="post" id="mapInputForm">
     @Html.HiddenFor(x => x.X, new { @id = "xCoord" })
     @Html.HiddenFor(x => x.Y, new { @id = "yCoord" })
-    <input type="button" class="btn btn-success" value="Neste" onclick="openPopup()" />
+    <input type="button" class="btn btn-success" value="Neste" onclick="openPopup()" style="margin-top:10px;" />
 </form>
 
 <!-- Pop-up feilmeldingsskjema -->
@@ -54,7 +54,7 @@
             </div>
 
             <!-- Vedlegg -->
-            <div class="form-group">
+            <div class="form-group" style="margin-bottom: 10px;">
                 <label asp-for="Attachment" class="form-label">Vedlegg</label>
                 <input asp-for="Attachment" type="file" class="form-control" />
                 <span asp-validation-for="Attachment" class="text-danger"></span>
@@ -62,7 +62,7 @@
 
             <!-- Send-knapp -->
             <div class="form-group">
-                <input type="submit" class="btn btn-primary" value="Send" />
+                <input type="submit" class="btn btn-success" value="Send" style="margin-top: 10px;" />
             </div>
         </form>
     </div>
