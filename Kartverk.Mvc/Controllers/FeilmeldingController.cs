@@ -41,7 +41,7 @@ namespace Kartverk.Mvc.Controllers
         public IActionResult MineInnmeldinger()
         {
             // bruker samme liste som i oversikt
-            return View("Oversikt", _feilmeldinger);
+            return View("Oversikt", "Feilmelding");
         }
     }
 }
