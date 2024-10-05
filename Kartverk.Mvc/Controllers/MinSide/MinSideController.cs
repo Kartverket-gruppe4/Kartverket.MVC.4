@@ -58,6 +58,6 @@ public class MinSideController : Controller
     public IActionResult MineInnmeldinger()
     {
         // Her kan vi hente innmeldinger fra databasen, for n� er det tomt
-        return View();
+        return RedirectToAction("Oversikt", "Feilmelding");
     }
 }
