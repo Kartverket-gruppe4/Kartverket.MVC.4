@@ -17,7 +17,7 @@ namespace Kartverk.Mvc.Controllers
 
         // POST: Feilmelding/Opprett
         [HttpPost]
-        public IActionResult Opprett(Feilmelding model)
+        public IActionResult Save(Feilmelding model)
         {
             if (ModelState.IsValid) // Sjekker om modellen er gyldig
             {
@@ -35,6 +35,13 @@ namespace Kartverk.Mvc.Controllers
         public IActionResult Oversikt()
         {
             return View(_feilmeldinger); // Sender listen med feilmeldinger til viewet
+        }
+
+        // GET: Feilmelding/MineInnmeldinger
+        public IActionResult MineInnmeldinger()
+        {
+            // bruker samme liste som i oversikt
+            return View("Oversikt", _feilmeldinger);
         }
     }
 }
