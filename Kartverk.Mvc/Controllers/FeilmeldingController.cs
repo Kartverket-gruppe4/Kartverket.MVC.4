@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Kartverk.Mvc.Models; // Husk å inkludere modellen din
-using System.Collections.Generic;
 
 namespace Kartverk.Mvc.Controllers
 {
@@ -17,18 +16,25 @@ namespace Kartverk.Mvc.Controllers
 
         // POST: Feilmelding/Opprett
         [HttpPost]
-        public IActionResult Save(Feilmelding model)
+        public IActionResult Save(MapCorrectionModel model)
         {
             if (ModelState.IsValid) // Sjekker om modellen er gyldig
             {
+                Feilmelding feilmelding = new Feilmelding();
+                
                 // Legger til feilmeldingen i listen
-                model.Id = _feilmeldinger.Count + 1; // Generer en unik ID
-                _feilmeldinger.Add(model);
+                feilmelding.Id = _feilmeldinger.Count + 1; // Generer en unik ID
+                feilmelding.X = model.X;
+                feilmelding.Y = model.Y;
+                feilmelding.Email = AccountController.Users.First().Email;
+                feilmelding.Beskrivelse = model.Description;
+                feilmelding.Kategori = model.Category;
+                _feilmeldinger.Add(feilmelding);
 
                 // Omstyring til oversikten over innmeldinger (kan endres til ønsket side)
                 return RedirectToAction("Oversikt");
             }
-            return View(model); // Returnerer til viewet med eventuelle valideringsfeil
+            return View("Index", model); // Returnerer til viewet med eventuelle valideringsfeil
         }
 
         // GET: Feilmelding/Oversikt
@@ -41,7 +47,7 @@ namespace Kartverk.Mvc.Controllers
         public IActionResult MineInnmeldinger()
         {
             // bruker samme liste som i oversikt
-            return View("Oversikt", "Feilmelding");
+            return View("Oversikt", _feilmeldinger);
         }
     }
 }

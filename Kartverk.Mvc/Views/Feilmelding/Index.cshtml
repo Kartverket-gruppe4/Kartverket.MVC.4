@@ -12,8 +12,7 @@
 
 <!-- "Neste" knapp for å åpne pop-up form -->
 <form asp-controller="MapCorrections" asp-action="Save" method="post" id="mapInputForm">
-    @Html.HiddenFor(x => x.X, new { @id = "xCoord" })
-    @Html.HiddenFor(x => x.Y, new { @id = "yCoord" })
+    
     <input type="button" class="btn btn-success" value="Neste" onclick="openPopup()" style="margin-top:10px;" />
 </form>
 
@@ -33,6 +32,8 @@
 
         <form asp-action="Save" method="post" enctype="multipart/form-data">
             @Html.ValidationSummary()
+            @Html.HiddenFor(x => x.X, new { @id = "xCoord" })
+            @Html.HiddenFor(x => x.Y, new { @id = "yCoord" })
 
             <!-- Kategori -->
             <div class="form-group">
