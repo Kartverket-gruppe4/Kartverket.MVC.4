@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 public class AccountController : Controller
 {
     // simulert lagring
-    private static List<IdentityUser> _users = new List<IdentityUser>();
+    public static List<IdentityUser> Users = new List<IdentityUser>();
 
     // GET: Account/LoggInn
     public ActionResult LoggInn()
@@ -25,7 +25,7 @@ public class AccountController : Controller
         {
             // Handle login logic here, e.g., verify user credentials
             // Redirect to another page if successful
-            var user = _users.FirstOrDefault(u => u.Email == model.Email);
+            var user = Users.FirstOrDefault(u => u.Email == model.Email);
             if (user != null && user.Password == model.Password)
             {
                 // redirect til ønsket side
@@ -49,7 +49,7 @@ public class AccountController : Controller
     {
         if (ModelState.IsValid)
         {
-            if (_users.Any(u => u.Email == model.Email))
+            if (Users.Any(u => u.Email == model.Email))
             {
                 ModelState.AddModelError(string.Empty, "Brukeren eksisterer allerede.");
                 return View(model);
@@ -57,7 +57,7 @@ public class AccountController : Controller
 
             // Oppretter ny bruker og legger den til
             var user = new IdentityUser { UserName = model.Email, Email = model.Email, Password = model.Password };
-            _users.Add(user);
+            Users.Add(user);
 
             // brukeren omdirigeres dersom det lykkes
             return RedirectToAction("LoggInn");
@@ -69,7 +69,7 @@ public class AccountController : Controller
     // Hente bruker etter e-postadresse
     public static IdentityUser? GetUserByEmail(string email)
     {
-        return _users.FirstOrDefault(u => u.Email == email);
+        return Users.FirstOrDefault(u => u.Email == email);
     }
 
 

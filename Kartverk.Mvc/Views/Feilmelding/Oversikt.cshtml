@@ -11,6 +11,7 @@
     <tr>
         <th>ID</th>
         <th>E-post</th>
+        <th>Koordinater</th>
         <th>Beskrivelse</th>
         <th>Dato</th>
     </tr>
@@ -23,6 +24,7 @@
             <tr>
                 <td>@feilmelding.Id</td>
                 <td>@feilmelding.Email</td>
+                <td>@feilmelding.X, @feilmelding.Y</td>
                 <td>@feilmelding.Beskrivelse</td>
                 <td>@feilmelding.Dato.ToString("dd.MM.yyyy HH:mm:ss")</td> <!-- Formaterer datoen -->
             </tr>
