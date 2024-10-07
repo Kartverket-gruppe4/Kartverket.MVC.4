@@ -1,6 +1,6 @@
-namespace Kartverk.Mvc.Models
+namespace Kartverk.Mvc.Models.Feilmelding
 {
-    public class Feilmelding
+    public class FeilmeldingViewModel
     {
         public int Id { get; set; } // Unik ID for feilmeldingen
         public string? Email { get; set; } // Brukerens e-post

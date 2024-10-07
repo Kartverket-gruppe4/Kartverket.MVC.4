@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Kartverk.Mvc.Models;
 using System.Text.Json;
 
-namespace Kartverk.Mvc.Controllers;
+namespace Kartverk.Mvc.Controllers.Home;
 
 public class HomeController : Controller
 {
