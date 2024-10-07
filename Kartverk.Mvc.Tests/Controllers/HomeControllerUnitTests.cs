@@ -1,4 +1,4 @@
-﻿using Kartverk.Mvc.Controllers;
+﻿using Kartverk.Mvc.Controllers.Home;
 using Kartverk.Mvc.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

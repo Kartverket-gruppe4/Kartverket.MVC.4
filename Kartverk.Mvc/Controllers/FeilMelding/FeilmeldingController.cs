@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
-using Kartverk.Mvc.Models; // Husk å inkludere modellen din
+using Kartverk.Mvc.Models;
+using Kartverk.Mvc.Models.Feilmelding;
 
-namespace Kartverk.Mvc.Controllers
+namespace Kartverk.Mvc.Controllers.FeilMelding
 {
     public class FeilmeldingController : Controller
     {
         // Statisk liste for lagring av feilmeldinger
-        private static List<Feilmelding> _feilmeldinger = new List<Feilmelding>();
+        private static List<FeilmeldingViewModel> _feilmeldinger = new List<FeilmeldingViewModel>();
 
         // GET: Feilmelding
         public IActionResult Index()
@@ -20,8 +21,8 @@ namespace Kartverk.Mvc.Controllers
         {
             if (ModelState.IsValid) // Sjekker om modellen er gyldig
             {
-                Feilmelding feilmelding = new Feilmelding();
-                
+                FeilmeldingViewModel feilmelding = new FeilmeldingViewModel();
+
                 // Legger til feilmeldingen i listen
                 feilmelding.Id = _feilmeldinger.Count + 1; // Generer en unik ID
                 feilmelding.X = model.X;

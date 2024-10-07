@@ -10,11 +10,6 @@ public class HomeViewModel
     [Required]
     [DisplayName("Ny melding")]
     public string? NewMessage { get; set; }
-
-
-    [PrimenumberValidator]
-    [DisplayName("Primtall(kan v�re null)")]
-    public int? Number { get; set; }
     
     public string? Hidden { get; set; }
 }
