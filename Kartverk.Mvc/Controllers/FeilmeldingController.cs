@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Kartverk.Mvc.Models; // Husk å inkludere modellen din
+using Kartverk.Mvc.Models; 
 
 namespace Kartverk.Mvc.Controllers
 {
