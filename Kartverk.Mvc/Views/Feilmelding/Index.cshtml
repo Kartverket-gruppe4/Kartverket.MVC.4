@@ -11,10 +11,7 @@
 <div id="map" style="height: 600px; margin-bottom: 10px;"></div>
 
 <!-- "Neste" knapp for å åpne pop-up form -->
-<form asp-controller="MapCorrections" asp-action="Save" method="post" id="mapInputForm">
-    
-    <input type="button" class="btn btn-success" value="Neste" onclick="openPopup()" style="margin-top:10px;" />
-</form>
+<input type="button" class="btn btn-success" value="Neste" onclick="openPopup()" style="margin-top:10px;"/>
 
 <!-- Pop-up feilmeldingsskjema -->
 <div id="popupForm" class="modal">
@@ -50,20 +47,20 @@
             <!-- Beskrivelse -->
             <div class="form-group">
                 <label asp-for="Description" class="form-label">Beskrivelse</label>
-                <input asp-for="Description" class="form-control" />
+                <input asp-for="Description" class="form-control"/>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
 
             <!-- Vedlegg -->
             <div class="form-group" style="margin-bottom: 10px;">
                 <label asp-for="Attachment" class="form-label">Vedlegg</label>
-                <input asp-for="Attachment" type="file" class="form-control" />
+                <input asp-for="Attachment" type="file" class="form-control"/>
                 <span asp-validation-for="Attachment" class="text-danger"></span>
             </div>
 
             <!-- Send-knapp -->
             <div class="form-group">
-                <input type="submit" class="btn btn-success" value="Send" style="margin-top: 10px;" />
+                <input type="submit" class="btn btn-success" value="Send" style="margin-top: 10px;"/>
             </div>
         </form>
     </div>
