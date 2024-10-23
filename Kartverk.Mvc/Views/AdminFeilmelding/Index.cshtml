@@ -1,0 +1,78 @@
+
+@{
+    ViewBag.Title = "Admin Feilmeldinger";
+    Layout = "_Layout";
+}
+
+<div class="container mt-4">
+    <h3>Innsendte Feilmeldinger</h3>
+    <p>Her kan du administrere feilmeldinger</p>
+
+<!-- søk og filter -->
+    <div class="search-filter-container">
+        <!-- Søke felt -->
+        <input type="text" id="searchInput" placeholder="Søk på feilmeldinger..." class="form-control" style="width: 500px; display: inline-block;">
+        <button class="btn btn-success" id="searchBtn">Søk</button>
+    
+        <!-- Filtrer knappen -->
+        <button class="btn btn-secondary" id="filterBtn" onclick="openFilterPopup()">Filtrer</button>
+    </div>
+
+    <!-- Filtrerings pop-up (skjult til den åpnes) -->
+    <div id="filterPopup" class="filter-popup" style="display:none; position: absolute; background-color: white; border: 1px solid #ddd; padding: 15px;">
+        <h4>Filtrer feilmeldinger</h4>
+    
+        <!-- Kategori filter -->
+        <label for="category">Kategori:</label>
+        <select id="category" class="form-control">
+            <option value="Alle">Alle</option>
+            <option value="Tursti">Tursti</option>
+            <option value="Vei">Vei</option>
+            <option value="Sjø">Sjø</option>
+            <option value="Stedsnavn">Stedsnavn</option>
+        </select>
+    
+        <!-- Dato filter -->
+        <label for="date">Dato:</label>
+        <input type="date" id="date" class="form-control">
+    
+        <!-- Kommune filter -->
+        <label for="kommune">Kommune:</label>
+        <input type="text" id="kommune" placeholder="Skriv kommune..." class="form-control">
+    
+        <!-- Status filter -->
+        <label for="status">Status:</label>
+        <select id="status" class="form-control">
+            <option value="Alle">Alle</option>
+            <option value="Ny">Ny</option>
+            <option value="Behandles">Behandles</option>
+            <option value="Ferdig behandlet">Ferdig behandlet</option>
+        </select>
+    
+        <!-- Filtrer knapp -->
+        <button class="btn btn-success" id="applyFiltersBtn" onclick="closeFilterPopup()">Bruk filter</button>
+    </div>
+</div>
+
+
+<!-- Pop-up funksjonaliteter-->
+<script>
+    // Funksjon for å åpne pop-upen
+    function openFilterPopup() {
+        var popup = document.getElementById("filterPopup");
+        popup.style.display = "block";  // Åpne pop-up
+    }
+
+    // Funksjon for å lukke pop-upen
+    function closeFilterPopup() {
+        var popup = document.getElementById("filterPopup");
+        popup.style.display = "none";  // Lukk pop-up
+    }
+
+    // Kontrollsjekk for å se at scriptet er lastet
+    console.log("Popup script loaded correctly");
+</script>
+
+
+<!-- Divider -->
+<hr />
