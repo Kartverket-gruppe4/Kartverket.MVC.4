@@ -1,0 +1,21 @@
+.view-button {
+    background-color: #28a745; /* Grønn bakgrunn */
+    border: none;
+    cursor: pointer; /* Musepekeren blir en hånd */
+    padding: 5px;
+    border-radius: 4px;
+    width: 100%; /* Gjør knappen så bred som cellen */
+    display: flex; /* Bruker flex for å sentrere innholdet */
+    justify-content: center; /* Sentrerer innholdet horisontalt */
+    align-items: center; /* Sentrerer innholdet vertikalt */
+}
+
+    .view-button i {
+        font-size: 20px; /* Setter ikonet til ønsket størrelse */
+        color: #00008b; /* Mørkeblått øyeikon */
+    }
+
+    /* Legg til hover-effekt for knappen */
+    .view-button:hover {
+        opacity: 0.8; /* Gjør knappen litt gjennomsiktig når man holder musen over den */
+    }
