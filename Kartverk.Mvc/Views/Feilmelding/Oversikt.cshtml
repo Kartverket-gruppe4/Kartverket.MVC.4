@@ -38,7 +38,7 @@
                         <td>@feilmelding.Beskrivelse</td>
                         <td>@feilmelding.Dato.ToString("dd.MM.yyyy HH:mm:ss")</td> <!-- Formaterer datoen -->
                         <td>
-                            <button class="view-button" onclick="openPopup()">
+                            <button class="view-button" onclick="openPopup('@feilmelding.Beskrivelse')">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </td> <!-- Legger til knappen ved siden av datoen -->
@@ -54,12 +54,35 @@
         </tbody>
     </table>
 
+    <!-- Pop-up Vindu -->
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <span class="close" onclick="closePopup()">&times;</span>
+            <h3>Feilmelding Detaljer</h3>
+            <p id="popup-description"></p>
+        </div>
+    </div>
+
     <script>
-        function openPopup() {
-            alert('Denne knappen vil vise mer informasjon i fremtiden.');
+        function openPopup(description) {
+            document.getElementById('popup-description').innerText = description; // Oppdaterer beskrivelsen i pop-up
+            const popup = document.getElementById('popup');
+            popup.style.opacity = 1; // Gjør popup synlig
+        }
+
+        function closePopup() {
+            const popup = document.getElementById('popup');
+            popup.style.opacity = 0; // Skjuler popup
+        }
+
+        // Lukk pop-up når brukeren klikker utenfor innholdet
+        window.onclick = function (event) {
+            const popup = document.getElementById('popup');
+            if (event.target == popup) {
+                closePopup();
+            }
         }
     </script>
 
 </body>
 </html>
-

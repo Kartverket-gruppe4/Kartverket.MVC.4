@@ -19,3 +19,46 @@
     .view-button:hover {
         opacity: 0.8; /* Gjør knappen litt gjennomsiktig når man holder musen over den */
     }
+
+/* Kode for pop-up */
+.popup {
+    position: fixed; /* Fiksert posisjonering */
+    left: 50%; /* Sentrering horisontalt */
+    top: 50%; /* Sentrering vertikalt */
+    transform: translate(-50%, -50%); /* Sentraliserer */
+    width: 90%; /* Størrelse på pop-up */
+    height: 80%; /* Størrelse på popup */
+    max-width: 800px; /* Maksimal bredde */
+    background-color: white;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Skygge rundt pop-up */
+    z-index: 1000; /* Sikre at den er over alt annet */
+    border-radius: 10px; /* Rundede kanter */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    opacity: 0; /* Start usynlig */
+    transition: opacity 0.5s ease-in-out, height 0.5s ease-in-out; /* Animasjon for opplysning */
+}
+
+.popup-content {
+    width: 100%; /* Fyller pop-up */
+    height: 100%; /* Fyller pop-up */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Sentraliserer innholdet */
+}
+
+.popup h3 {
+    margin: -250px 0 50px;
+    padding-bottom: 10px;
+}
+
+.popup .close {
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    font-size: 20px;
+}
