@@ -16,15 +16,16 @@
     <!-- Menu -->
     <div class="list-group">
         <!-- Submissions Link -->
-        <a href="@Url.Action("Index", "AdminFeilmelding")" class="list-group-item-action">
+        <a href="@Url.Action("Index", "AdminFeilmelding")" class="list-group-item list-group-item-action">
             <i class="bi bi-pencil-square"></i> Feilmeldinger
         </a>
-    </div>
-    
-    <div class="list-group">
-        <!-- Lenk til AdminInnboks-->
-        <a href="@Url.Action("Index", "AdminInnboks")" class="list-group-item-action">
-            <i class="bi bi-envelope"></i> Innboks 
+
+        <a href="@Url.Action("Index", "AdminInnboks")" class="list-group-item list-group-item-action">
+            <i class="bi bi-envelope"></i> Innboks
+        </a>
+
+        <a href="@Url.Action("LoggUt", "LoggUt")" class="list-group-item list-group-item-action">
+            <i class="bi bi-box-arrow-right"></i> Logg ut
         </a>
     </div>
 </div>
