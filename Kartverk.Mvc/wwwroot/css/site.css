@@ -1,13 +1,4 @@
-@font-face {
-    font-family: "Fonts", sans-serif;
-    src: url(Fonts/kartverket-font.woff2) format('woff2');
-    font-weight: normal;
-    font-style: normal;
-}
 
-html {
-    font-size: 14px;
-}
 
 @media (min-width: 768px) {
     html {
@@ -32,11 +23,12 @@ html {
 html {
     position: relative;
     min-height: 100%;
+    font-size: 16px;
 }
 
 body {
     margin-bottom: 60px;
-    font-family: "Fonts", sans-serif;
+    font-family: "Mulish", sans-serif;
 }
 
 .circle-container {
