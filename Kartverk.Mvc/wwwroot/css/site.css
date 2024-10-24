@@ -56,3 +56,29 @@ body {
 .field-validation-error {
     color: red
 }
+
+/*Styl til Filter på admin feilmeldingsiden*/
+.search-filter-container {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Øker avstanden mellom elementene */
+}
+
+.filter-popup {
+    width: 300px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    z-index: 100;
+}
+
+.filter-popup h4 {
+    margin-bottom: 15px;
+}
+
+.filter-popup label {
+    margin-top: 10px;
+}
+
+#applyFiltersBtn {
+    margin-top: 15px;
+}

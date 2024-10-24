@@ -7,7 +7,7 @@ namespace Kartverk.Mvc.Controllers.FeilMelding
     public class FeilmeldingController : Controller
     {
         // Statisk liste for lagring av feilmeldinger
-        private static List<FeilmeldingViewModel> _feilmeldinger = new List<FeilmeldingViewModel>();
+        public static List<FeilmeldingViewModel> _feilmeldinger = new List<FeilmeldingViewModel>();
 
         // GET: Feilmelding
         public IActionResult Index()
