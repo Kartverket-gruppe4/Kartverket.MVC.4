@@ -10,8 +10,10 @@
 
 <div id="map" style="height: 600px; margin-bottom: 10px;"></div>
 
+
+
 <!-- "Neste" knapp for å åpne pop-up form -->
-<input type="button" class="btn btn-success" value="Neste" onclick="openPopup()" style="margin-top:10px;"/>
+<input type="button" id="nesteKnapp" class="btn btn-success" value="Neste" onclick="openPopup()" style="margin-top:10px;" />
 
 <!-- Pop-up feilmeldingsskjema -->
 <div id="popupForm" class="modal">
@@ -47,20 +49,20 @@
             <!-- Beskrivelse -->
             <div class="form-group">
                 <label asp-for="Description" class="form-label">Beskrivelse</label>
-                <input asp-for="Description" class="form-control"/>
+                <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
 
             <!-- Vedlegg -->
             <div class="form-group" style="margin-bottom: 10px;">
                 <label asp-for="Attachment" class="form-label">Vedlegg</label>
-                <input asp-for="Attachment" type="file" class="form-control"/>
+                <input asp-for="Attachment" type="file" class="form-control" />
                 <span asp-validation-for="Attachment" class="text-danger"></span>
             </div>
 
             <!-- Send-knapp -->
             <div class="form-group">
-                <input type="submit" class="btn btn-success" value="Send" style="margin-top: 10px;"/>
+                <input type="submit" class="btn btn-success" value="Send" style="margin-top: 10px;" />
             </div>
         </form>
     </div>
@@ -104,20 +106,22 @@
                     document.getElementById("displayYCoord").innerText = coordinates.lng.toFixed(6);
                 }
             }
-            // Åpne modal pop-up
+            // Åpne modal pop-up og skjul "Neste" knappen
             document.getElementById("popupForm").style.display = "block";
+            document.getElementById("nesteKnapp").style.display = "none";
         }
 
         // Funksjon for å lukke pop-up skjemaet
         function closePopup() {
             document.getElementById("popupForm").style.display = "none";
+            document.getElementById("nesteKnapp").style.display = "inline-block";
         }
 
         // Lukk pop-up ved å klikke utenfor modal
         window.onclick = function (event) {
             var modal = document.getElementById("popupForm");
             if (event.target == modal) {
-                modal.style.display = "none";
+                closePopup();
             }
         }
     </script>
