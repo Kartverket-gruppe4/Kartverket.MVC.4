@@ -1,13 +1,17 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Kartverk.Mvc.Models.Feilmelding
 {
+    [Table("feilmeldinger")] // Explicitly specifying lowercase name
     public class FeilmeldingViewModel
     {
-        public int Id { get; set; } // Unik ID for feilmeldingen
-        public string? Email { get; set; } // Brukerens e-post
-        public string? Beskrivelse { get; set; } // Beskrivelse av feilen
-        public DateTime Dato { get; set; } = DateTime.Now; // Når meldingen ble sendt
-        public string X { get; set; }
-        public string Y { get; set; }
-        public string Kategori { get; set; }
+        public int Id { get; set; }  // This corresponds to the primary key column "Id" in the database
+        public string X { get; set; }  // Matches "X" in the database
+        public string Y { get; set; }  // Matches "Y" in the database
+        public string Email { get; set; }  // Matches "Email" in the database
+        public string Beskrivelse { get; set; }  // Matches "Beskrivelse" in the database
+        public string Kategori { get; set; }  // Matches "Kategori" in the database
+        public DateTime Dato { get; set; }  // Matches "Dato" in the database
+        public string GeoJson { get; set; }  // Matches "GeoJson" in the database
     }
 }

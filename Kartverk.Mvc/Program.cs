@@ -1,6 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+using Kartverk.Mvc.Models.Feilmelding;
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddControllersWithViews();
+
+// konfigurer EF med mariaDb
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
+    new MySqlServerVersion(new Version(10, 5, 9))));
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigins",
