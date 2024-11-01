@@ -1,7 +1,7 @@
 @model Kartverk.Mvc.Models.MapCorrectionModel
 
 @{
-    ViewData["Title"] = "Meld inn en feil";
+ViewData["Title"] = "Meld inn en feil";
 }
 
 <h2>Meld inn en feil</h2>
@@ -9,8 +9,6 @@
 <p>Bruk kartet nedenfor til å markere feilen du har oppdaget:</p>
 
 <div id="map" style="height: 600px; margin-bottom: 10px;"></div>
-
-
 
 <!-- "Neste" knapp for å åpne pop-up form -->
 <input type="button" id="nesteKnapp" class="btn btn-success" value="Neste" onclick="openPopup()" style="margin-top:10px;" />
@@ -25,9 +23,14 @@
         <!-- Viser koordinatene -->
         <div class="form-group">
             <label>Koordinater:</label>
-            <p>Øst: <span id="displayXCoord"></span></p>
             <p>Nord: <span id="displayYCoord"></span></p>
+            <p>Øst: <span id="displayXCoord"></span></p>
         </div>
+
+        <!-- Nytt div-element for å vise kommuneinformasjon -->
+        <div id="kommuneInfo" class="form-group" style="margin-top: 10px;">
+            <!-- Kommuneinformasjon vil vises her etter henting -->
+        </div> <!-- Avslutter kommuneInfo div -->
 
         <form asp-action="Save" method="post" enctype="multipart/form-data">
             @Html.ValidationSummary()
@@ -66,63 +69,81 @@
             </div>
         </form>
     </div>
-</div>
+</div> <!-- Avslutter popupForm div -->
 
 @section Scripts {
-    <script>
-        // Opprett kartet
-        var map = L.map('map').setView([58.164048, 8.004007], 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
+<script>
+    // Opprett kartet
+    var map = L.map('map').setView([58.164048, 8.004007], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
 
-        // Geoman for å tegne på kartet
-        map.pm.addControls({
-            position: 'topleft',
-            drawCircleMarker: false,
-            rotateMode: false,
-            cutPolygon: false,
-            drawText: false
-        });
+    // Geoman for å tegne på kartet
+    map.pm.addControls({
+        position: 'topleft',
+        drawCircleMarker: false,
+        rotateMode: false,
+        cutPolygon: false,
+        drawText: false
+    });
 
-        // Funksjon for å hente koordinater og åpne pop-up skjemaet
-        function openPopup() {
-            var layers = L.PM.Utils.findLayers(map);
-            if (layers.length > 0) {
-                var layer = layers[0]; // For nå, tar vi kun det første laget
-                var coordinates;
-                // Sjekker om det er en markør
-                if (layer instanceof L.Marker) {
-                    coordinates = layer.getLatLng();
-                }
-                // Sjekker om det er et polygon eller linje og henter midtpunktet
-                else if (layer instanceof L.Polygon || layer instanceof L.Polyline) {
-                    coordinates = layer.getBounds().getCenter();
-                }
-                if (coordinates) {
-                    document.getElementById("xCoord").value = coordinates.lat;
-                    document.getElementById("yCoord").value = coordinates.lng;
-                    document.getElementById("displayXCoord").innerText = coordinates.lat.toFixed(6);
-                    document.getElementById("displayYCoord").innerText = coordinates.lng.toFixed(6);
-                }
+    // Funksjon for å hente koordinater og åpne pop-up skjemaet
+    function openPopup() {
+        var layers = L.PM.Utils.findLayers(map);
+        if (layers.length > 0) {
+            var layer = layers[0]; // For nå, tar vi kun det første laget
+            var coordinates;
+            // Sjekker om det er en markør
+            if (layer instanceof L.Marker) {
+                coordinates = layer.getLatLng();
             }
-            // Åpne modal pop-up og skjul "Neste" knappen
-            document.getElementById("popupForm").style.display = "block";
-            document.getElementById("nesteKnapp").style.display = "none";
-        }
+            // Sjekker om det er et polygon eller linje og henter midtpunktet
+            else if (layer instanceof L.Polygon || layer instanceof L.Polyline) {
+                coordinates = layer.getBounds().getCenter();
+            }
+            if (coordinates) {
+                document.getElementById("xCoord").value = coordinates.lng; // X skal være lng (øst-vest)
+                document.getElementById("yCoord").value = coordinates.lat; // Y skal være lat (nord-sør)
+                document.getElementById("displayXCoord").innerText = coordinates.lng.toFixed(6); // Vis lng i Øst-feltet
+                document.getElementById("displayYCoord").innerText = coordinates.lat.toFixed(6); // Vis lat i Nord-feltet
 
-        // Funksjon for å lukke pop-up skjemaet
-        function closePopup() {
-            document.getElementById("popupForm").style.display = "none";
-            document.getElementById("nesteKnapp").style.display = "inline-block";
-        }
+                // Send AJAX-forespørsel til backend for å hente kommuneinformasjon
+                fetch(`/api/feilmelding/kommuneinfo?nord=${coordinates.lat}&ost=${coordinates.lng}&koordsys=4326`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Ingen kommuneinformasjon funnet for disse koordinatene.");
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        document.getElementById("kommuneInfo").innerText =
+                            `Kommune: ${data.kommunenavn}, Kommunenummer: ${data.kommunenummer}, Fylke: ${data.fylkesnavn}`;
+                    })
+                    .catch(error => {
+                        console.error("Feil ved henting av kommuneinformasjon:", error);
+                    });
 
-        // Lukk pop-up ved å klikke utenfor modal
-        window.onclick = function (event) {
-            var modal = document.getElementById("popupForm");
-            if (event.target == modal) {
-                closePopup();
+
             }
         }
-    </script>
+        // Åpne modal pop-up og skjul "Neste" knappen
+        document.getElementById("popupForm").style.display = "block";
+        document.getElementById("nesteKnapp").style.display = "none";
+    }
+
+    // Funksjon for å lukke pop-up skjemaet
+    function closePopup() {
+        document.getElementById("popupForm").style.display = "none";
+        document.getElementById("nesteKnapp").style.display = "inline-block";
+    }
+
+    // Lukk pop-up ved å klikke utenfor modal
+    window.onclick = function (event) {
+        var modal = document.getElementById("popupForm");
+        if (event.target == modal) {
+            closePopup();
+        }
+    }
+</script>
 }
