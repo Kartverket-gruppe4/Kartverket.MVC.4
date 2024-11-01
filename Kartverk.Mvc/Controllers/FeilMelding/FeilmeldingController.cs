@@ -1,13 +1,22 @@
 using Microsoft.AspNetCore.Mvc;
 using Kartverk.Mvc.Models;
 using Kartverk.Mvc.Models.Feilmelding;
+using Kartverk.Mvc.Services; // Import for IKommuneInfoService
 
 namespace Kartverk.Mvc.Controllers.FeilMelding
 {
     public class FeilmeldingController : Controller
     {
+        private readonly IKommuneInfoService _kommuneInfoService;
+
         // Statisk liste for lagring av feilmeldinger
         public static List<FeilmeldingViewModel> _feilmeldinger = new List<FeilmeldingViewModel>();
+
+        // Constructor med dependency injection for IKommuneInfoService
+        public FeilmeldingController(IKommuneInfoService kommuneInfoService)
+        {
+            _kommuneInfoService = kommuneInfoService;
+        }
 
         // GET: Feilmelding
         public IActionResult Index()
@@ -49,6 +58,18 @@ namespace Kartverk.Mvc.Controllers.FeilMelding
         {
             // bruker samme liste som i oversikt
             return View("Oversikt", _feilmeldinger);
+        }
+
+        // Ny GET-metode for å hente kommuneinfo basert på koordinater
+        [HttpGet("api/feilmelding/kommuneinfo")]
+        public async Task<IActionResult> GetKommuneInfo(double nord, double ost)
+        {
+            var kommuneInfo = await _kommuneInfoService.GetKommuneInfoAsync(nord, ost);
+            if (kommuneInfo == null)
+            {
+                return NotFound("Ingen kommuneinformasjon funnet for de gitte koordinatene.");
+            }
+            return Ok(kommuneInfo);
         }
     }
 }

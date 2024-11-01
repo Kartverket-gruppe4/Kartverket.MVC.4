@@ -1,5 +1,14 @@
+using Kartverk.Mvc.Services;
+using Kartverk.Mvc.API_Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Bind the API settings from appsettings.json
+builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("ApiSettings"));
+
+//Register services and their interfaces
+builder.Services.AddHttpClient<IKommuneInfoService, KommuneInfoService>();
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddCors(options =>
 {
