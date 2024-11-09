@@ -8,6 +8,8 @@ namespace Kartverk.Mvc.Models.Feilmelding
         public DateTime Dato { get; set; } = DateTime.Now; // Når meldingen ble sendt
         public string X { get; set; }
         public string Y { get; set; }
+        public string GeoJson {  get; set; }
         public string Kategori { get; set; }
+        public string Kommune { get; set; }
     }
 }

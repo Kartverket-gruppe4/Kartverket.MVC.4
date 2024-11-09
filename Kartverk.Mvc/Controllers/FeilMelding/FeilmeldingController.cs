@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Kartverk.Mvc.Models;
 using Kartverk.Mvc.Models.Feilmelding;
-using Kartverk.Mvc.Services; // Import for IKommuneInfoService
+using Kartverk.Mvc.Services;
+using Newtonsoft.Json; // Import for IKommuneInfoService
 
 namespace Kartverk.Mvc.Controllers.FeilMelding
 {
@@ -30,15 +31,17 @@ namespace Kartverk.Mvc.Controllers.FeilMelding
         {
             if (ModelState.IsValid) // Sjekker om modellen er gyldig
             {
+                
+                
                 FeilmeldingViewModel feilmelding = new FeilmeldingViewModel();
 
                 // Legger til feilmeldingen i listen
                 feilmelding.Id = _feilmeldinger.Count + 1; // Generer en unik ID
-                feilmelding.X = model.X;
-                feilmelding.Y = model.Y;
+                feilmelding.GeoJson = model.GeoJson;
                 feilmelding.Email = AccountController.Users.First().Email;
                 feilmelding.Beskrivelse = model.Description;
                 feilmelding.Kategori = model.Category;
+
                 _feilmeldinger.Add(feilmelding);
 
                 // Omstyring til oversikten over innmeldinger (kan endres til ønsket side)
