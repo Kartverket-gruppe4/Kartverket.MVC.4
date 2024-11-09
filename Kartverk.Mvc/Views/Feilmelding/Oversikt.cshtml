@@ -23,6 +23,7 @@
             <tr>
                 <th>Nr</th>
                 <th>Kategori</th>
+                <th>GeoJson</th>
                 <th>Kommune</th>
                 <th>Dato</th>
                 <th>Mer</th> <!-- Endret fra "Handling" til "Mer" -->
@@ -36,9 +37,11 @@
                     <tr>
                         <td>@feilmelding.Id</td>
                         <td>@feilmelding.Kategori</td> <!-- Oppdatert til Kategori -->
-                        <td>@feilmelding</td>
+                        <td>@feilmelding.GeoJson</td>
+                        <td>@feilmelding.Kommune</td>
                         <td>@feilmelding.Dato.ToString("dd.MM.yyyy")</td> <!-- Formaterer datoen -->
                         <td>
+                            <!-- her kan feilmelding.GeoJson legges inn for å få opp på popup om det ønskes. -->
                             <button class="view-button" onclick="openPopup('@feilmelding.Beskrivelse', '@feilmelding.Kategori', '@feilmelding.Dato.ToString("dd.MM.yyyy")', 'Ingen kommune', 'Pågående', '#')">
                                 <i class="fas fa-eye"></i>
                             </button>
@@ -84,13 +87,35 @@
         </div>
     </div>
     <script>
-        function openPopup(description, category, date, municipality, status, attachmentUrl) {
+        function openPopup(description, category, date, municipality, status, attachmentUrl, geoJsonString) {
             document.getElementById('popup-description').innerText = description; // Oppdaterer beskrivelse
             document.getElementById('popup-category').innerText = category; // Oppdaterer kategori
             document.getElementById('popup-date').innerText = date; // Oppdaterer dato
             document.getElementById('popup-municipality').innerText = municipality; // Oppdaterer kommune
             document.getElementById('popup-status').innerText = status; // Oppdaterer status
             document.getElementById('popup-attachment').setAttribute('href', attachmentUrl); // Oppdaterer vedleggslenke
+
+            // initialiser kartet i pop-upen
+            var mapElement = document.getElementById("popup-map");
+            if (mapElement) {
+                // Sletter eksisterende kart hvis det finnes
+                mapElement.innerHTML = "";
+            }
+
+            // Hvis geoJsonString er tilgjengelig, vis kartet
+            if (geoJsonString) {
+ 
+                // var geoJson = JSON.parse(geoJsonString);
+
+                /* // Opprett et kart i pop-upen
+                var popupMap = L.map('popup-map').setView([58.164048, 8.004007], 13); // Sentrer kartet på et standard sted
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(popupMap);
+
+                // Legg til GeoJSON-laget på kartet
+                L.geoJSON(geoJson).addTo(popupMap); */
+            }
 
             const popup = document.getElementById('popup');
             popup.style.display = 'block'; // Viser popup

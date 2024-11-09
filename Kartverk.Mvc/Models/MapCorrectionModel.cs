@@ -14,9 +14,6 @@ namespace Kartverk.Mvc.Models
         public IFormFile? Attachment { get; set; }
 
         [Required]
-        public string X { get; set; } = string.Empty;
-
-        [Required]
-        public string Y { get; set; } = string.Empty;
+        public string GeoJson { get; set; } = string.Empty;
     }
 }
