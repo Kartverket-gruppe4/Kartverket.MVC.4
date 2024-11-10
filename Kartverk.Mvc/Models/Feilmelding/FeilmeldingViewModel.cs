@@ -10,6 +10,6 @@ namespace Kartverk.Mvc.Models.Feilmelding
         public string Y { get; set; }
         public string GeoJson {  get; set; }
         public string Kategori { get; set; }
-        public string Kommune { get; set; }
+        public string KommuneInfo { get; set; }
     }
 }

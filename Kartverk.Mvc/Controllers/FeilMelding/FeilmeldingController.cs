@@ -38,6 +38,7 @@ namespace Kartverk.Mvc.Controllers.FeilMelding
                 // Legger til feilmeldingen i listen
                 feilmelding.Id = _feilmeldinger.Count + 1; // Generer en unik ID
                 feilmelding.GeoJson = model.GeoJson;
+                feilmelding.KommuneInfo = model.KommuneInfo;
                 feilmelding.Email = AccountController.Users.First().Email;
                 feilmelding.Beskrivelse = model.Description;
                 feilmelding.Kategori = model.Category;
