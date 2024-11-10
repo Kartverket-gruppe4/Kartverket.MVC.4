@@ -36,8 +36,8 @@ ViewData["Title"] = "Meld inn en feil";
         <form asp-action="Save" method="post" enctype="multipart/form-data">
             @Html.ValidationSummary()
             @Html.HiddenFor(inputForm => inputForm.GeoJson, new { @id = "geoJsonHiddenInput" })
-
-
+            @Html.HiddenFor(inputForm => inputForm.KommuneInfo, new { @id = "kommuneInfoHiddenInput" })
+            
             <!-- Kategori -->
             <div class="form-group">
                 <label asp-for="Category" class="form-label">Kategori</label>
@@ -73,7 +73,7 @@ ViewData["Title"] = "Meld inn en feil";
 </div> <!-- Avslutter popupForm div -->
 
 @section Scripts {
-<script>
+    <script>
     // Opprett kartet
     var map = L.map('map').setView([58.164048, 8.004007], 13);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -146,8 +146,9 @@ ViewData["Title"] = "Meld inn en feil";
                 return response.json();
             })
             .then(data => {
+                document.getElementById("kommuneInfoHiddenInput").value = JSON.stringify(data);
                 document.getElementById("kommuneInfo").innerText =
-                    `Kommune: ${data.kommunenavn}, Kommunenummer: ${data.kommunenummer}, Fylke: ${data.fylkesnavn}`;
+                    `Kommune: ${data.kommunenavn}, Kommunenummer: ${data.kommunenummer}`;
             })
             .catch(error => {
                 console.error("Feil ved henting av kommuneinformasjon:", error);

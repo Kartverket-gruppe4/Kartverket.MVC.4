@@ -15,5 +15,7 @@ namespace Kartverk.Mvc.Models
 
         [Required]
         public string GeoJson { get; set; } = string.Empty;
+        
+        public string KommuneInfo { get; set; } = string.Empty;
     }
 }

@@ -38,7 +38,7 @@
                         <td>@feilmelding.Id</td>
                         <td>@feilmelding.Kategori</td> <!-- Oppdatert til Kategori -->
                         <td>@feilmelding.GeoJson</td>
-                        <td>@feilmelding.Kommune</td>
+                        <td>@feilmelding.KommuneInfo</td>
                         <td>@feilmelding.Dato.ToString("dd.MM.yyyy")</td> <!-- Formaterer datoen -->
                         <td>
                             <!-- her kan feilmelding.GeoJson legges inn for å få opp på popup om det ønskes. -->
@@ -69,7 +69,7 @@
                     <p><strong>Beskrivelse:</strong> <span id="popup-description"></span></p>
                     <p><strong>Kategori:</strong> <span id="popup-category"></span></p>
                     <p><strong>Dato:</strong> <span id="popup-date"></span></p>
-                    <p><strong>Kommune:</strong> <span id="popup-municipality">Ingen kommune</span></p>
+                    <p><strong>Kommune:</strong> <span id="popup-municipality"></span></p>
                     <p><strong>Status:</strong> <span id="popup-status">Pågående</span></p>
                 </div>
 
@@ -91,7 +91,7 @@
             document.getElementById('popup-description').innerText = description; // Oppdaterer beskrivelse
             document.getElementById('popup-category').innerText = category; // Oppdaterer kategori
             document.getElementById('popup-date').innerText = date; // Oppdaterer dato
-            document.getElementById('popup-municipality').innerText = municipality; // Oppdaterer kommune
+            document.getElementById('popup-municipality').innerText = kommune; // Oppdaterer kommune
             document.getElementById('popup-status').innerText = status; // Oppdaterer status
             document.getElementById('popup-attachment').setAttribute('href', attachmentUrl); // Oppdaterer vedleggslenke
 
