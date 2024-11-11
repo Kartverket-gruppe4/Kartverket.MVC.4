@@ -20,13 +20,13 @@ ViewData["Title"] = "Meld inn en feil";
 
         <h3>Feilmeldingsskjema</h3>
 
-        <!-- Viser GeoJson Info -->
-        <div class="form-group">
+        <!-- Kan legges inn hvis vi vil vise GeoJson Info -->
+       <!--<div class="form-group">
             <div class="form-group">
                 <label>GeoJson:</label>
                 <pre id="geoJsonInput"></pre>
             </div>
-        </div>
+        </div> -->
 
         <!-- Nytt div-element for å vise kommuneinformasjon -->
         <div id="kommuneInfo" class="form-group" style="margin-top: 10px;">
@@ -134,7 +134,7 @@ ViewData["Title"] = "Meld inn en feil";
         }
 
         var geoJsonString = JSON.stringify(geoJson);
-        document.getElementById('geoJsonInput').textContent = geoJsonString;
+        // Kan legges inn hvis vi vil ha geojson på popup -> document.getElementById('geoJsonInput').textContent = geoJsonString;
         document.getElementById('geoJsonHiddenInput').value = geoJsonString;
            
         // Send AJAX-forespørsel til backend for å hente kommuneinformasjon
