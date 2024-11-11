@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Kartverk.Mvc.Models;
 using Kartverk.Mvc.Models.Feilmelding;
 using Kartverk.Mvc.Services;
-using Newtonsoft.Json; // Import for IKommuneInfoService
+using Newtonsoft.Json; // Import for IKommuneInfoService.
 
 namespace Kartverk.Mvc.Controllers.FeilMelding
 {
