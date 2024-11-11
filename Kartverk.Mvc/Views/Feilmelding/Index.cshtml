@@ -20,12 +20,13 @@ ViewData["Title"] = "Meld inn en feil";
 
         <h3>Feilmeldingsskjema</h3>
 
-        <!-- Viser koordinatene -->
-        <div class="form-group">
-            <label>Koordinater:</label>
-            <p>Nord: <span id="displayYCoord"></span></p>
-            <p>Øst: <span id="displayXCoord"></span></p>
-        </div>
+        <!-- Kan legges inn hvis vi vil vise GeoJson Info -->
+       <!--<div class="form-group">
+            <div class="form-group">
+                <label>GeoJson:</label>
+                <pre id="geoJsonInput"></pre>
+            </div>
+        </div> -->
 
         <!-- Nytt div-element for å vise kommuneinformasjon -->
         <div id="kommuneInfo" class="form-group" style="margin-top: 10px;">
@@ -34,13 +35,13 @@ ViewData["Title"] = "Meld inn en feil";
 
         <form asp-action="Save" method="post" enctype="multipart/form-data">
             @Html.ValidationSummary()
-            @Html.HiddenFor(x => x.X, new { @id = "xCoord" })
-            @Html.HiddenFor(x => x.Y, new { @id = "yCoord" })
-
+            @Html.HiddenFor(inputForm => inputForm.GeoJson, new { @id = "geoJsonHiddenInput" })
+            @Html.HiddenFor(inputForm => inputForm.KommuneInfo, new { @id = "kommuneInfoHiddenInput" })
+            
             <!-- Kategori -->
             <div class="form-group">
                 <label asp-for="Category" class="form-label">Kategori</label>
-                <select asp-for="Category" class="form-control">
+                <select asp-for="Category" class="form-control" id="Category">
                     <option value="Tursti">Tursti</option>
                     <option value="Vei">Vei</option>
                     <option value="Sjø">Sjø</option>
@@ -72,7 +73,7 @@ ViewData["Title"] = "Meld inn en feil";
 </div> <!-- Avslutter popupForm div -->
 
 @section Scripts {
-<script>
+    <script>
     // Opprett kartet
     var map = L.map('map').setView([58.164048, 8.004007], 13);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -88,45 +89,71 @@ ViewData["Title"] = "Meld inn en feil";
         drawText: false
     });
 
+    function getLayerGeoJSON(layer) {
+        const geojsonLayer = L.geoJSON(layer.toGeoJSON ? layer.toGeoJSON() : layer);
+        return geojsonLayer.toGeoJSON();
+    }
+
+    function getFirstCoordinate(geoJson) {
+
+        const { type, coordinates } = geoJson.features[0].geometry;
+        var coordinatesArray;
+        if (type === "Point") {
+            coordinatesArray = coordinates;
+        }
+        if (type === "LineString") {
+            coordinatesArray = coordinates[0];
+        }
+        if (type === "Polygon") {
+            coordinatesArray = coordinates[0][0];
+        }
+
+        if(coordinatesArray.length > 0)
+            return {
+                longitude: coordinatesArray[0],
+                latitude: coordinatesArray[1],
+            };
+
+        console.warn("Unsupported GeoJSON geometry type");
+        return null;
+    }
+
     // Funksjon for å hente koordinater og åpne pop-up skjemaet
     function openPopup() {
         var layers = L.PM.Utils.findLayers(map);
-        if (layers.length > 0) {
-            var layer = layers[0]; // For nå, tar vi kun det første laget
-            var coordinates;
-            // Sjekker om det er en markør
-            if (layer instanceof L.Marker) {
-                coordinates = layer.getLatLng();
-            }
-            // Sjekker om det er et polygon eller linje og henter midtpunktet
-            else if (layer instanceof L.Polygon || layer instanceof L.Polyline) {
-                coordinates = layer.getBounds().getCenter();
-            }
-            if (coordinates) {
-                document.getElementById("xCoord").value = coordinates.lng; // X skal være lng (øst-vest)
-                document.getElementById("yCoord").value = coordinates.lat; // Y skal være lat (nord-sør)
-                document.getElementById("displayXCoord").innerText = coordinates.lng.toFixed(6); // Vis lng i Øst-feltet
-                document.getElementById("displayYCoord").innerText = coordinates.lat.toFixed(6); // Vis lat i Nord-feltet
+        if (layers.length <= 0)
+            throw new Error("Must select layer.");
 
-                // Send AJAX-forespørsel til backend for å hente kommuneinformasjon
-                fetch(`/api/feilmelding/kommuneinfo?nord=${coordinates.lat}&ost=${coordinates.lng}&koordsys=4326`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error("Ingen kommuneinformasjon funnet for disse koordinatene.");
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        document.getElementById("kommuneInfo").innerText =
-                            `Kommune: ${data.kommunenavn}, Kommunenummer: ${data.kommunenummer}, Fylke: ${data.fylkesnavn}`;
-                    })
-                    .catch(error => {
-                        console.error("Feil ved henting av kommuneinformasjon:", error);
-                    });
+        var layer = layers[0]; // For nå, tar vi kun det første laget
+        var geoJson = getLayerGeoJSON(layer);
+        var coordinates = getFirstCoordinate(geoJson);
 
-
-            }
+        if (!geoJson || !coordinates) {
+            alert("GeoJSON data er ikke gyldig.");
+            return;
         }
+
+        var geoJsonString = JSON.stringify(geoJson);
+        // Kan legges inn hvis vi vil ha geojson på popup -> document.getElementById('geoJsonInput').textContent = geoJsonString;
+        document.getElementById('geoJsonHiddenInput').value = geoJsonString;
+           
+        // Send AJAX-forespørsel til backend for å hente kommuneinformasjon
+        fetch(`/api/feilmelding/kommuneinfo?nord=${coordinates.latitude}&ost=${coordinates.longitude}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Ingen kommuneinformasjon funnet for disse koordinatene.");
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById("kommuneInfoHiddenInput").value = JSON.stringify(data);
+                document.getElementById("kommuneInfo").innerText =
+                    `Kommune: ${data.kommunenavn}, Kommunenummer: ${data.kommunenummer}`;
+            })
+            .catch(error => {
+                console.error("Feil ved henting av kommuneinformasjon:", error);
+            });
+
         // Åpne modal pop-up og skjul "Neste" knappen
         document.getElementById("popupForm").style.display = "block";
         document.getElementById("nesteKnapp").style.display = "none";

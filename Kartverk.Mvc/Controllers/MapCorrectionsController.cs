@@ -23,7 +23,7 @@ namespace Kartverk.Mvc.Controllers
 
             // Logikk for å håndtere innsendte data
             // Eksempel: Logge data for testing, eller lagre til database
-            Console.WriteLine($"Kategori: {model.Category}, Beskrivelse: {model.Description}, Koordinater: {model.X}, {model.Y}");
+            Console.WriteLine($"Kategori: {model.Category}, Beskrivelse: {model.Description}");
 
             // Etter suksessfull lagring, kan man returnere en bekreftelsesside eller lignende
             return View("Success");

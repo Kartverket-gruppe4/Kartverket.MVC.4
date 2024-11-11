@@ -1,0 +1,20 @@
+@using Kartverk.Mvc.Models
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Takk for din henvendelse";
+}
+
+<h2>Takk for din henvendelse</h2>
+<p>Din feilmelding har blitt sendt inn.</p>
+
+<p>
+    Du kan følge statusen på din innmelding ved å gå til 
+    <a asp-action="MineInnmeldinger" asp-controller="Feilmelding">Mine innmeldinger</a>. 
+    Hvis Kartverket har oppfølgingsspørsmål, vil de dukke opp i 
+    <a asp-action="Index" asp-controller="Innboks">Min innboks</a>.
+</p>
+
+<p>
+    <a asp-action="Oversikt" asp-controller="Feilmelding">Oversikt over innmeldinger</a>
+</p>

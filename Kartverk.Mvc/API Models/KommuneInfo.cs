@@ -9,7 +9,7 @@ public class KommuneInfo
         public string? Fylkesnummer { get; set; }
         [JsonPropertyName("kommunenavn")]
         public string? Kommunenavn { get; set; }
-        [JsonPropertyName("kommunennummer")]
+        [JsonPropertyName("kommunenummer")]
         public string? Kommunenummer { get; set; }
     }
 
