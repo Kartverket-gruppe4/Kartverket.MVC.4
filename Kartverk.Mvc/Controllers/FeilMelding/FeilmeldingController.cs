@@ -24,32 +24,33 @@ namespace Kartverk.Mvc.Controllers.FeilMelding
         {
             return View(); // Returnerer visningen for Feilmelding
         }
-
+        
         // POST: Feilmelding/Opprett
         [HttpPost]
         public IActionResult Save(MapCorrectionModel model)
         {
-            if (ModelState.IsValid) // Sjekker om modellen er gyldig
+            if (ModelState.IsValid)
             {
-                
-                
-                FeilmeldingViewModel feilmelding = new FeilmeldingViewModel();
-
-                // Legger til feilmeldingen i listen
-                feilmelding.Id = _feilmeldinger.Count + 1; // Generer en unik ID
-                feilmelding.GeoJson = model.GeoJson;
-                feilmelding.KommuneInfo = model.KommuneInfo;
-                feilmelding.Email = AccountController.Users.First().Email;
-                feilmelding.Beskrivelse = model.Description;
-                feilmelding.Kategori = model.Category;
+                FeilmeldingViewModel feilmelding = new FeilmeldingViewModel
+                {
+                    Id = _feilmeldinger.Count + 1,
+                    GeoJson = model.GeoJson,
+                    KommuneInfo = model.KommuneInfo,
+                    Email = AccountController.Users.First().Email,
+                    Beskrivelse = model.Description,
+                    Kategori = model.Category
+                };
 
                 _feilmeldinger.Add(feilmelding);
 
-                // Omstyring til oversikten over innmeldinger (kan endres til ønsket side)
-                return RedirectToAction("Oversikt");
+                // Returnerer til Confirmation-siden
+                return View("Confirmation");
             }
-            return View("Index", model); // Returnerer til viewet med eventuelle valideringsfeil
+
+            // Returnerer til hovedsiden med modellen hvis det er valideringsfeil
+            return View("Index", model);
         }
+
 
         // GET: Feilmelding/Oversikt
         public IActionResult Oversikt()
