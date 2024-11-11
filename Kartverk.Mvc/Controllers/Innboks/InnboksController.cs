@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace Kartverk.Mvc.Controllers.Innboks
+
+namespace Kartverk.Mvc.Controllers
 {
     public class InnboksController : Controller
     {
