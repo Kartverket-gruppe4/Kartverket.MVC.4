@@ -46,8 +46,8 @@
         <select id="statusFilter" class="form-control">
             <option value="Alle">Alle</option>
             <option value="Ny">Ny</option>
-            <option value="Behandles">Behandles</option>
-            <option value="Ferdig behandlet">Ferdig behandlet</option>
+            <option value="Pågående">Pågående</option>
+            <option value="Ferdigbehandlet">Ferdigbehandlet</option>
         </select>
 
         <!-- Filtrer knapp -->
@@ -134,6 +134,18 @@
                 <td>@feilmelding.Dato.ToString("dd.MM.yyyy HH:mm:ss")</td>
                 <td>@feilmelding.GeoJson</td>
                 <td>@feilmelding.KommuneInfo</td>
+
+                <td>
+                    <!-- Kode for å vise status og endre den for administrator -->
+                    <form action="@Url.Action("EndreStatus", "AdminFeilmelding")" method="post">
+                        <input type="hidden" name="id" value="@feilmelding.Id"/>
+                        <select name="status" class="form-control" onchange="this.form.submit()">
+                            <option value="Ferdigbehandlet" selected="@((feilmelding.Status == "Ferdigbehandlet") ? "selected" : "")">Ferdigbehandlet</option>
+                            <option value="Pågående" selected="@((feilmelding.Status == "Pågående") ? "selected" : "")">Pågående</option>
+                            <option value="Ny" selected="@((feilmelding.Status == "Ny") ? "selected" : "")">Ny</option>
+                        </select>
+                    </form>
+                </td>
                         
                 <td>
                     <button class="view-button" onclick="openPopup()">

@@ -40,6 +40,7 @@ namespace Kartverk.Mvc.Controllers.FeilMelding
                     Beskrivelse = model.Description,
                     Kategori = model.Category
                 };
+                feilmelding.Status = "Mottatt";
 
                 _feilmeldinger.Add(feilmelding);
 
