@@ -6,25 +6,20 @@ USER app
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
+EXPOSE 5000
+
 
 
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 
-WORKDIR /src
-
-# Copy the solution file if it exists
-COPY ["Kartverk.Mvc/Kartverk.sln", "./"]
-
 # Set the working directory and copy the specific project file to restore dependencies
+WORKDIR /src
 COPY ["Kartverk.Mvc/Kartverk.Mvc.csproj", "Kartverk.Mvc/"]
 
 # Explicitly restore the project file
-# RUN dotnet restore --project "Kartverk.Mvc/Kartverk.Mvc.csproj"
-
-# Run restore using the solution file to restore all projects in one go
-RUN dotnet restore "Kartverk.sln"
+RUN dotnet restore --project "Kartverk.Mvc/Kartverk.Mvc.csproj"
 
 # Copy the rest of the source code
 COPY . .
