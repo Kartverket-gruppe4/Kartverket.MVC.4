@@ -11,20 +11,34 @@ EXPOSE 8081
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
+
+# Set the working directory and copy the specific project file to restore dependencies
 WORKDIR /src
 COPY ["Kartverk.Mvc/Kartverk.Mvc.csproj", "Kartverk.Mvc/"]
-RUN dotnet restore "./Kartverk.Mvc/Kartverk.Mvc.csproj"
+
+# Explicitly restore the project file
+RUN dotnet restore "Kartverk.Mvc/Kartverk.Mvc.csproj"
+
+# Copy the rest of the source code
 COPY . .
+
+# Change to the project directory and build the project
 WORKDIR "/src/Kartverk.Mvc"
-RUN dotnet build "./Kartverk.Mvc.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "Kartverk.Mvc.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Kartverk.Mvc.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+# Explicitly publish the project file
+RUN dotnet publish "Kartverk.Mvc.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
+
+# Copy the published output from the publish stage to the final image
 COPY --from=publish /app/publish .
+
+# Define the entry point for the application
 ENTRYPOINT ["dotnet", "Kartverk.Mvc.dll"]
