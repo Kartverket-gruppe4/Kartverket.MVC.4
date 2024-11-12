@@ -7,11 +7,18 @@ namespace Kartverk.Mvc.Controllers.AdminFeilmelding
 {
     public class AdminFeilmeldingController : Controller
     {
+        private readonly ApplicationDbContext _context;
+
+        public AdminFeilmeldingController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
         // GET: AdminFeilmelding/Index
         public IActionResult Index()
         {
-            // Hent alle feilmeldinger fra tjenesten eller databasen
-            var feilmeldinger = FeilmeldingController._feilmeldinger;
+            // Hent alle feilmeldinger fra databasen
+            var feilmeldinger = _context.feilmeldinger.ToList();
 
             // Send listen av feilmeldinger til visningen
             return View(feilmeldinger);
@@ -21,12 +28,15 @@ namespace Kartverk.Mvc.Controllers.AdminFeilmelding
         [HttpPost]
         public IActionResult EndreStatus(int id, string status)
         {
-            // Henter feilmeldingen med det spesifikke ID-et
-            var feilmelding = FeilmeldingController._feilmeldinger.FirstOrDefault(f => f.Id == id);
+            // Henter feilmeldingen med det spesifikke ID-et fra databasen
+            var feilmelding = _context.feilmeldinger.FirstOrDefault(f => f.Id == id);
 
             if (feilmelding != null)
             {
-                feilmelding.Status = status; // Oppdaterer statusen til den valgte verdien
+                feilmelding.Status = status; // Oppdaterer statusen 
+
+                // lagre endringene i databasen
+                _context.SaveChanges();
             }
 
             // Omstyring tilbake til oversikten/Index etter at status er oppdatert

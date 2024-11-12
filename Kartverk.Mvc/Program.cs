@@ -1,5 +1,7 @@
 using Kartverk.Mvc.Services;
 using Kartverk.Mvc.API_Models;
+using Microsoft.EntityFrameworkCore;
+using Kartverk.Mvc.Models.Feilmelding;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,16 @@ builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("ApiSet
 builder.Services.AddHttpClient<IKommuneInfoService, KommuneInfoService>();
 
 builder.Services.AddControllersWithViews();
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+Console.WriteLine("ConnectionString: " + connectionString);
+
+// Konfigurer EF med mariadb
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseMySql(connectionString,
+    new MySqlServerVersion(new Version(10, 5, 9)))
+        .LogTo(Console.WriteLine, LogLevel.Information));
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigins",
@@ -23,6 +35,13 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+// Kjør migrasjoner EF ved oppstart
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    dbContext.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -44,4 +63,5 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+app.MapControllers();
 app.Run();
