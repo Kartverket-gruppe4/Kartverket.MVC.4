@@ -5,16 +5,45 @@
     ViewData["Title"] = "Takk for din henvendelse";
 }
 
-<h2>Takk for din henvendelse</h2>
-<p>Din feilmelding har blitt sendt inn.</p>
+<!-- Hele siden med lys blå bakgrunn -->
+<style>
+    html, body {
+        height: 100%;  /* Sørger for at både html og body tar opp hele skjermhøyden */
+        margin: 0;  /* Fjerner standard margin */
+        background-color: #e6edf7;  /* Lys blå bakgrunn for hele skjermen */
+    }
 
-<p>
-    Du kan følge statusen på din innmelding ved å gå til 
-    <a asp-action="MineInnmeldinger" asp-controller="Feilmelding">Mine innmeldinger</a>. 
-    Hvis Kartverket har oppfølgingsspørsmål, vil de dukke opp i 
-    <a asp-action="Index" asp-controller="Innboks">Min innboks</a>.
-</p>
+    /* Innholdsboks */
+    .content-box {
+        max-width: 700px;
+        padding: 30px;
+        background-color: #fff;  /* Hvit bakgrunn for boksen */
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        margin: 50px auto;  /* Sentraliserer boksen med litt avstand fra toppen */
+    }
 
-<p>
-    <a asp-action="Oversikt" asp-controller="Feilmelding">Oversikt over innmeldinger</a>
-</p>
+    /* Stil for lenker */
+    .content-box a {
+        color: #2e5d9f;
+        text-decoration: underline;
+    }
+</style>
+
+<!-- Hele siden med lys blå bakgrunn og hvit boks sentrert -->
+<div class="content-box">
+    
+    <!-- Kart-ikon eller sjekkmerke øverst -->
+    <img src="/checkmark.png" alt="Sjekkmerke" style="width: 80px; margin-bottom: 20px;">
+
+    <h2 style="color: #2e5d9f; font-weight: 600;">Takk for din henvendelse</h2>
+    <p>Din feilmelding har blitt sendt inn og vil bli sett på fortløpende.</p>
+
+    <p>
+        Du kan følge statusen på din innmelding ved å gå til 
+        <a asp-action="MineInnmeldinger" asp-controller="Feilmelding">Mine innmeldinger</a>. 
+        Hvis Kartverket har oppfølgingsspørsmål, vil de dukke opp i 
+        <a asp-action="Index" asp-controller="Innboks">Min innboks</a>.
+    </p>
+</div>

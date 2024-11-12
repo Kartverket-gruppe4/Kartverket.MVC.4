@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <Content Remove="Views\Feilmelding\FeilMeldiingViewModel.cshtml" />
+    <Content Remove="wwwroot\check-mark.png" />
   </ItemGroup>
 
   <ItemGroup>
