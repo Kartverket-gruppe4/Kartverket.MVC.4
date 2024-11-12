@@ -31,4 +31,4 @@ jobs:
 
 
     - name: Run tests
-      run: dotnet test --no-restore --verbosity normal
+      run: dotnet test Kartverk.Mvc/Kartverk.Mvc.csproj --no-restore --verbosity normal
