@@ -1,16 +1,21 @@
 ﻿@model HomeViewModel
 
 @{
-    ViewData["Title"] = "Hjem";
+    ViewData["Title"] = "Hjem";  // Setter tittelen på siden
 }
 
+<!-- Bakgrunn og sentrert innhold -->
 <div class="content-background h-100 w-100 justify-content-center d-flex align-content-center">
-<div class="centered-box">
-    <h1 class="display-4">Rett i kartet</h1>
-    <p>Vil du sende inn en feilmelding? Logg inn eller registrer deg.</p>
-    <a class="btn btn-success mt-3" type="button" href="@Url.Action("LoggInn", "Account")">Logg inn / Registrer deg</a>
+    <div class="centered-box">
+        <!-- Tittel og beskrivelse -->
+        <h1 class="display-4">Rett i kartet</h1>
+        <p>Vil du sende inn en feilmelding? Logg inn eller registrer deg.</p>
+        
+        <!-- Knapper for innlogging eller registrering -->
+        <a class="btn btn-success mt-3" type="button" href="@Url.Action("LoggInn", "Account")">Logg inn / Registrer deg</a>
+    </div>
 </div>
-</div>
+
 
 
 

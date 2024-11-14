@@ -5,58 +5,78 @@ using System.Text.Json;
 
 namespace Kartverk.Mvc.Controllers.Home;
 
+// Controller som håndterer logikken for hjemmesiden.
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> logger;
+   // Logger som kan brukes til å logge informasjon og feilmeldinger.
+   private readonly ILogger<HomeController> logger;
 
-    public HomeController(ILogger<HomeController> logger)
+   // Konstruktør for HomeController. Loggeren initialiseres her. 
+   public HomeController(ILogger<HomeController> logger)
     {
-        this.logger = logger;
+        this.logger = logger; // Loggeren blir tilgjengelig i hele controlleren.
     }
-
+   
+   // Denne metoden håndterer GET-forespørsler til 'Home/Index' og returnerer visningen.
     public IActionResult Index()
     {
+        // Lager et nytt HomeViewModel objekt som brukes for å vise data på hjemmesiden.
         var model = new HomeViewModel();
-        model.Message = "Det tar en time";
+        model.Message = "Det tar en time"; //Dette skal ikke være med.
 
-        return View("Index", model);
+        return View("Index", model); // Returnerer visningen 'Index' og sender med HomeViewModel som modelldata. 
     }
-
+    
+    // Denne metoden håndterer POST-forespørsler når data sendes fra skjemaet på hjemmesiden.
     [HttpPost]
     public IActionResult Index(HomeViewModel model)
     {
 
-        if (!ModelState.IsValid)
-            return View("Index", model);
+       // Sjekker om modellen er valid (f.eks. om alle påkrevde felt er fylt ut korrekt).
+       if (!ModelState.IsValid)
+            return View("Index", model); // Hvis modellen er ugyldig, sendes den tilbake til visningen med feil. 
 
-        if (model.Hidden != null)
+       // Hvis det finnes skjulte data, deserialiserer vi dem fra JSON.
+       if (model.Hidden != null)
         {
+            // Deserialiserer JSON-strengen til MapData-objektet.
             var mapData = JsonSerializer.Deserialize<MapData>(model.Hidden, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
+       
+       // Oppdaterer modellen med den nye meldingen som er sendt fra brukeren.
         model.Message = model.NewMessage;
-        model.NewMessage = null;
+        model.NewMessage = null; // Nullstiller NewMessage for å forhindre at den sendes tilbake i neste forespørsel. 
+        
+        // Returnerer visningen 'Index' med den oppdaterte modellen.
         return View("Index", model);
     }
-
+    
+    // Denne metoden håndterer GET-forespørsler til 'Home/Privacy' og viser personvern-siden.
     public IActionResult Privacy()
     {
-        return View();
+        return View(); // Returnerer visningen for personvern. 
     }
 
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    // Error handling metode for feilmeldinger, som viser en feilmelding når en feil skjer.
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)] // Hindrer at feilsiden blir cached.
     public IActionResult Error()
     {
+        // Henter sporings-ID (ReguestId) for feilen fra Activity eller HTTP-konteksten og sender det til feilsiden.
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 }
+
+// Modell som representerer kartdata (f.eks. punkter og linjer på kartet)
+// public class MapData. 
 public class MapData
 {
-    public List<LatLng> Points { get; set; }
-    public List<List<LatLng>> Lines { get; set; }
+    public List<LatLng> Points { get; set; } // Liste av punkter (hver punkt er et LatLng-objekt).
+    public List<List<LatLng>> Lines { get; set; } // Liste av linjer (hver linje er en liste av punkter).
 }
 
+// Modell som representerer geografiske koordinater (breddegrad og lengdegrad)
 public class LatLng
 {
-    public double Lat { get; set; }
-    public double Lng { get; set; }
+    public double Lat { get; set; } // Breddegrad (latitude)
+    public double Lng { get; set; } // Lengdegrad (longitude)
 }

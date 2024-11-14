@@ -12,13 +12,16 @@ namespace Kartverk.Mvc.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            // Angir at databasen skal bruke utf8mb4 tegnsettet (som er viktig for å støtte flere tegnsett som emojier).
             migrationBuilder.AlterDatabase()
                 .Annotation("MySql:CharSet", "utf8mb4");
 
+            // Oppretter en ny tabell kalt 'feilmeldinger' i databasen.
             migrationBuilder.CreateTable(
                 name: "feilmeldinger",
                 columns: table => new
                 {
+                    // Kolonnene i tabellen
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Email = table.Column<string>(type: "longtext", nullable: true)
@@ -37,6 +40,7 @@ namespace Kartverk.Mvc.Migrations
                 },
                 constraints: table =>
                 {
+                    // Definerer en primærnøkkel på kolonnen 'Id'
                     table.PrimaryKey("PK_feilmeldinger", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -45,6 +49,7 @@ namespace Kartverk.Mvc.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            // Fjerner tabellen 'feilmeldinger' fra databasen.
             migrationBuilder.DropTable(
                 name: "feilmeldinger");
         }

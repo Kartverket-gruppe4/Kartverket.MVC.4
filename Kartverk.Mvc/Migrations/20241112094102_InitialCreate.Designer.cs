@@ -7,59 +7,76 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-#nullable disable
+#nullable disable // Deaktiverer nullable referanseadvarsler (brukt i nyere versjoner av C# for sikkerhetskontroller)
 
 namespace Kartverk.Mvc.Migrations
 {
+    // Marker klassen som en migrasjon knyttet til ApplicationDbContext
     [DbContext(typeof(ApplicationDbContext))]
+    // Angir at denne migrasjonen er "InitialCreate" og har et tidsstempel
     [Migration("20241112094102_InitialCreate")]
     partial class InitialCreate
     {
+        // Denne metoden bygger datamodellen som representerer tabellene i databasen
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
+                // Angir versjonen av produktet og den maksimale identifikatorlengden i databasen
                 .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
+            // Bruker MySQL-spesifikke utvidelser for automatisk autoincrement av kolonner
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
+            // Definerer en entitet (tabell) for feilmeldinger i databasen
             modelBuilder.Entity("Kartverk.Mvc.Models.Feilmelding.FeilmeldingViewModel", b =>
                 {
+                    // Definerer "Id"-kolonnen som en auto-inkrementert integer
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                        .ValueGeneratedOnAdd() // Automatisk generering av verdier
                         .HasColumnType("int");
 
+                    // Bruker MySQL-spesifikk strategi for auto-inkrement
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    // Definerer "Beskrivelse"-kolonnen som tekst med ingen spesifisert lengde
                     b.Property<string>("Beskrivelse")
                         .HasColumnType("longtext");
 
+                    // Definerer "Dato"-kolonnen som en datetime med presisjon (6 desimaler)
                     b.Property<DateTime>("Dato")
                         .HasColumnType("datetime(6)");
 
+                    // Definerer "Email"-kolonnen som tekst
                     b.Property<string>("Email")
                         .HasColumnType("longtext");
 
+                    // Definerer "GeoJson"-kolonnen som en obligatorisk tekstkolonne
                     b.Property<string>("GeoJson")
-                        .IsRequired()
+                        .IsRequired() // Påkrevd felt
                         .HasColumnType("longtext");
 
+                    // Definerer "Kategori"-kolonnen som en obligatorisk tekstkolonne
                     b.Property<string>("Kategori")
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    // Definerer "KommuneInfo"-kolonnen som en obligatorisk tekstkolonne
                     b.Property<string>("KommuneInfo")
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    // Definerer "Status"-kolonnen som en obligatorisk tekstkolonne
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    // Angir at "Id" er primærnøkkelen for tabellen
                     b.HasKey("Id");
 
+                    // Angir at entiteten (tabellen) skal kalles "feilmeldinger" i databasen
                     b.ToTable("feilmeldinger");
                 });
 #pragma warning restore 612, 618
