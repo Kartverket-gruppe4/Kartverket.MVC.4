@@ -1,25 +1,26 @@
 @{
-    ViewBag.Title = "Admin Login";
+    ViewBag.Title = "Admin Login";  // Setter tittelen på admin-innloggingssiden
 }
 
 <div class="container mt-4">
-    <h3>Admin-innlogging</h3>
-
-    @using (Html.BeginForm("AdminLogin", "MinSide", FormMethod.Post))
+    <h3>Admin-innlogging</h3> <!-- Tittel for innloggingssiden -->
+    
+    @using (Html.BeginForm("AdminLogin", "MinSide", FormMethod.Post))  @* Begynner et skjema som sender en POST-forespørsel til AdminLogin handlingen i MinSide-kontrolleren *@
     {
-        <div class="form-group">
-            @Html.Label("Admin Passord")
-            @Html.Password("adminPassword", null, new { @class = "form-control" })
+        <div class="form-group">  <!-- Form-gruppe for passordfeltet -->
+            @Html.Label("Admin Passord")  <!-- Label for passordfeltet -->
+            @Html.Password("adminPassword", null, new { @class = "form-control" })  <!-- Passordfelt for admin-brukeren med Bootstrap-klasser -->
         </div>
 
-        <button type="submit" class="btn btn-success mt-3">Logg inn</button>
+        <button type="submit" class="btn btn-success mt-3">Logg inn</button>  <!-- Send-knapp for skjemaet -->
 
-        <!-- Vis feilmeldinger -->
-        @if (!ViewData.ModelState.IsValid)
+        <!-- Vist hvis modellen ikke er gyldig -->
+        @if (!ViewData.ModelState.IsValid)  @* Sjekker om skjemaet har valideringsfeil *@
         {
-            <div class="alert alert-danger mt-3">
-                @Html.ValidationSummary()
+            <div class="alert alert-danger mt-3">  <!-- Feilmelding som vises i rød boks -->
+                @Html.ValidationSummary()  <!-- Vist som en liste med oppsummering av valideringsfeil -->
             </div>
         }
     }
 </div>
+

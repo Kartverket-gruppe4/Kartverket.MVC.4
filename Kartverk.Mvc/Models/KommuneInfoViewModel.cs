@@ -1,10 +1,9 @@
-using System.Text.Json.Serialization;
 namespace Kartverk.Mvc.Models;
 
 public class KommuneInfoViewModel
 {
-    public string? Fylkesnavn { get; set; }
-    public string? Fylkesnummer { get; set; }
-    public string? Kommunenavn { get; set; }
-    public string? Kommunenummer { get; set; }
+    public string? Fylkesnavn { get; set; } // Navnet på fylket. 
+    public string? Fylkesnummer { get; set; } // Nummeret på fylket. 
+    public string? Kommunenavn { get; set; } // Navnet på kommunen.
+    public string? Kommunenummer { get; set; } // Nummeret på kommunen. 
 }

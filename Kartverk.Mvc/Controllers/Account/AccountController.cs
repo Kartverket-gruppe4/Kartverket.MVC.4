@@ -1,10 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Kartverk.Mvc.Models;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Identity;
-using System.Reflection.Metadata.Ecma335;
-using Microsoft.EntityFrameworkCore.Storage;
 using Kartverk.Mvc.Models.Feilmelding;
 
 public class AccountController : Controller

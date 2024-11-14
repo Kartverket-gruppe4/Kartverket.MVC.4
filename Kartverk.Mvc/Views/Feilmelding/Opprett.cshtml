@@ -6,13 +6,19 @@
 
 <h2>Meld inn en feil</h2>
 
+<!-- Skjema for å melde inn en feil -->
 <form asp-controller="Feilmelding" asp-action="Opprett" method="post">
 
-
-
+    <!-- Skjulte inputfelter for geoJson og kommuneInfo -->
     <input type="hidden" id="geoJsonInput" name="geoJson" />
     <input type="hidden" id="kommuneInfoInput" name="kommuneInfo" />
+
+    <!-- E-post inputfelt -->
     <input type="email" class="form-control" name="Epost" placeholder="Din e-post" required />
+
+    <!-- Beskrivelse inputfelt -->
     <input type="text" class="form-control" name="Beskrivelse" placeholder="Beskrivelse av feilen" required />
+
+    <!-- Send inn knapp -->
     <button type="submit" class="btn btn-success">Send inn</button>
 </form>

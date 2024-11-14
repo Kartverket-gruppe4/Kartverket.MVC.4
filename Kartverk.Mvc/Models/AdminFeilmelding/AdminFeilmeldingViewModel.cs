@@ -1,9 +1,12 @@
 namespace Kartverk.Mvc.Models.AdminFeilmelding 
 {
-    public class AdminFeilmeldingViewModel
+   // Definerer en ViewModel for admin som skal håndtere feilmeldinger. 
+   public class AdminFeilmeldingViewModel
     {
-        public int Id { get; set; }
-        // Eventuelt andre egenskaper for feilmeldinger
+       // Unik identifikator for feilmeldingen (primærnøkkel i databasen).
+       public int Id { get; set; }
+        
+       // En tekststreng som representerer statusen på feilmeldingen (Ny, påbegynt, osv).
         public string Status { get; set; }
     }
 }
