@@ -2,6 +2,7 @@ using Kartverk.Mvc.Services;
 using Kartverk.Mvc.API_Models;
 using Microsoft.EntityFrameworkCore;
 using Kartverk.Mvc.Models.Feilmelding;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,15 @@ builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("ApiSet
 
 //Register services and their interfaces
 builder.Services.AddHttpClient<IKommuneInfoService, KommuneInfoService>();
+
+// Add session services
+builder.Services.AddDistributedMemoryCache(); // Required for session state to work
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout (optional)
+    options.Cookie.HttpOnly = true; // Secure the session cookie
+    options.Cookie.IsEssential = true; // Makes the cookie essential for the app
+});
 
 builder.Services.AddControllersWithViews();
 
@@ -21,6 +31,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(connectionString,
     new MySqlServerVersion(new Version(10, 5, 9)))
         .LogTo(Console.WriteLine, LogLevel.Information));
+
+builder.Services.AddControllersWithViews();
+
 
 builder.Services.AddCors(options =>
 {

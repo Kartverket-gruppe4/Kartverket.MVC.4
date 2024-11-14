@@ -1,15 +1,19 @@
-using Microsoft.AspNetCore.Mvc;
 using Kartverk.Mvc.Models.MinSide;
+using Microsoft.AspNetCore.Mvc;
+using Kartverk.Mvc.Models.Feilmelding;
 
 namespace Kartverk.Mvc.Controllers.MinSide;
 
-public class MinSideController : Controller
+public class MinSideController(ApplicationDbContext context) : Controller
 {
+    private readonly ApplicationDbContext _context = context;
+
     // GET
     [HttpGet]
-    public IActionResult Index(string Email)
+    public IActionResult Index(string email)
     {
-        var user = AccountController.GetUserByEmail(Email);
+        var accountController = new AccountController(_context);
+        var user = accountController.GetUserByEmail(email);
 
         if (user != null)
         {
