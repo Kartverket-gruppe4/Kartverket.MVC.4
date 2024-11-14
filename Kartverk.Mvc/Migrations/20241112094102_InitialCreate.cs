@@ -32,7 +32,7 @@ namespace Kartverk.Mvc.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     KommuneInfo = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                   Status = table.Column<string>(type: "longtext", nullable: true)
+                    Status = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>

@@ -10,7 +10,7 @@ namespace Kartverk.Mvc.Controllers.FeilMelding
     {
         // EF
         private readonly ApplicationDbContext _context;
-        
+
         private readonly IKommuneInfoService _kommuneInfoService;
 
         private readonly ILogger<FeilmeldingController> _logger;
@@ -27,33 +27,43 @@ namespace Kartverk.Mvc.Controllers.FeilMelding
         {
             return View(); // Returnerer visningen for Feilmelding
         }
-        
+
         // POST: Feilmelding/Opprett
         [HttpPost]
         public IActionResult Save(MapCorrectionModel model)
         {
             if (ModelState.IsValid)
             {
-                var feilmelding = new FeilmeldingViewModel
+                var user = HttpContext.Request.Cookies["UserEmail"];
+
+                if (user != null)
                 {
-                    GeoJson = model.GeoJson,
-                    KommuneInfo = model.KommuneInfo,
-                    Email = AccountController.Users.First().Email,
-                    Beskrivelse = model.Description,
-                    Kategori = model.Category,
-                    Status = "Ny"
-                };
+                    var feilmelding = new FeilmeldingViewModel
+                    {
+                        GeoJson = model.GeoJson,
+                        KommuneInfo = model.KommuneInfo,
+                        Email = user,
+                        Beskrivelse = model.Description,
+                        Kategori = model.Category,
+                        Status = "Ny"
+                    };
 
-                // lagre feilmeldingen i databasen
-                _context.feilmeldinger.Add(feilmelding);
-                _context.SaveChanges();
+                    // lagre feilmeldingen i databasen
+                    _context.feilmeldinger.Add(feilmelding);
+                    _context.SaveChanges();
 
-                // Returnerer til Confirmation-siden
-                return View("Confirmation");
+                    // Returnerer til Confirmation-siden
+                    return View("Confirmation");
+                }
+
+                // Returnerer til hovedsiden med modellen hvis det er valideringsfeil
+                return View("Index", model);
             }
-
-            // Returnerer til hovedsiden med modellen hvis det er valideringsfeil
-            return View("Index", model);
+            else
+            {
+                ModelState.AddModelError("", "User not found.");
+                return View("Index", model);
+            }
         }
 
 
@@ -67,9 +77,16 @@ namespace Kartverk.Mvc.Controllers.FeilMelding
         // GET: Feilmelding/MineInnmeldinger
         public IActionResult MineInnmeldinger()
         {
+            var email = HttpContext.Request.Cookies["UserEmail"];
+
+            if (string.IsNullOrEmpty(email))
+            {
+                return RedirectToAction("Oversikt", "Feilmelding");
+            }
+
             // finner brukers feilmeldinger fra databasen
             var brukerFeilmeldinger = _context.feilmeldinger
-                .Where(f => f.Email == AccountController.Users.First().Email)
+                .Where(f => f.Email == email)
                 .ToList();
             return View("Oversikt", brukerFeilmeldinger);
         }

@@ -8,7 +8,10 @@ namespace Kartverk.Mvc.Models.Feilmelding
         {
         }
 
-        // representerer en samling av objekter som kan knyttes til database-tabell
+        // Feilmeldinger lagring
         public DbSet<FeilmeldingViewModel> feilmeldinger { get; set; }
+
+        // Brukerlagring
+        public DbSet<IdentityUser> brukere { get; set; }
     }
 }
