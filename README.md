@@ -14,7 +14,7 @@ Gi eksempler ...?
 Se eksempel 
 
 ## Folders and file structures (Github Repository Root) 
-Her kommer mappestrukturen vi har 
+Mapstructure for Kartverket.MVC.4
 
 │   ├── ## Root         
 │   │   ├── # CSS         
