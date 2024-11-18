@@ -17,70 +17,47 @@ Se eksempel
 Mapstructure for Kartverket.MVC.4
 
 │   ├── ## Root         
-│   │   ├── #css        
-│   │   │   ├── **popup.css** 
-│   │   │   ├── **site.css** 
-│   │   ├── **Fonts** 
-│   │   ├── **img**  
-
-│   ├── ## API Models      
-│   │   ├── **Apisettings.cs** 
-│   │   ├── **KommuneInfo.cs** 
+│   │   ├── # CSS         
+│   │   │   ├── **Layout.css** 
+│   │   ├── **Image**         
 
 │   ├── ## Controllers      
-│   │   ├── **Account**
-│   │   ├── **AdminFeilmelding**
-│   │   ├── **AdminInnboks**
-│   │   ├── **Feilmelding**
-│   │   ├── **HjelpKontakt**
-│   │   ├── **Home**
-│   │   ├── **Innboks**
-│   │   ├── **MinSide**
-│   │   ├── **MapCorrectionsController.cs**
+│   │   ├── **AccountControllers** 
+│   │   ├── **CheckListControllers** 
+│   │   ├── **DashboardControllers** 
 
-│   ├── ##Migrations                      
+│   ├── ##Data              
+│   │   ├── **AppDbContext**   
 
-│   ├── ##Models  
-│   │   ├── **Account**
-│   │   ├── **AdminFeilmelding**
-│   │   ├── **AdminInnboks**
-│   │   ├── **Feilmelding**
-│   │   ├── **HjelpKontakt**
-│   │   ├── **Home**
-│   │   ├── **MinSide**
-│   │   ├── **ApplicationDbContext.cs**
-│   │   ├── **ErrorViewModel.cs**
-│   │   ├── **KommuneInfoViewModel.cs**
-│   │   ├── **MapCorrectionModel.cs**
+│   ├── ##Migrations        
+
+│   ├── ##Models        
+│   │   ├── **AccountModel**  
+│   │   ├── **ChecklistModel**
+│   │   ├── **DashboardModel**
+│   │   ├── **ErrorViewModel**
 
 │   ├── ##Services         
 
-│   ├── ##Views 
-│   │   ├── **Account**
-│   │   ├── **AdminFeilmelding**
-│   │   ├── **AdminInnboks**
-│   │   ├── **Feilmelding**
-│   │   ├── **HjelpKontakt**
-│   │   ├── **Home**
-│   │   ├── **Innboks**
-│   │   ├── **MinSide**  
-│   │   ├── **Shared** 
-│   │   ├── **ViewImports.cshtml**         
+│   ├── ##Views           
+│   │   ├── **Account**       
+│   │   ├── **Dashboard**     
+│   │   ├── **Electro**       
+│   │   ├── **FunksjonsTest** 
+│   │   ├── **Hydrolisk**     
+│   │   ├── **Mechanical**
+│   │   ├── **Roles**         
+│   │   ├── **ServiceOrder**  
+│   │   ├── **ServiceSkjema** 
+│   │   ├── **Trykk**         
 
-│   ├── ##Shared  
-│   │   ├── **_Layout.cshtml** 
-│   │   ├── **_ValidationScriptsPartial.cshtml**
-│   │   ├── **Error.cshtml**
+│   ├── ##Shared         
+│   │   ├── **Layout.cshtml** 
+│   │   ├── **appsettings.json**
 
-│   ├── **.editorconfig**
+│   ├── ##DockerFile         
 
-│   ├── **appsettings.json**
-
-│   ├── **DockerFile**  
-
-│   ├── **libman.json**      
-
-│   ├── **Program.cs**
+│   ├── ##Program.cs
 </pre>
 
 ## Installation 
