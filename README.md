@@ -112,5 +112,65 @@ Inkluder link til oppgaven se eksempel vi fikk
    https://github.com/Kartverket-gruppe4/Kartverket.MVC.4.git
 
 
+# Architectural Structure / MVC Architectural Pattern
 
+This code block follows the MVC (Model-View-Controller) architectural pattern. This pattern separates the application into three main components, providing a modular and easily maintainable structure.
+
+## * Model
+
+Includes data models such as the AppDbContext class and Identity-related classes (ApplicationUser, IdentityRole, etc.). Database operations and user authorization processes are handled in this layer.
+ <pre> 
+ ## Models 
+ 
+│   │   ├── **Account**
+│   │   ├── **AdminFeilmelding**
+│   │   ├── **AdminInnboks**
+│   │   ├── **Feilmelding**
+│   │   ├── **HjelpKontakt**
+│   │   ├── **Home**
+│   │   ├── **MinSide**
+│   │   ├── ApplicationDbContext.cs
+│   │   ├── ErrorViewModel.cs
+│   │   ├── KommuneInfoViewModel.cs
+│   │   ├── MapCorrectionModel.cs    
+
+</pre>
+
+## * View
+
+Includes elements related to the user interface, such as Razor pages in the Views folder and static files (CSS, JavaScript, etc.) in the wwww root folder.
+ <pre>
+ ## Views 
+
+│   │   ├── **Account**
+│   │   ├── **AdminFeilmelding**
+│   │   ├── **AdminInnboks**
+│   │   ├── **Feilmelding**
+│   │   ├── **HjelpKontakt**
+│   │   ├── **Home**
+│   │   ├── **Innboks**
+│   │   ├── **MinSide**  
+│   │   ├── **Shared** 
+│   │   ├── ViewImports.cshtml        
+
+      </pre>    
+
+
+## * Controller
+
+Controller classes like AccountController receive HTTP requests, initiate processes, and redirect to the appropriate view to display results.
+ <pre>
+## Controllers
+
+│   │   ├── **Account**
+│   │   ├── **AdminFeilmelding**
+│   │   ├── **AdminInnboks**
+│   │   ├── **Feilmelding**
+│   │   ├── **HjelpKontakt**
+│   │   ├── **Home**
+│   │   ├── **Innboks**
+│   │   ├── **MinSide**
+│   │   ├── MapCorrectionsController.cs
+
+</pre>
 
