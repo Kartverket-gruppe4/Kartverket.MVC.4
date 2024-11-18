@@ -17,47 +17,70 @@ Se eksempel
 Mapstructure for Kartverket.MVC.4
 
 │   ├── ## Root         
-│   │   ├── # CSS         
-│   │   │   ├── **Layout.css** 
-│   │   ├── **Image**         
+│   │   ├── # css        
+│   │   │   ├── **popup.css** 
+│   │   │   ├── **site.css** 
+│   │   ├── #Fonts 
+│   │   ├── #img  
+
+│   ├── ## API Models      
+│   │   ├── **Apisettings.cs** 
+│   │   ├── **KommuneInfo.cs** 
 
 │   ├── ## Controllers      
-│   │   ├── **AccountControllers** 
-│   │   ├── **CheckListControllers** 
-│   │   ├── **DashboardControllers** 
+│   │   ├── #Account
+│   │   ├── #AdminFeilmelding
+│   │   ├── #AdminInnboks
+│   │   ├── #Feilmelding
+│   │   ├── #HjelpKontakt
+│   │   ├── #Home
+│   │   ├── #Innboks
+│   │   ├── #MinSide
+│   │   ├── **MapCorrectionsController.cs**
 
-│   ├── ##Data              
-│   │   ├── **AppDbContext**   
+│   ├── ##Migrations                      
 
-│   ├── ##Migrations        
-
-│   ├── ##Models        
-│   │   ├── **AccountModel**  
-│   │   ├── **ChecklistModel**
-│   │   ├── **DashboardModel**
-│   │   ├── **ErrorViewModel**
+│   ├── ##Models  
+│   │   ├── #Account
+│   │   ├── #AdminFeilmelding
+│   │   ├── #AdminInnboks
+│   │   ├── #Feilmelding
+│   │   ├── #HjelpKontakt
+│   │   ├── #Home
+│   │   ├── #MinSide
+│   │   ├── **ApplicationDbContext.cs**
+│   │   ├── **ErrorViewModel.cs**
+│   │   ├── **KommuneInfoViewModel.cs**
+│   │   ├── **MapCorrectionModel.cs**
 
 │   ├── ##Services         
 
-│   ├── ##Views           
-│   │   ├── **Account**       
-│   │   ├── **Dashboard**     
-│   │   ├── **Electro**       
-│   │   ├── **FunksjonsTest** 
-│   │   ├── **Hydrolisk**     
-│   │   ├── **Mechanical**
-│   │   ├── **Roles**         
-│   │   ├── **ServiceOrder**  
-│   │   ├── **ServiceSkjema** 
-│   │   ├── **Trykk**         
+│   ├── ##Views 
+│   │   ├── #Account
+│   │   ├── #AdminFeilmelding
+│   │   ├── #AdminInnboks
+│   │   ├── #Feilmelding
+│   │   ├── #HjelpKontakt
+│   │   ├── #Home
+│   │   ├── #Innboks
+│   │   ├── #MinSide  
+│   │   ├── #Shared 
+│   │   ├── **ViewImports.cshtml**         
 
-│   ├── ##Shared         
-│   │   ├── **Layout.cshtml** 
-│   │   ├── **appsettings.json**
+│   ├── ##Shared  
+│   │   ├── **_Layout.cshtml** 
+│   │   ├── **_ValidationScriptsPartial.cshtml**
+│   │   ├── **Error.cshtml**
 
-│   ├── ##DockerFile         
+│   ├── **.editorconfig**
 
-│   ├── ##Program.cs
+│   ├── **appsettings.json**
+
+│   ├── **DockerFile**  
+
+│   ├── **libman.json**      
+
+│   ├── **Program.cs**
 </pre>
 
 ## Installation 
