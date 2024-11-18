@@ -17,37 +17,37 @@ Se eksempel
 Mapstructure for Kartverket.MVC.4
 
 │   ├── ## Root         
-│   │   ├── # css        
+│   │   ├── css        
 │   │   │   ├── **popup.css** 
 │   │   │   ├── **site.css** 
-│   │   ├── #Fonts 
-│   │   ├── #img  
+│   │   ├── Fonts 
+│   │   ├── img  
 
 │   ├── ## API Models      
 │   │   ├── **Apisettings.cs** 
 │   │   ├── **KommuneInfo.cs** 
 
 │   ├── ## Controllers      
-│   │   ├── #Account
-│   │   ├── #AdminFeilmelding
-│   │   ├── #AdminInnboks
-│   │   ├── #Feilmelding
-│   │   ├── #HjelpKontakt
-│   │   ├── #Home
-│   │   ├── #Innboks
-│   │   ├── #MinSide
+│   │   ├── Account
+│   │   ├── AdminFeilmelding
+│   │   ├── AdminInnboks
+│   │   ├── Feilmelding
+│   │   ├── HjelpKontakt
+│   │   ├── Home
+│   │   ├── Innboks
+│   │   ├── MinSide
 │   │   ├── **MapCorrectionsController.cs**
 
 │   ├── ##Migrations                      
 
 │   ├── ##Models  
-│   │   ├── #Account
-│   │   ├── #AdminFeilmelding
-│   │   ├── #AdminInnboks
-│   │   ├── #Feilmelding
-│   │   ├── #HjelpKontakt
-│   │   ├── #Home
-│   │   ├── #MinSide
+│   │   ├── Account
+│   │   ├── AdminFeilmelding
+│   │   ├── AdminInnboks
+│   │   ├── Feilmelding
+│   │   ├── HjelpKontakt
+│   │   ├── Home
+│   │   ├── MinSide
 │   │   ├── **ApplicationDbContext.cs**
 │   │   ├── **ErrorViewModel.cs**
 │   │   ├── **KommuneInfoViewModel.cs**
@@ -56,15 +56,15 @@ Mapstructure for Kartverket.MVC.4
 │   ├── ##Services         
 
 │   ├── ##Views 
-│   │   ├── #Account
-│   │   ├── #AdminFeilmelding
-│   │   ├── #AdminInnboks
-│   │   ├── #Feilmelding
-│   │   ├── #HjelpKontakt
-│   │   ├── #Home
-│   │   ├── #Innboks
-│   │   ├── #MinSide  
-│   │   ├── #Shared 
+│   │   ├── Account
+│   │   ├── AdminFeilmelding
+│   │   ├── AdminInnboks
+│   │   ├── Feilmelding
+│   │   ├── HjelpKontakt
+│   │   ├── Home
+│   │   ├── Innboks
+│   │   ├── MinSide  
+│   │   ├── Shared 
 │   │   ├── **ViewImports.cshtml**         
 
 │   ├── ##Shared  
