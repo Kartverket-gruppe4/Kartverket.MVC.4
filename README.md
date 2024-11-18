@@ -16,16 +16,17 @@ Se eksempel
 ## Folders and file structures (Github Repository Root) 
 Mapstructure for Kartverket.MVC.4
 
+<pre>
 │   ├── ## wwwroot         
-│   │   ├── #css        
-│   │   │   ├── **popup.css** 
-│   │   │   ├── **site.css** 
+│   │   ├── **css**        
+│   │   │   ├── popup.css
+│   │   │   ├── site.css
 │   │   ├── **Fonts** 
 │   │   ├── **img**  
 
 │   ├── ## API Models      
-│   │   ├── **Apisettings.cs** 
-│   │   ├── **KommuneInfo.cs** 
+│   │   ├── Apisettings.cs
+│   │   ├── KommuneInfo.cs
 
 │   ├── ## Controllers      
 │   │   ├── **Account**
@@ -36,11 +37,11 @@ Mapstructure for Kartverket.MVC.4
 │   │   ├── **Home**
 │   │   ├── **Innboks**
 │   │   ├── **MinSide**
-│   │   ├── **MapCorrectionsController.cs**
+│   │   ├── MapCorrectionsController.cs
 
-│   ├── ##Migrations                      
+│   ├── ## Migrations                      
 
-│   ├── ##Models  
+│   ├── ## Models  
 │   │   ├── **Account**
 │   │   ├── **AdminFeilmelding**
 │   │   ├── **AdminInnboks**
@@ -48,14 +49,14 @@ Mapstructure for Kartverket.MVC.4
 │   │   ├── **HjelpKontakt**
 │   │   ├── **Home**
 │   │   ├── **MinSide**
-│   │   ├── **ApplicationDbContext.cs**
-│   │   ├── **ErrorViewModel.cs**
-│   │   ├── **KommuneInfoViewModel.cs**
-│   │   ├── **MapCorrectionModel.cs**
+│   │   ├── ApplicationDbContext.cs
+│   │   ├── ErrorViewModel.cs
+│   │   ├── KommuneInfoViewModel.cs
+│   │   ├── MapCorrectionModel.cs
 
-│   ├── ##Services         
+│   ├── ## Services         
 
-│   ├── ##Views 
+│   ├── ## Views 
 │   │   ├── **Account**
 │   │   ├── **AdminFeilmelding**
 │   │   ├── **AdminInnboks**
@@ -65,23 +66,24 @@ Mapstructure for Kartverket.MVC.4
 │   │   ├── **Innboks**
 │   │   ├── **MinSide**  
 │   │   ├── **Shared** 
-│   │   ├── **ViewImports.cshtml**         
+│   │   ├── ViewImports.cshtml         
 
-│   ├── ##Shared  
-│   │   ├── **_Layout.cshtml** 
-│   │   ├── **_ValidationScriptsPartial.cshtml**
-│   │   ├── **Error.cshtml**
+│   ├── ## Shared  
+│   │   ├── _Layout.cshtml
+│   │   ├── _ValidationScriptsPartial.cshtml
+│   │   ├── Error.cshtml
 
-│   ├── **.editorconfig**
+│   ├── .editorconfig
 
-│   ├── **appsettings.json**
+│   ├── appsettings.json
 
-│   ├── **DockerFile**  
+│   ├── DockerFile
 
-│   ├── **libman.json**      
+│   ├── libman.json      
 
-│   ├── **Program.cs**
+│   ├── Program.cs
 </pre>
+
 
 ## Installation 
 
