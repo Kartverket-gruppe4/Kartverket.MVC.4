@@ -15,7 +15,7 @@ namespace Kartverk.Mvc.Controllers.AdminFeilmelding
         {
             _context = context; // Initialiserer databasen som controlleren skal bruke
         }
-        
+
         // Denne metoden håndterer GET-forespørsler til 'AdminFeilmelding/Index' og henter ut feilmeldinger fra databasen
         public IActionResult Index()
         {
@@ -25,13 +25,13 @@ namespace Kartverk.Mvc.Controllers.AdminFeilmelding
             // Sender listen med feilmeldinger til viewen for visning på websiden
             return View(feilmeldinger);
         }
-        
+
         // Denne metoden håndterer POST-forespørsler og brukes til å oppdatere status på en feilmelding
         [HttpPost]
         public IActionResult EndreStatus(int id, string status)
         {
             var feilmelding = _context.feilmeldinger.FirstOrDefault(f => f.Id == id);
-            
+
             if (feilmelding != null)
             {
                 feilmelding.Status = status; // Oppdaterer statusen

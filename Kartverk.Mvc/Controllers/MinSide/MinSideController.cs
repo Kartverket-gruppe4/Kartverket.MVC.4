@@ -56,7 +56,7 @@ public class MinSideController : Controller
         if (adminPassword == predefinedPassword)
         {
             // Hvis passordet er riktig, omdiriger til admin-siden
-            return RedirectToAction("AdminDashboard");
+            return RedirectToAction("Index", "AdminFeilmelding");
         }
 
         // Hvis passordet er feil, vis feilmelding
