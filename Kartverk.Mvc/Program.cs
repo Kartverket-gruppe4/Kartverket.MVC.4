@@ -2,6 +2,9 @@ using Kartverk.Mvc.Services;
 using Kartverk.Mvc.API_Models;
 using Microsoft.EntityFrameworkCore;
 using Kartverk.Mvc.Models.Feilmelding;
+using Microsoft.AspNetCore.Identity;
+using MySqlConnector;
+using System.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +13,38 @@ builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("ApiSet
 
 // Registrer tjenester og deres grensesnitt
 builder.Services.AddHttpClient<IKommuneInfoService, KommuneInfoService>();
+
+// legger til identity services
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 6;
+    options.User.RequireUniqueEmail = true;
+})
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders();
+
+// konfigurer autentikasjon
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Account/Login/";
+    options.AccessDeniedPath = "/Account/AccessDenied/";
+    options.Cookie.Name = "YourAppCookie";
+});
+
+// registrer IDbConnection for Dapper
+builder.Services.AddTransient<IDbConnection>((sp) =>
+{
+    var configuration = sp.GetRequiredService<IConfiguration>();
+    var connectionString = configuration.GetConnectionString("DefaultConnection");
+    return new MySqlConnection(connectionString);
+});
+
+// registrer feilmeldingsservice
+builder.Services.AddScoped<FeilmeldingService>();
 
 // Legger til session-tjenester for å støtte sesjonshåndtering
 builder.Services.AddDistributedMemoryCache(); // Kreves for at sesjonsstatusen skal fungere
@@ -67,7 +102,9 @@ app.UseStaticFiles(); // Gjør statiske filer (som bilder, CSS, JS) tilgjengelig
 
 app.UseRouting();  // Setter opp ruter for kontrollere
 // Bruk CORS-policyen definert tidligere
-app.UseCors("AllowSpecificOrigins"); 
+app.UseCors("AllowSpecificOrigins");
+
+app.UseAuthentication();
 app.UseAuthorization();  // Aktiverer autorisasjon (f.eks. for tilgangskontroll)
 
 // Kartlegger den grunnleggende ruten til MVC (standard controller og action)

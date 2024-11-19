@@ -2,6 +2,8 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Kartverk.Mvc.Models;
 using System.Text.Json;
+using Kartverk.Mvc.Services;
+using Microsoft.AspNetCore.Identity;
 
 namespace Kartverk.Mvc.Controllers.Home;
 

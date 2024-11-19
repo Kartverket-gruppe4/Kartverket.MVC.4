@@ -1,4 +1,4 @@
-﻿@model RegisterViewModel 
+@model RegisterViewModel 
 
 <div class="container">
     <!-- Tittel for registreringsskjemaet -->
@@ -33,3 +33,9 @@
     <!-- Link til innloggingsside for eksisterende brukere -->
     <p>Har du allerede en konto? <a href="@Url.Action("LoggInn", "Account")">Logg inn her</a></p>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

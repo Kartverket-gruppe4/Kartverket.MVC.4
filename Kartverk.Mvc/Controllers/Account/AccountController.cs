@@ -1,13 +1,19 @@
 using Microsoft.AspNetCore.Mvc;
 using Kartverk.Mvc.Models.Feilmelding;
+using Microsoft.AspNetCore.Identity;
+using Kartverk.Mvc.Models;
 
 public class AccountController : Controller
 {
     private readonly ApplicationDbContext _context;
+    private readonly UserManager<IdentityUser> _userManager;
+    private readonly SignInManager<IdentityUser> _signInManager;
 
-    public AccountController(ApplicationDbContext context)
+    public AccountController(ApplicationDbContext context, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
     {
         _context = context;
+        _userManager = userManager;
+        _signInManager = signInManager;
     }
 
     // GET: Account/LoggInn
@@ -18,26 +24,34 @@ public class AccountController : Controller
 
     // For post request handling of login
     [HttpPost]
-    public IActionResult LoggInn(LogginnViewModel model)
+    public async Task<IActionResult> LoggInn(LogginnViewModel model)
     {
         if (ModelState.IsValid)
         {
-            // Handle login logic here, e.g., verify user credentials
-            // Redirect to another page if successful
-            var user = _context.brukere.FirstOrDefault(u => u.Email == model.Email);
-            if (user != null && user.Password == model.Password)
-            {
-                HttpContext.Response.Cookies.Append("UserEmail", user.Email, new CookieOptions
-                {
-                    Expires = DateTime.UtcNow.AddDays(1), // Set the expiration date as needed
-                    IsEssential = true // Mark the cookie as essential (optional)
-                });
+            var user = await _userManager.FindByEmailAsync(model.Email);
 
-                // redirect til ønsket side
-                return RedirectToAction("Index", "MinSide", new { email = user.Email });
+            if (user != null)
+            {
+                var result = await _signInManager.PasswordSignInAsync(
+                    userName: user.Email,
+                    password: model.Password,
+                    isPersistent: false,
+                    lockoutOnFailure: false);
+
+                if (result.Succeeded)
+                {
+                    HttpContext.Response.Cookies.Append("UserEmail", user.Email, new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        Expires = DateTimeOffset.Now.AddDays(30)
+                    });
+
+                    return RedirectToAction("Index", "MinSide", new { email = user.Email });
+                }
             }
 
-            ModelState.AddModelError(string.Empty, "Ugyldig Innlogging.");
+            ModelState.AddModelError("", "Invalid login attempt.");
         }
 
         // Returnerer view med valideringsfeil
@@ -50,30 +64,36 @@ public class AccountController : Controller
         return View();
     }
 
+    // POST: Account/Register
     [HttpPost]
-    public IActionResult Register(RegisterViewModel model)
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Register(RegisterViewModel model)
     {
         if (ModelState.IsValid)
         {
-            if (_context.brukere.Any(u => u.Email == model.Email))
+            var existingUser = await _userManager.FindByEmailAsync(model.Email);
+            if (existingUser != null)
             {
                 ModelState.AddModelError(string.Empty, "Brukeren eksisterer allerede.");
                 return View(model);
             }
 
-            // Oppretter ny bruker og legger den til
             var user = new IdentityUser
             {
                 UserName = model.Email,
-                Email = model.Email,
-                Password = model.Password
+                Email = model.Email
             };
 
-            _context.brukere.Add(user);
-            _context.SaveChanges();
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("LoggInn");
+            }
 
-            // brukeren omdirigeres dersom det lykkes
-            return RedirectToAction("LoggInn");
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
         }
         // returnerer til registreringssiden hvis det er valideringsfeil
         return View(model);
@@ -82,7 +102,7 @@ public class AccountController : Controller
     // Hente bruker etter e-postadresse
     public IdentityUser? GetUserByEmail(string email)
     {
-        return _context.brukere.FirstOrDefault(u => u.Email == email);
+        return _context.Users.FirstOrDefault(u => u.Email == email);
     }
 
 
