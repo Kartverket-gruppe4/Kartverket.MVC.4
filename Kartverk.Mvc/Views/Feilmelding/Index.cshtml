@@ -4,14 +4,16 @@
 ViewData["Title"] = "Meld inn en feil";
 }
 
-<h2>Meld inn en feil</h2>
+<div style="text-align: center;">
+    <h2>Meld inn en feil</h2>
+    <p>Bruk kartet nedenfor til å markere feilen du har oppdaget:</p>
+</div>
 
-<p>Bruk kartet nedenfor til å markere feilen du har oppdaget:</p>
+<div id="map" class="map-container"></div>
 
-<div id="map" style="height: 600px; margin-bottom: 10px;"></div>
-
-<!-- "Neste" knapp for å åpne pop-up form -->
-<input type="button" id="nesteKnapp" class="btn btn-success" value="Neste" onclick="openPopup()" style="margin-top:10px;" />
+<div class="button-container">
+    <input type="button" id="nesteKnapp" class="btn btn-success" value="Neste" onclick="openPopup()" />
+</div>
 
 <!-- Pop-up feilmeldingsskjema -->
 <div id="popupForm" class="modal">
