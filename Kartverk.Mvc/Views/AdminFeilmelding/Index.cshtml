@@ -133,11 +133,11 @@
                 <td>
                     <!-- Kode for å vise status og endre den for administrator -->
                     <form action="@Url.Action("EndreStatus", "AdminFeilmelding")" method="post">
-                        <input type="hidden" name="id" value="@feilmelding.Id"/>
+                        <input type="hidden" name="id" value="@feilmelding.Id" />
                         <select name="status" class="form-control" onchange="this.form.submit()">
-                            <option value="Ferdigbehandlet" selected="@((feilmelding.Status == "Ferdigbehandlet") ? "selected" : "")">Ferdigbehandlet</option>
-                            <option value="Pågående" selected="@((feilmelding.Status == "Pågående") ? "selected" : "")">Pågående</option>
-                            <option value="Ny" selected="@((feilmelding.Status == "Ny") ? "selected" : "")">Ny</option>
+                            <option value="Ny" selected="@((feilmelding.Status == "Ny") ? "selected" : null)">Ny</option>
+                            <option value="Pågående" selected="@((feilmelding.Status == "Pågående") ? "selected" : null)">Pågående</option>
+                            <option value="Ferdigbehandlet" selected="@((feilmelding.Status == "Ferdigbehandlet") ? "selected" : null)">Ferdigbehandlet</option>
                         </select>
                     </form>
                 </td>
