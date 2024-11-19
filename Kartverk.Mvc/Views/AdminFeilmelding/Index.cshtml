@@ -81,8 +81,7 @@
         // Funksjon for å bruke filtrering på tabellen
         function applyFilters() {
             var category = document.getElementById("categoryFilter").value;
-            var date = document.getElementById("dateFilter").value;
-        var geoJson = document.getElementById('geoJsonHiddenInput').value = geoJsonString;
+            var date = document.getElementById("dateFilter").value
             var kommune = document.getElementById("kommuneFilter").value.toLowerCase();
             var status = document.getElementById("statusFilter").value;
 
@@ -114,9 +113,7 @@
     <tr>
         <th>Nr</th>
         <th>Kategori</th>
-        <th>Beskrivelse</th>
         <th>Dato</th>
-            <th>GeoJson</th>
         <th>KommuneInfo</th>
         <th>Status</th>
         <th>Mer</th>
@@ -130,9 +127,7 @@
             <tr class="feilmelding-row" data-category="@feilmelding.Kategori" data-date="@feilmelding.Dato.ToString("yyyy-MM-dd")">
                 <td>@feilmelding.Id</td>
                 <td>@feilmelding.Kategori</td>
-                <td>@feilmelding.Beskrivelse</td>
                 <td>@feilmelding.Dato.ToString("dd.MM.yyyy HH:mm:ss")</td>
-                <td>@feilmelding.GeoJson</td>
                 <td>@feilmelding.KommuneInfo</td>
 
                 <td>
