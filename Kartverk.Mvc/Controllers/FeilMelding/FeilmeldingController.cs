@@ -98,15 +98,19 @@ namespace Kartverk.Mvc.Controllers.FeilMelding
 
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> UpdateOverview()
+        public async Task<IActionResult> UpdateOverview(string viewName = "Oversikt")
         {
             try
             {
                 var user = await _userManager.GetUserAsync(User);
                 var userId = user.Id;
 
-                var allChanges = _feilmeldingService.GetAllFeilmeldinger(userId);
-                return View(allChanges);
+                var feilmeldinger = _feilmeldingService.GetAllFeilmeldinger(userId);
+                if (viewName == "Index")
+                {
+                    return View("~/Views/AdminFeilmelding/Index.cshtml", feilmeldinger);
+                }
+                return View("~/Views/Feilmelding/Oversikt.cshtml", feilmeldinger);
             }
             catch (Exception ex)
             {
@@ -182,13 +186,34 @@ namespace Kartverk.Mvc.Controllers.FeilMelding
         [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, string viewName)
         {
             var user = await _userManager.GetUserAsync(User);
             var userId = user.Id;
 
-            _feilmeldingService.DeleteFeilmelding(id, userId);
-            return RedirectToAction("UpdateOverview");
+            try
+            {
+                _feilmeldingService.DeleteFeilmelding(id, userId);
+                TempData["SuccessMessage"] = "Feilmeldingen ble slettet.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Noe gikk galt ved sletting: {ex.Message}";
+            }
+
+            if (string.IsNullOrEmpty(viewName) || viewName == "Index")
+            {
+                return RedirectToAction("Index", "AdminFeilmelding");
+            }
+            else if (viewName == "Oversikt")
+            {
+                return RedirectToAction("Oversikt", "Feilmelding");
+            }
+            else
+            {
+                // Default fallback
+                return RedirectToAction("Index", "AdminFeilmelding");
+            }
         }
 
         // GET: Feilmelding/MineInnmeldinger
