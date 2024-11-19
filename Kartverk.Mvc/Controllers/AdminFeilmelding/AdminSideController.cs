@@ -29,20 +29,19 @@ namespace Kartverk.Mvc.Controllers.AdminFeilmelding
         [HttpPost]
         public IActionResult EndreStatus(int id, string status)
         {
-            // Henter feilmeldingen fra databasen basert på det spesifikke ID-et
             var feilmelding = _context.feilmeldinger.FirstOrDefault(f => f.Id == id);
-
-            // Hvis feilmeldingen finnes
+            
             if (feilmelding != null)
             {
-                // Oppdaterer statusen på feilmeldingen
-                feilmelding.Status = status; 
-
-                // Lagre endringene til databasen
-                _context.SaveChanges();
+                feilmelding.Status = status; // Oppdaterer statusen
+                _context.SaveChanges(); // Lagre endringen i databasen
+                TempData["SuccessMessage"] = "Status oppdatert.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Feilmelding ikke funnet.";
             }
 
-            // Etter oppdateringen, omdirigerer vi tilbake til Index-siden for å vise de oppdaterte feilmeldingene
             return RedirectToAction("Index");
         }
     }
