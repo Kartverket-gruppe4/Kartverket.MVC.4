@@ -82,3 +82,22 @@ body {
 #applyFiltersBtn {
     margin-top: 15px;
 }
+
+.map-container {
+    height: 385px;
+    width: 70%;
+    margin: 0 auto 10px auto; /* Sentrert horisontalt og 10px under */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    text-align: center;
+}
+
+.button-container {
+    margin-top: 10px;
+    margin: 0 auto; /* Sentrerer beholderen */
+    width: 70%; /* Samme bredde som kartet */
+    text-align: right; /* Flytt innholdet (knappen) til høyre */
+}
+
