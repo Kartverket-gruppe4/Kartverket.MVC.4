@@ -1,15 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Kartverk.Mvc.Models;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Identity;
-using System.Reflection.Metadata.Ecma335;
-using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.AspNetCore.Mvc;
+using Kartverk.Mvc.Models.Feilmelding;
 
 public class AccountController : Controller
 {
-    // simulert lagring
-    public static List<IdentityUser> Users = new List<IdentityUser>();
+    private readonly ApplicationDbContext _context;
+
+    public AccountController(ApplicationDbContext context)
+    {
+        _context = context;
+    }
 
     // GET: Account/LoggInn
     public ActionResult LoggInn()
@@ -25,12 +24,19 @@ public class AccountController : Controller
         {
             // Handle login logic here, e.g., verify user credentials
             // Redirect to another page if successful
-            var user = Users.FirstOrDefault(u => u.Email == model.Email);
+            var user = _context.brukere.FirstOrDefault(u => u.Email == model.Email);
             if (user != null && user.Password == model.Password)
             {
+                HttpContext.Response.Cookies.Append("UserEmail", user.Email, new CookieOptions
+                {
+                    Expires = DateTime.UtcNow.AddDays(1), // Set the expiration date as needed
+                    IsEssential = true // Mark the cookie as essential (optional)
+                });
+
                 // redirect til ønsket side
                 return RedirectToAction("Index", "MinSide", new { email = user.Email });
             }
+
             ModelState.AddModelError(string.Empty, "Ugyldig Innlogging.");
         }
 
@@ -49,15 +55,22 @@ public class AccountController : Controller
     {
         if (ModelState.IsValid)
         {
-            if (Users.Any(u => u.Email == model.Email))
+            if (_context.brukere.Any(u => u.Email == model.Email))
             {
                 ModelState.AddModelError(string.Empty, "Brukeren eksisterer allerede.");
                 return View(model);
             }
 
             // Oppretter ny bruker og legger den til
-            var user = new IdentityUser { UserName = model.Email, Email = model.Email, Password = model.Password };
-            Users.Add(user);
+            var user = new IdentityUser
+            {
+                UserName = model.Email,
+                Email = model.Email,
+                Password = model.Password
+            };
+
+            _context.brukere.Add(user);
+            _context.SaveChanges();
 
             // brukeren omdirigeres dersom det lykkes
             return RedirectToAction("LoggInn");
@@ -67,9 +80,9 @@ public class AccountController : Controller
     }
 
     // Hente bruker etter e-postadresse
-    public static IdentityUser? GetUserByEmail(string email)
+    public IdentityUser? GetUserByEmail(string email)
     {
-        return Users.FirstOrDefault(u => u.Email == email);
+        return _context.brukere.FirstOrDefault(u => u.Email == email);
     }
 
 

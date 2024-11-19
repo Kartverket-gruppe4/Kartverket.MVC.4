@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: 54321
+      MYSQL_DATABASE: kartverket
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 54321
+    ports:
+      - "3307:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - backend
+
+
+  kartverk.mvc:
+    image: ${DOCKER_REGISTRY-}kartverkmvc
+    build:
+      context: .
+      dockerfile: Kartverk.Mvc/Dockerfile
+    ports:
+      - "5000:80"
+    depends_on:
+      - mariadb
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=mariadb;Database=kartverket;User=root;Password=54321;"
+    networks:
+      - backend
+ 
+volumes:
+  mariadb_data:
+
+networks:
+  backend:

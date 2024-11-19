@@ -1,47 +1,81 @@
 using Kartverk.Mvc.Services;
 using Kartverk.Mvc.API_Models;
+using Microsoft.EntityFrameworkCore;
+using Kartverk.Mvc.Models.Feilmelding;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Bind the API settings from appsettings.json
+// Binder API-innstillingene fra appsettings.json
 builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("ApiSettings"));
 
-//Register services and their interfaces
+// Registrer tjenester og deres grensesnitt
 builder.Services.AddHttpClient<IKommuneInfoService, KommuneInfoService>();
 
-builder.Services.AddControllersWithViews();
+// Legger til session-tjenester for å støtte sesjonshåndtering
+builder.Services.AddDistributedMemoryCache(); // Kreves for at sesjonsstatusen skal fungere
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Setter sesjonens timeout (valgfritt)
+    options.Cookie.HttpOnly = true; // Sikrer at sesjons-cookie kun er tilgjengelig via HTTP
+    options.Cookie.IsEssential = true; // Gjør at cookien er essensiell for appen
+});
+
+builder.Services.AddControllersWithViews(); // Legger til støtte for MVC-kontrollere og visninger
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection"); 
+Console.WriteLine("ConnectionString: " + connectionString); // Skriver ut til konsollen for debugging
+
+// Konfigurerer Entity Framework (EF) med MariaDB som database
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseMySql(connectionString, 
+    new MySqlServerVersion(new Version(10, 5, 9)))  // Versjonen av MariaDB som skal brukes
+        .LogTo(Console.WriteLine, LogLevel.Information));  // Logger SQL-spørringer for debugging
+
+builder.Services.AddControllersWithViews();  // Legger til MVC-støtte (som en ekstra sikkerhet)
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowSpecificOrigins",
+    options.AddPolicy("AllowSpecificOrigins", 
         builder =>
         {
-            builder.WithOrigins(
-                "https://unpkg.com")
-                .AllowAnyHeader()
-                .AllowAnyMethod();
+            // Angir hvilke opprinnelser som er tillatt for CORS
+            builder.WithOrigins("https://unpkg.com")  // Eksempel på tillatt opprinnelse
+                .AllowAnyHeader()  // Tillater alle headers
+                .AllowAnyMethod(); // Tillater alle HTTP-metoder
         });
 });
 
-var app = builder.Build();
+var app = builder.Build(); // Bygger applikasjonen
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+// Kjør migrasjoner for EF ved applikasjonens oppstart
+using (var scope = app.Services.CreateScope())
 {
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    dbContext.Database.Migrate(); // Utfører migrasjoner på databasen
 }
 
-app.UseHttpsRedirection();
-app.UseStaticFiles();
+// Konfigurerer HTTP-request pipeline (håndtering av forespørsler)
+if (!app.Environment.IsDevelopment())  // Hvis applikasjonen ikke er i utviklingsmodus
+{
+    app.UseExceptionHandler("/Home/Error");  // Bruker en global feilhåndteringsside
+    // Standard HSTS-verdi er 30 dager. Endre dette i produksjonsmiljøet hvis nødvendig
+    app.UseHsts();  // Aktivere HSTS (HTTP Strict Transport Security) for ekstra sikkerhet
+}
 
-app.UseRouting();
-// Use CORS policy
-app.UseCors("AllowSpecificOrigins");
-app.UseAuthorization();
+app.UseHttpsRedirection(); // Tvinger HTTPS-forbindelse
+app.UseStaticFiles(); // Gjør statiske filer (som bilder, CSS, JS) tilgjengelige
 
+app.UseRouting();  // Setter opp ruter for kontrollere
+// Bruk CORS-policyen definert tidligere
+app.UseCors("AllowSpecificOrigins"); 
+app.UseAuthorization();  // Aktiverer autorisasjon (f.eks. for tilgangskontroll)
+
+// Kartlegger den grunnleggende ruten til MVC (standard controller og action)
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.Run();
+// Mapper kontrollerne for API
+app.MapControllers(); 
+
+app.Run();  // Kjører applikasjonen

@@ -1,17 +1,21 @@
 ﻿@model HomeViewModel
 
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Hjem";  // Setter tittelen på siden
 }
 
-<div class="text-center">
-    <h1 class="display-4">Rett i kartet</h1>
-    <p>Vil du sende inn en feilmelding? Logg inn eller registrer deg.</p>
-    <a class="btn btn-success" type="button" href="@Url.Action("LoggInn", "Account")" style="margin-bottom: 10px;">Logg inn / Registrer deg</a>
+<!-- Bakgrunn og sentrert innhold -->
+<div class="content-background h-100 w-100 justify-content-center d-flex align-content-center">
+    <div class="centered-box">
+        <!-- Tittel og beskrivelse -->
+        <h1 class="display-4">Rett i kartet</h1>
+        <p>Vil du sende inn en feilmelding? Logg inn eller registrer deg.</p>
+        
+        <!-- Knapper for innlogging eller registrering -->
+        <a class="btn btn-success mt-3" type="button" href="@Url.Action("LoggInn", "Account")">Logg inn / Registrer deg</a>
+    </div>
 </div>
 
-@* Legg til bildet her *@
-<div style="text-align: center;">
-    <img src="https://cdn.pixabay.com/photo/2023/07/05/18/13/mountains-8108961_1280.jpg" alt="Beautiful mountains" class="forsideBilde">
-</div>
+
+
 

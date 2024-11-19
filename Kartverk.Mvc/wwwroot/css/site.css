@@ -1,19 +1,44 @@
 
+.header, .footer {
+    background-color: white;
+}
+
+/* bakgrunnsbilde på hovedside */
+.content-background {
+    background-image: url('https://cdn.pixabay.com/photo/2023/07/05/18/13/mountains-8108961_1280.jpg'); /* link til bildet */
+    background-size: cover;
+    background-position: center;
+    justify-content: center;
+    align-items: center;
+}
+
+/* sentrert hvit boks på hovedside */
+.centered-box {
+    background-color: white;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 520px;
+    text-align: center;
+    width: 90%; /* gjør det responsivt */
+}
+
+/*footer på applikasjonen*/
+footer {
+    padding: 8px;
+    text-align: center;
+    color: #6c757d; /* Gjør skriften grå */
+}
+
+footer a {
+    text-decoration: none; /* fjerner underlinje under personvern-link */
+}
+
 
 @media (min-width: 768px) {
     html {
         font-size: 16px;
     }
-    .forsideBilde {
-        min-width:768px;
-        max-width:850px;
-    }
-}
-
-.forsideBilde {
-    width: 90%;
-    height:auto;  
-    margin-top: 10px;
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
@@ -22,32 +47,15 @@
 
 html {
     position: relative;
-    min-height: 100%;
+    height: 100%;
     font-size: 16px;
 }
 
 body {
-    margin-bottom: 60px;
-    font-family: "Mulish", sans-serif;
+    height: 100%;
+    font-family: "Mulish", sans-serif; /* fikser font på applikajsonen, i tillegg til standardfont hvis gitt font ikke funker*/
 }
 
-.circle-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh; /* Adjust this if you want the circle to be centered within a specific section */
-}
-
-.circle {
-    width: 100px;
-    height: 100px;
-    background-color: red;
-    border-radius: 50%;
-}
-
-.field-validation-error {
-    color: red
-}
 
 /*Styl til Filter på admin feilmeldingsiden*/
 .search-filter-container {

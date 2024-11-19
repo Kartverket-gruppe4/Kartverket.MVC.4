@@ -2,10 +2,13 @@ using Microsoft.AspNetCore.Mvc;
 using Kartverk.Mvc.Models.HjelpKontakt;
 namespace Kartverk.Mvc.Controllers.HjelpKontakt
 {
-    public class HjelpKontaktController : Controller
+   // Controller for hjelp og kontakt-siden.
+   public class HjelpKontaktController : Controller
     {
-        public IActionResult Index()
+       // Denne metoden håndterer GET-forespørsler til 'HjelpKontakt/Index' og viser hjelp og kontakt-siden. 
+       public IActionResult Index()
         {
+            //// Returnerer visningen (View) som kan vise informasjon relatert til hjelp og kontakt.
             return View();
         }
 

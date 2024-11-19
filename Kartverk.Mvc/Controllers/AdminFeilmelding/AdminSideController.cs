@@ -1,35 +1,48 @@
-using Microsoft.AspNetCore.Mvc;
-using Kartverk.Mvc.Models.Feilmelding;
-using System.Collections.Generic;
-using Kartverk.Mvc.Controllers.FeilMelding;
+using Microsoft.AspNetCore.Mvc; // Importerer MVC-biblioteket for å håndtere HTTP-forespørsler og -svar
+using Kartverk.Mvc.Models.Feilmelding; // Importerer modellen for feilmeldinger
 
+// Brukes til å håndtere feilmeldinger i administrasjonsdelen av applikasjonen
 namespace Kartverk.Mvc.Controllers.AdminFeilmelding
 {
+    // Controller for administrasjon av feilmeldinger
     public class AdminFeilmeldingController : Controller
     {
-        // GET: AdminFeilmelding/Index
+        private readonly ApplicationDbContext _context;
+
+        // Konstruktør som tar inn ApplicationDbContext for å få tilgang til databasen
+        public AdminFeilmeldingController(ApplicationDbContext context)
+        {
+            _context = context; // Initialiserer databasen som controlleren skal bruke
+        }
+        
+        // Denne metoden håndterer GET-forespørsler til 'AdminFeilmelding/Index' og henter ut feilmeldinger fra databasen
         public IActionResult Index()
         {
-            // Hent alle feilmeldinger fra tjenesten eller databasen
-            var feilmeldinger = FeilmeldingController._feilmeldinger;
+            // Henter alle feilmeldinger fra databasen og konverterer til en liste
+            var feilmeldinger = _context.feilmeldinger.ToList();
 
-            // Send listen av feilmeldinger til visningen
+            // Sender listen med feilmeldinger til viewen for visning på websiden
             return View(feilmeldinger);
         }
         
-        // Post-metode for å endre status på en feilmelding
+        // Denne metoden håndterer POST-forespørsler og brukes til å oppdatere status på en feilmelding
         [HttpPost]
         public IActionResult EndreStatus(int id, string status)
         {
-            // Henter feilmeldingen med det spesifikke ID-et
-            var feilmelding = FeilmeldingController._feilmeldinger.FirstOrDefault(f => f.Id == id);
+            // Henter feilmeldingen fra databasen basert på det spesifikke ID-et
+            var feilmelding = _context.feilmeldinger.FirstOrDefault(f => f.Id == id);
 
+            // Hvis feilmeldingen finnes
             if (feilmelding != null)
             {
-                feilmelding.Status = status; // Oppdaterer statusen til den valgte verdien
+                // Oppdaterer statusen på feilmeldingen
+                feilmelding.Status = status; 
+
+                // Lagre endringene til databasen
+                _context.SaveChanges();
             }
 
-            // Omstyring tilbake til oversikten/Index etter at status er oppdatert
+            // Etter oppdateringen, omdirigerer vi tilbake til Index-siden for å vise de oppdaterte feilmeldingene
             return RedirectToAction("Index");
         }
     }

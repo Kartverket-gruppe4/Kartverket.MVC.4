@@ -1,78 +1,78 @@
 @model Kartverk.Mvc.Models.MinSide.MinSideViewModel
 
 @{
-    ViewBag.Title = "Min Side";
-    Layout = "_Layout";
+    ViewBag.Title = "Min Side";  // Setter tittelen på "Min Side"-siden
+    Layout = "_Layout";  // Bruker "_Layout" som layout for denne visningen
 }
 
 <!-- Main container -->
-<div class="container mt-4">
+<div class="container mt-4">  <!-- Hovedcontainer for innholdet på siden -->
 
     <!-- Profile Section -->
     <div class="row">
         <div class="col-12 d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
-                <span class="fs-4">Velkommen til Din Side, @Model.Email!</span>
+                <span class="fs-4">Velkommen til Din Side, @Model.Email!</span>  <!-- Vist velkomstmelding med brukerens e-post -->
             </div>
             <!-- Placeholder for user status (like 'No Errors') -->
-            <a href="@Url.Action("Index", "Feilmelding")" class="btn btn-success">
-                <strong>Meld inn en feil</strong>
+            <a href="@Url.Action("Index", "Feilmelding")" class="btn btn-success">  <!-- Knapp for å sende inn en feilmelding -->
+                <strong>Meld inn en feil</strong>  <!-- Tekst for knappen -->
             </a>
         </div>
     </div>
 
     <!-- Divider -->
-    <hr />
+    <hr />  <!-- Horisontal linje for visuell adskillelse -->
 
     <!-- User Information -->
     <div class="row">
         <div class="col-12">
-            <h5>Din informasjon:</h5>
-            <p><strong>Email:</strong> @Model.Email</p>
+            <h5>Din informasjon:</h5>  <!-- Seksjon for brukerens informasjon -->
+            <p><strong>Email:</strong> @Model.Email</p>  <!-- Vist e-postadresse til brukeren -->
         </div>
     </div>
 
     <!-- Menu -->
-    <div class="list-group">
+    <div class="list-group">  <!-- Liste med navigasjonslenker -->
         <!-- Submissions Link -->
-        <a href="@Url.Action("MineInnmeldinger", "MinSide")" class="list-group-item list-group-item-action">
-            <i class="bi bi-pencil-square"></i> Mine Feilmeldinger
+        <a href="@Url.Action("MineInnmeldinger", "MinSide")" class="list-group-item list-group-item-action">  <!-- Link til brukerens innmeldte feilmeldinger -->
+            <i class="bi bi-pencil-square"></i> Mine Feilmeldinger  <!-- Ikon og tekst for feilmeldinger -->
         </a>
 
-        <a href="@Url.Action("Index", "Innboks")" class="list-group-item list-group-item-action">
-            <i class="bi bi-envelope"></i> Innboks
+        <a href="@Url.Action("Index", "Innboks")" class="list-group-item list-group-item-action">  <!-- Link til innboksen -->
+            <i class="bi bi-envelope"></i> Innboks  <!-- Ikon og tekst for innboksen -->
         </a>
 
-        <a href="@Url.Action("Index", "HjelpKontakt")" class="list-group-item list-group-item-action">
-            <i class="bi bi-info-circle"></i> Hjelp & Kontakt
+        <a href="@Url.Action("Index", "HjelpKontakt")" class="list-group-item list-group-item-action">  <!-- Link til hjelp og kontakt -->
+            <i class="bi bi-info-circle"></i> Hjelp & Kontakt  <!-- Ikon og tekst for hjelp og kontakt -->
         </a>
         
-        <a href="@Url.Action("LoggUt", "LoggUt")" class="list-group-item list-group-item-action">
-            <i class="bi bi-box-arrow-right"></i> Logg ut
+        <a href="@Url.Action("LoggUt", "LoggUt")" class="list-group-item list-group-item-action">  <!-- Link til logg ut -->
+            <i class="bi bi-box-arrow-right"></i> Logg ut  <!-- Ikon og tekst for logg ut -->
         </a>
     </div>
 </div>
 
 <!-- Admin Link -->
-<a href="@Url.Action("AdminLogin", "MinSide")" class="admin-link">Admin</a>
+<a href="@Url.Action("AdminLogin", "MinSide")" class="admin-link">Admin</a>  <!-- Link til admin på siden -->
 
 <!-- Custom CSS to position the admin link -->
 <style>
-    .admin-link {
-        position: fixed;
-        bottom: 10px;
-        right: 10px;
-        color: #28a745; /* Bright green text color */
-        font-size: 16px; /* Font size */
-        text-decoration: none; /* Remove underline */
-        opacity: 1; /* Fully visible */
-        transition: opacity 0.3s, color 0.3s;
-        z-index: 1000; /* Ensure it's on top of other elements */
+    .admin-link {  /* Stil for admin-linken */
+        position: fixed;  /* Plasserer lenken fast i hjørnet */
+        bottom: 10px;  /* 10px fra bunnen */
+        right: 10px;  /* 10px fra høyre kant */
+        color: #28a745;  /* Lys grønn farge på teksten */
+        font-size: 16px;  /* Skriftstørrelse */
+        text-decoration: none;  /* Fjerner understreking */
+        opacity: 1;  /* Gjør lenken helt synlig */
+        transition: opacity 0.3s, color 0.3s;  /* Legger til en overgangseffekt for farge og opasitet */
+        z-index: 1000;  /* Sørger for at lenken vises over andre elementer */
     }
 
-        .admin-link:hover {
-            color: #218838; /* Darker green shade on hover */
-            opacity: 0.8; /* Slightly reduce opacity on hover */
-        }
+    .admin-link:hover {  /* Stil ved hover (når musepekeren er over lenken) */
+        color: #218838;  /* Mørkere grønn ved hover */
+        opacity: 0.8;  /* Reduserer litt på opasiteten ved hover */
+    }
 </style>
 

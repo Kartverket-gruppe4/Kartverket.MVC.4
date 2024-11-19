@@ -8,15 +8,18 @@ namespace Kartverk.Mvc.Controllers.FeilMelding
 {
     public class FeilmeldingController : Controller
     {
+        // EF
+        private readonly ApplicationDbContext _context;
+
         private readonly IKommuneInfoService _kommuneInfoService;
 
-        // Statisk liste for lagring av feilmeldinger
-        public static List<FeilmeldingViewModel> _feilmeldinger = new List<FeilmeldingViewModel>();
+        private readonly ILogger<FeilmeldingController> _logger;
 
-        // Constructor med dependency injection for IKommuneInfoService
-        public FeilmeldingController(IKommuneInfoService kommuneInfoService)
+        public FeilmeldingController(ApplicationDbContext context, IKommuneInfoService kommuneInfoService, ILogger<FeilmeldingController> logger)
         {
+            _context = context;
             _kommuneInfoService = kommuneInfoService;
+            _logger = logger;
         }
 
         // GET: Feilmelding
@@ -24,46 +27,68 @@ namespace Kartverk.Mvc.Controllers.FeilMelding
         {
             return View(); // Returnerer visningen for Feilmelding
         }
-        
+
         // POST: Feilmelding/Opprett
         [HttpPost]
         public IActionResult Save(MapCorrectionModel model)
         {
             if (ModelState.IsValid)
             {
-                FeilmeldingViewModel feilmelding = new FeilmeldingViewModel
+                var user = HttpContext.Request.Cookies["UserEmail"];
+
+                if (user != null)
                 {
-                    Id = _feilmeldinger.Count + 1,
-                    GeoJson = model.GeoJson,
-                    KommuneInfo = model.KommuneInfo,
-                    Email = AccountController.Users.First().Email,
-                    Beskrivelse = model.Description,
-                    Kategori = model.Category
-                };
-                feilmelding.Status = "Mottatt";
+                    var feilmelding = new FeilmeldingViewModel
+                    {
+                        GeoJson = model.GeoJson,
+                        KommuneInfo = model.KommuneInfo,
+                        Email = user,
+                        Beskrivelse = model.Description,
+                        Kategori = model.Category,
+                        Status = "Ny"
+                    };
 
-                _feilmeldinger.Add(feilmelding);
+                    // lagre feilmeldingen i databasen
+                    _context.feilmeldinger.Add(feilmelding);
+                    _context.SaveChanges();
 
-                // Returnerer til Confirmation-siden
-                return View("Confirmation");
+                    // Returnerer til Confirmation-siden
+                    return View("Confirmation");
+                }
+
+                // Returnerer til hovedsiden med modellen hvis det er valideringsfeil
+                return View("Index", model);
             }
-
-            // Returnerer til hovedsiden med modellen hvis det er valideringsfeil
-            return View("Index", model);
+            else
+            {
+                ModelState.AddModelError("", "User not found.");
+                return View("Index", model);
+            }
         }
 
 
         // GET: Feilmelding/Oversikt
         public IActionResult Oversikt()
         {
-            return View(_feilmeldinger); // Sender listen med feilmeldinger til viewet
+            var feilmeldinger = _context.feilmeldinger.ToList();
+            return View(feilmeldinger);
         }
 
         // GET: Feilmelding/MineInnmeldinger
         public IActionResult MineInnmeldinger()
         {
-            // bruker samme liste som i oversikt
-            return View("Oversikt", _feilmeldinger);
+            var email = HttpContext.Request.Cookies["UserEmail"];
+
+            if (string.IsNullOrEmpty(email))
+            {
+                return RedirectToAction("Oversikt", "Feilmelding");
+            }
+
+            // finner brukers feilmeldinger fra databasen
+            var brukerFeilmeldinger = _context.feilmeldinger
+                .Where(f => f.Email == email)
+                .ToList();
+            return View("Oversikt", brukerFeilmeldinger);
         }
 
         // Ny GET-metode for å hente kommuneinfo basert på koordinater

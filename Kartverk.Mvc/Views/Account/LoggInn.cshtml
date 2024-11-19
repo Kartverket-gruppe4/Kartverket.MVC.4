@@ -1,19 +1,31 @@
 ﻿@model LogginnViewModel
 
 <div class="container">
+    <!-- Tittel for innloggingsskjemaet -->
     <h2>Logg Inn</h2>
+
     @using (Html.BeginForm("LoggInn", "Account", FormMethod.Post))
     {
+        <!-- E-postfelt -->
         <div class="form-group">
             @Html.LabelFor(m => m.Email, "E-post")
             @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
         </div>
+
+        <!-- Passordfelt -->
         <div class="form-group" style="margin-bottom: 10px;">
             @Html.LabelFor(m => m.Password, "Passord")
             @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
             @Html.ValidationMessage("Password")
         </div>
-        <button type="submit" class="btn btn-success" style="margin-bottom: 10px;">Logg inn</button>
+
+        <!-- Sendeknapp for skjema -->
+        <button type="submit" class="btn btn-success" style="margin-bottom: 10px;">
+            Logg inn
+        </button>
     }
+
+    <!-- Link til registreringssiden -->
     <p>Har du ikke en konto? <a href="@Url.Action("Register", "Account")">Registrer deg</a></p>
 </div>
+

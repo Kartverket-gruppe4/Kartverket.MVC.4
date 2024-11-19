@@ -1,83 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Kartverk.Mvc</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Kartverk.Mvc.styles.css" asp-append-version="true" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <!-- tittel på siden i tab-->
+    <title>@ViewData["Title"] - Kartverket</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/Kartverk.Mvc.styles.css" asp-append-version="true"/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-          crossorigin="" />
-    <link rel="stylesheet" 
+          crossorigin=""/>
+    <link rel="stylesheet"
           href="https://unpkg.com/@@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css"/>
-    <!-- Bootstrap Icon -->
+    <!-- Bootstrap ikon -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Fonter til applikasjonen -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
 
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <div class="siteheader-container">
-                    <a href="/" class="siteheader-logolink">
-                        <img src="~/img/kartverket-logo-large.svg" alt="Kartverket Logo" />
-                    </a>
-                </div>
-
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-
-                    </ul>
-
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <!-- Bootstrap Icon -->
-                                <i class="bi bi-three-dots"></i>
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" asp-controller="Home" asp-action="Index">Home</a></li>
-                                <li><a class="dropdown-item" asp-controller="MinSide" asp-action="Index">Min Side</a></li>
-                            </ul>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Feilmelding" asp-action="Save"></a>
-                        </li>
-                    </ul>
-                </div>
+<body class="d-flex flex-column">
+<header>
+    <!-- bilde av kartverket logo-->
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow">
+        <div class="container-fluid px-4">
+            <div class="siteheader-container">
+                <a href="/" class="siteheader-logolink">
+                    <img src="~/img/kartverket-logo-large.svg" alt="Kartverket Logo"/>
+                </a>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+            <!-- dropdown meny knapp-->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - Kartverk.Mvc - <a href="https://www.kartverket.no/om-kartverket/personvern" target="_blank">Personvern</a>
+            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <ul class="navbar-nav flex-grow-1">
+                </ul>
+
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <!-- Bootstrap ikon til dropdown meny -->
+                            <i class="bi bi-three-dots"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li>
+                                <a class="dropdown-item" asp-controller="Home" asp-action="Index">Hjem</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" asp-controller="MinSide" asp-action="Index">Min Side</a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Feilmelding" asp-action="Save"></a>
+                    </li>
+                </ul>
+            </div>
         </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    </nav>
+</header>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-            crossorigin=""></script>
-    <script src="https://unpkg.com/@@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.js"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+<!-- bakgrunnsbilde på hovedsiden -->
+<main role="main" class="flex-fill">
+    @RenderBody()
+</main>
+
+<!-- legg til footer her -->
+<footer>
+    <p>&copy; 2024 Kartverket - <a href="https://www.kartverket.no/om-kartverket/personvern" target="_blank">Personvern</a></p>
+</footer>
+
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+
+<!-- Leaflet linker -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+<script src="https://unpkg.com/@@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.js"></script>
+@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

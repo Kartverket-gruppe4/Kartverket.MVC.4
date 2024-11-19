@@ -24,10 +24,11 @@ jobs:
         dotnet-version: '8.0.x' # Adjust the version as needed
 
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore Kartverk.Mvc/Kartverk.Mvc.csproj
 
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build Kartverk.Mvc/Kartverk.Mvc.csproj --configuration Release --no-restore
+
 
     - name: Run tests
-      run: dotnet test --no-restore --verbosity normal
+      run: dotnet test Kartverk.Mvc/Kartverk.Mvc.csproj --no-restore --verbosity normal

@@ -1,17 +1,34 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Kartverk.Mvc.Models.Feilmelding
 {
+    // Attributtet Table spesifiserer hvilket navn tabellen skal ha i databasen.
+    [Table("feilmeldinger")] 
     public class FeilmeldingViewModel
     {
-        public int Id { get; set; } // Unik ID for feilmeldingen
-        public string? Email { get; set; } // Brukerens e-post
-        public string? Beskrivelse { get; set; } // Beskrivelse av feilen
-        public DateTime Dato { get; set; } = DateTime.Now; // Når meldingen ble sendt
-        public string X { get; set; }
-        public string Y { get; set; }
-        public string GeoJson {  get; set; }
+        // Unik identifikator for feilmeldingen i databasen (primærnøkkel).
+        public int Id { get; set; } 
+        
+        // Brukerens e-postadresse (kan være null).
+        public string? Email { get; set; } 
+        
+        // Beskrivelse av feilmeldingen (kan være null).
+        public string? Beskrivelse { get; set; } 
+        
+        // Når feilmeldingen ble sendt (standardverdi er dagens dato).
+        public DateTime Dato { get; set; } = DateTime.Now; 
+        
+        // Geometrisk data i GeoJSON-format (kan ikke være null).
+        public string GeoJson { get; set; }
+        
+        // Kategori som feilmeldingen tilhører (kan ikke være null).
         public string Kategori { get; set; }
+
+        // Kommuneinfo relatert til feilmeldingen, kan være null.
+        [Column("KommuneInfo")] // Spesifiserer kolonnenavnet i databasen.
         public string KommuneInfo { get; set; }
         
-        public string Status { get; set; }
+        // Status på feilmeldingen, kan være null.
+        public string? Status { get; set; }
     }
 }

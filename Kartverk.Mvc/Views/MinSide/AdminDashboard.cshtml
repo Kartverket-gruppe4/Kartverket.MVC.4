@@ -1,21 +1,21 @@
 @model Kartverk.Mvc.Models.AdminFeilmelding.AdminFeilmeldingViewModel
 @{
-    ViewBag.Title = "Admin Dashboard";
+    ViewBag.Title = "Admin Dashboard";  // Setter tittelen på siden som "Admin Dashboard"
 }
 
 <div class="container mt-4">
-    <h3>Velkommen til Admin Dashboard</h3>
-    <p>Her kan du utføre admin-oppgaver.</p>
+    <h3>Velkommen til Admin Dashboard</h3>  <!-- Vist som en velkomstoverskrift -->
+    <p>Her kan du utføre admin-oppgaver.</p>  <!-- Informerer brukeren om at de kan utføre admin-oppgaver på denne siden -->
 
-    <!-- Section to display submitted data -->
+    <!-- Seksjon for å vise innsendte data -->
     <div id="submitted-data" class="mt-4">
-        <h4>Dine verktøy:</h4>
-        <ul id="submission-list"></ul>
+        <h4>Dine verktøy:</h4>  <!-- Overskrift for verktøyseksjonen -->
+        <ul id="submission-list"></ul>  <!-- Liste for innsendte verktøy -->
     </div>
     
-    <!-- Menu -->
+    <!-- Meny -->
     <div class="list-group">
-        <!-- Submissions Link -->
+        <!-- Link til Feilmeldinger -->
         <a href="@Url.Action("Index", "AdminFeilmelding")" class="list-group-item list-group-item-action">
             <i class="bi bi-pencil-square"></i> Feilmeldinger
         </a>
@@ -30,24 +30,24 @@
     </div>
 </div>
 
-
-<!-- Custom script to handle form submission -->
+<!-- Egendefinert skript for å håndtere skjema-innsending -->
 <script>
     document.getElementById('submission-form').addEventListener('submit', function (event) {
-        event.preventDefault(); // Prevent the default form submission
+        event.preventDefault(); // Forhindrer at skjemaet blir sendt på vanlig måte
 
-        // Get form data
+        // Hent skjema-data
         const email = document.getElementById('email').value;
         const message = document.getElementById('message').value;
 
-        // Create a new list item
+        // Lag et nytt listeelement
         const listItem = document.createElement('li');
         listItem.textContent = `$(${email}): ${message}`;
 
-        // Append the new item to the submission list
+        // Legg til det nye elementet i innsendingslisten
         document.getElementById('submission-list').appendChild(listItem);
 
-        // Clear the form fields
+        // Tøm skjema-feltene
         document.getElementById('submission-form').reset();
     });
 </script>
+
