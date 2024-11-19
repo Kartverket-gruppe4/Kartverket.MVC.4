@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc; // Importerer MVC-biblioteket for å håndtere HTTP-forespørsler og -svar
 using Kartverk.Mvc.Models.Feilmelding; // Importerer modellen for feilmeldinger
+using Microsoft.AspNetCore.Identity;
 
 // Brukes til å håndtere feilmeldinger i administrasjonsdelen av applikasjonen
 namespace Kartverk.Mvc.Controllers.AdminFeilmelding

@@ -1,4 +1,4 @@
-﻿@model LogginnViewModel
+@model LogginnViewModel
 
 <div class="container">
     <!-- Tittel for innloggingsskjemaet -->
@@ -28,4 +28,8 @@
     <!-- Link til registreringssiden -->
     <p>Har du ikke en konto? <a href="@Url.Action("Register", "Account")">Registrer deg</a></p>
 </div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
 
