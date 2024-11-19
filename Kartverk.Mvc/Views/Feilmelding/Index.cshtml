@@ -1,7 +1,12 @@
 @model Kartverk.Mvc.Models.MapCorrectionModel
 
+
 @{
 ViewData["Title"] = "Meld inn en feil";
+}
+
+@section Styles {
+    <link rel="stylesheet" type="text/css" href="css/popup.css">
 }
 
 <div style="text-align: center;">
@@ -16,34 +21,25 @@ ViewData["Title"] = "Meld inn en feil";
 </div>
 
 <!-- Pop-up feilmeldingsskjema -->
-<div id="popupForm" class="modal">
-    <div class="modal-content">
+<div id="popupForm" class="popupForm">
+    <div class="popupForm-content">
         <span class="close" onclick="closePopup()">&times;</span>
-
         <h3>Feilmeldingsskjema</h3>
-
-        <!-- Kan legges inn hvis vi vil vise GeoJson Info -->
-       <!--<div class="form-group">
-            <div class="form-group">
-                <label>GeoJson:</label>
-                <pre id="geoJsonInput"></pre>
-            </div>
-        </div> -->
-
-        <!-- Nytt div-element for å vise kommuneinformasjon -->
         <div id="kommuneInfo" class="form-group" style="margin-top: 10px;">
             <!-- Kommuneinformasjon vil vises her etter henting -->
-        </div> <!-- Avslutter kommuneInfo div -->
+        </div>
+
+
 
         <form asp-action="Save" method="post" enctype="multipart/form-data">
             @Html.ValidationSummary()
             @Html.HiddenFor(inputForm => inputForm.GeoJson, new { @id = "geoJsonHiddenInput" })
             @Html.HiddenFor(inputForm => inputForm.KommuneInfo, new { @id = "kommuneInfoHiddenInput" })
-            
+
             <!-- Kategori -->
             <div class="form-group">
-                <label asp-for="Category" class="form-label">Kategori</label>
-                <select asp-for="Category" class="form-control" id="Category">
+                <label for="Category"><strong>Kategori:</strong></label>
+                <select id="Category" asp-for="Category" class="form-control">
                     <option value="Tursti">Tursti</option>
                     <option value="Vei">Vei</option>
                     <option value="Sjø">Sjø</option>
@@ -54,15 +50,15 @@ ViewData["Title"] = "Meld inn en feil";
 
             <!-- Beskrivelse -->
             <div class="form-group">
-                <label asp-for="Description" class="form-label">Beskrivelse</label>
-                <input asp-for="Description" class="form-control" />
+                <label for="Description"><strong>Beskrivelse:</strong></label>
+                <input id="Description" asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
 
             <!-- Vedlegg -->
             <div class="form-group" style="margin-bottom: 10px;">
-                <label asp-for="Attachment" class="form-label">Vedlegg</label>
-                <input asp-for="Attachment" type="file" class="form-control" />
+                <label for="Attachment"><strong>Vedlegg:</strong></label>
+                <input id="Attachment" asp-for="Attachment" type="file" class="form-control" />
                 <span asp-validation-for="Attachment" class="text-danger"></span>
             </div>
 
@@ -72,7 +68,7 @@ ViewData["Title"] = "Meld inn en feil";
             </div>
         </form>
     </div>
-</div> <!-- Avslutter popupForm div -->
+</div>
 
 @section Scripts {
     <script>
