@@ -131,8 +131,9 @@
         <tr>
             <th>Nr</th>
             <th>Kategori</th>
-            <th>Dato</th>
+            <th>GeoJson</th>
             <th>KommuneInfo</th>
+            <th>Dato</th>
             <th>Status</th>
             <th>Mer</th>
         </tr>
@@ -143,10 +144,11 @@
             foreach (var feilmelding in Model)
             {
                 <tr class="feilmelding-row" data-category="@feilmelding.Kategori" data-date="@feilmelding.Dato.ToString("yyyy-MM-dd")">
-                    <td>@feilmelding.Id</td>
-                    <td>@feilmelding.Kategori</td>
-                    <td>@feilmelding.Dato.ToString("dd.MM.yyyy HH:mm:ss")</td>
-                    <td>@feilmelding.KommuneInfo</td>
+                            <td>@feilmelding.Id</td>
+                                <td>@feilmelding.Kategori</td> <!-- Oppdatert til Kategori -->
+                                <td>@feilmelding.GeoJson</td>
+                                <td>@feilmelding.KommuneInfo</td>
+                                <td>@feilmelding.Dato.ToString("dd.MM.yyyy")</td> <!-- Formaterer datoen -->
 
                     <td>
                         <!-- Kode for å vise status og endre den for administrator -->
