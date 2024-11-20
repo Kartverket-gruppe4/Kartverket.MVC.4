@@ -49,26 +49,3 @@
     </div>
 </div>
 
-<!-- Admin Link -->
-<a href="@Url.Action("AdminLogin", "MinSide")" class="admin-link">Admin</a>  <!-- Link til admin på siden -->
-
-<!-- Custom CSS to position the admin link -->
-<style>
-    .admin-link {  /* Stil for admin-linken */
-        position: fixed;  /* Plasserer lenken fast i hjørnet */
-        bottom: 10px;  /* 10px fra bunnen */
-        right: 10px;  /* 10px fra høyre kant */
-        color: #28a745;  /* Lys grønn farge på teksten */
-        font-size: 16px;  /* Skriftstørrelse */
-        text-decoration: none;  /* Fjerner understreking */
-        opacity: 1;  /* Gjør lenken helt synlig */
-        transition: opacity 0.3s, color 0.3s;  /* Legger til en overgangseffekt for farge og opasitet */
-        z-index: 1000;  /* Sørger for at lenken vises over andre elementer */
-    }
-
-    .admin-link:hover {  /* Stil ved hover (når musepekeren er over lenken) */
-        color: #218838;  /* Mørkere grønn ved hover */
-        opacity: 0.8;  /* Reduserer litt på opasiteten ved hover */
-    }
-</style>
-
