@@ -4,20 +4,20 @@
 
 <div class="adminlogin-container">
     <h2 class="login-title">Admin-Innlogging</h2> <!-- Tittel for innloggingssiden -->
-    
-    @using (Html.BeginForm("AdminLogin", "MinSide", FormMethod.Post))  @* Begynner et skjema som sender en POST-forespørsel til AdminLogin handlingen i MinSide-kontrolleren *@
+    @using (Html.BeginForm("AdminLogin", "Home", FormMethod.Post))  @* Begynner et skjema som sender en POST-forespørsel til AdminLogin handlingen i MinSide-kontrolleren *@
     {
-        <div class="form-group">  <!-- Form-gruppe for passordfeltet -->
+        <div class="form-group">
+            <!-- Form-gruppe for passordfeltet -->
             @Html.Label("Admin Passord")  <!-- Label for passordfeltet -->
             @Html.Password("adminPassword", null, new { @class = "form-control" })  <!-- Passordfelt for admin-brukeren med Bootstrap-klasser -->
         </div>
 
         <button type="submit" class="btn btn-success mt-3">Logg inn</button>  <!-- Send-knapp for skjemaet -->
-
         <!-- Vist hvis modellen ikke er gyldig -->
         @if (!ViewData.ModelState.IsValid)  @* Sjekker om skjemaet har valideringsfeil *@
         {
-            <div class="alert alert-danger mt-3">  <!-- Feilmelding som vises i rød boks -->
+            <div class="alert alert-danger mt-3">
+                <!-- Feilmelding som vises i rød boks -->
                 @Html.ValidationSummary()  <!-- Vist som en liste med oppsummering av valideringsfeil -->
             </div>
         }

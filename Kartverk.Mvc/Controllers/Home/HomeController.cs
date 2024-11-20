@@ -66,6 +66,36 @@ public class HomeController : Controller
         // Henter sporings-ID (ReguestId) for feilen fra Activity eller HTTP-konteksten og sender det til feilsiden.
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
+
+    // GET: Home/AdminLogin
+    [HttpGet]
+    public IActionResult AdminLogin()
+    {
+        return View();
+    }
+
+    // POST: Home/AdminLogin
+    [HttpPost]
+    public IActionResult AdminLogin(string adminPassword)
+    {
+        const string predefinedPassword = "admin123"; // Predefinert passord for admin
+        if (adminPassword == predefinedPassword)
+        {
+            // Hvis passordet er riktig, omdiriger til admin-siden
+            return RedirectToAction("Index", "AdminFeilmelding");
+        }
+
+        // Hvis passordet er feil, vis feilmelding
+        ModelState.AddModelError("", "Feil admin-passord.");
+        return View();
+    }
+
+    // GET: Home/AdminDashboard
+    public IActionResult AdminDashboard()
+    {
+        return View(); // Dette blir admin-siden
+    }
+
 }
 
 // Modell som representerer kartdata (f.eks. punkter og linjer på kartet)
