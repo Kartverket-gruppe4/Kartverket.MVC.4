@@ -23,14 +23,19 @@ services:
       context: .
       dockerfile: Kartverk.Mvc/Dockerfile
     ports:
-      - "5000:80"
+      - "5001:8081"
     depends_on:
       - mariadb
+    entrypoint: [
+      "./wait-for-it.sh",
+      "mariadb:3306",
+      "--",
+      "dotnet", "Kartverk.Mvc.dll"]
     environment:
-      ConnectionStrings__DefaultConnection: "Server=mariadb;Database=kartverket;User=root;Password=54321;"
+      ConnectionStrings__DefaultConnection: "server=mariadb;database=kartverket;user=root;password=54321;"
     networks:
       - backend
- 
+
 volumes:
   mariadb_data:
 
