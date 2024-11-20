@@ -40,5 +40,12 @@ public class MinSideController : Controller
         
         return RedirectToAction("LoggInn", "Account");
     }
-    
+
+    // GET: MinSide/MineInnmeldinger
+    [HttpGet]
+    public IActionResult MineInnmeldinger()
+    {
+        // Her kan vi hente innmeldinger fra databasen, for n� er det tomt
+        return RedirectToAction("Oversikt", "Feilmelding");
+    }
 }
