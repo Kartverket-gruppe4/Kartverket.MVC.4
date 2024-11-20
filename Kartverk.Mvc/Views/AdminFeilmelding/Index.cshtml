@@ -160,7 +160,7 @@
                     <td>@feilmelding.KommuneInfo</td>
                         <td>
                             <!-- her kan feilmelding.GeoJson legges inn for å få opp på popup om det ønskes. -->
-                            <button class="view-button" onclick="openPopup('@feilmelding.Email', '@feilmelding.Dato.ToString("dd.MM.yyyy")', '@feilmelding.Kategori', '@feilmelding.Beskrivelse', '@feilmelding.KommuneInfo', '@feilmelding.GeoJson', '#')">
+                            <button class="view-button" onclick="openPopup('@feilmelding.Email', '@feilmelding.Dato.ToString("dd.MM.yyyy")', '@feilmelding.Kategori', '@feilmelding.KommuneInfo', '@feilmelding.GeoJson', '#', '@feilmelding.Beskrivelse')">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </td> <!-- Legger til knappen ved siden av datoen -->
@@ -210,7 +210,6 @@
                 <p><strong>Email:</strong> <span id="popup-email"></span></p>
                 <p><strong>Dato:</strong> <span id="popup-date"></span></p>
                 <p><strong>Kategori:</strong> <span id="popup-category"></span></p>
-                <p><strong>Beskrivelse:</strong> <span id="popup-description"></span></p>
                 <p><strong>Kommune:</strong> <span id="popup-municipality"></span></p>
                 <p><strong>GeoJson:</strong> <span id="popup-geojson"></span></p>
             </div>
@@ -222,21 +221,22 @@
             <div class="right-section">
                 <p><strong>Kartutsnitt:</strong></p>
                 <div class="map-placeholder">Kart kommer her</div>
-                <p><strong>Vedlegg:</strong></p>
-                <a href="#" id="popup-attachment">Last ned vedlegg</a> <!-- Ikke-fungerende lenke -->
+                    <p><strong>Vedlegg:</strong><a href="#" id="popup-attachment">  Last ned vedlegg</a></p> <!-- Ikke-fungerende lenke -->
+                <hr />
+                <p><strong>Beskrivelse:</strong></p><span id="popup-description"></span></p>
             </div>
         </div>
     </div>
 </div>
 <script>
-        function openPopup(email, date, category, description, municipality, geoJsonString, attachmentUrl) {
+        function openPopup(email, date, category, municipality, geoJsonString, attachmentUrl, description) {
         document.getElementById('popup-email').innerText = email; // Oppdaterer email
         document.getElementById('popup-date').innerText = date; // Oppdaterer dato
-        document.getElementById('popup-description').innerText = description; // Oppdaterer beskrivelse
         document.getElementById('popup-category').innerText = category; // Oppdaterer kategori
         document.getElementById('popup-municipality').innerText = municipality; // Oppdaterer kommune
         document.getElementById('popup-geojson').innerText = geoJsonString; // Oppdaterer geojson
         document.getElementById('popup-attachment').setAttribute('href', attachmentUrl); // Oppdaterer vedleggslenke
+        document.getElementById('popup-description').innerText = description; // Oppdaterer beskrivelse
 
         // initialiser kartet i pop-upen
         var mapElement = document.getElementById("popup-map");
