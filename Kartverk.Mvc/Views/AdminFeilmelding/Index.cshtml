@@ -5,7 +5,16 @@
     Layout = "_Layout";
 }
 
-<div class="container mt-4">
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/popup.css"> <!-- Lenker til popup.css-filen -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Linker til Font Awesome for ikoner -->
+</head>
+<body>
 
     <!-- Success and Error Messages -->
     @if (TempData["SuccessMessage"] != null)
@@ -31,46 +40,48 @@
     <!-- Divider -->
     <hr />
 
-    <h3>Innsendte Feilmeldinger</h3>
+    <h3 style="text-align: left;">Innsendte Feilmeldinger</h3>
 
-        <!-- Filtrer knappen -->
-        <button class="btn btn-success" id="filterBtn" onclick="openFilterPopup()">Filtrer</button>
-    </div>
+    <!-- Filtrer knappen -->
+    <button class="btn btn-success" id="filterBtn" onclick="openFilterPopup()">Filtrer</button>
 
-    <!-- Filtrerings pop-up (skjult til den åpnes) -->
-    <div id="filterPopup" class="filter-popup" style="display:none; position: absolute; background-color: white; border: 1px solid #ddd; padding: 15px;">
-        <h4>Filtrer feilmeldinger</h4>
 
-        <!-- Kategori filter -->
-        <label for="category">Kategori:</label>
-        <select id="categoryFilter" class="form-control">
-            <option value="Alle">Alle</option>
-            <option value="Tursti">Tursti</option>
-            <option value="Vei">Vei</option>
-            <option value="Sjø">Sjø</option>
-            <option value="Stedsnavn">Stedsnavn</option>
-        </select>
+<!-- Filtrerings pop-up (skjult til den åpnes) -->
+<div id="filterPopup" class="filter-popup" style="display:none; position: absolute; background-color: white; border: 1px solid #ddd; padding: 15px;">
+    <h4>Filtrer feilmeldinger</h4>
 
-        <!-- Dato filter -->
-        <label for="dateFilter">Dato:</label>
-        <input type="date" id="dateFilter" class="form-control">
+    <!-- Kategori filter -->
+    <label for="category">Kategori:</label>
+    <select id="categoryFilter" class="form-control">
+        <option value="Alle">Alle</option>
+        <option value="Tursti">Tursti</option>
+        <option value="Vei">Vei</option>
+        <option value="Sjø">Sjø</option>
+        <option value="Stedsnavn">Stedsnavn</option>
+    </select>
 
-        <!-- Kommune filter -->
-        <label for="kommuneFilter">Kommune:</label>
-        <input type="text" id="kommuneFilter" class="form-control" placeholder="Skriv kommune...">
+    <!-- Dato filter -->
+    <label for="dateFilter">Dato:</label>
+    <input type="date" id="dateFilter" class="form-control">
 
-        <!-- Status filter -->
-        <label for="statusFilter">Status:</label>
-        <select id="statusFilter" class="form-control">
-            <option value="Alle">Alle</option>
-            <option value="Ny">Ny</option>
-            <option value="Pågående">Pågående</option>
-            <option value="Ferdigbehandlet">Ferdigbehandlet</option>
-        </select>
+    <!-- Kommune filter -->
+    <label for="kommuneFilter">Kommune:</label>
+    <input type="text" id="kommuneFilter" class="form-control" placeholder="Skriv kommune...">
 
-        <!-- Filtrer knapp -->
-        <button class="btn btn-success" onclick="applyFilters()">Bruk filter</button>
-    </div>
+    <!-- Status filter -->
+    <label for="statusFilter">Status:</label>
+    <select id="statusFilter" class="form-control">
+        <option value="Alle">Alle</option>
+        <option value="Ny">Ny</option>
+        <option value="Pågående">Pågående</option>
+        <option value="Ferdigbehandlet">Ferdigbehandlet</option>
+    </select>
+
+    <div class="d-flex justify-content-end mt-3">
+    <!-- Filtrer knapp -->
+    <button class="btn btn-success" onclick="applyFilters()">Bruk filter</button>
+    <button class="btn btn-secondary" onclick="closeFilterPopup()">Lukk</button>
+</div>
 </div>
 
 <!-- Pop-up funksjonaliteter-->
@@ -131,11 +142,10 @@
         <tr>
             <th>Nr</th>
             <th>Kategori</th>
-            <th>GeoJson</th>
-            <th>KommuneInfo</th>
             <th>Dato</th>
-            <th>Status</th>
+            <th>KommuneInfo</th>
             <th>Mer</th>
+            <th>Status</th>
         </tr>
     </thead>
     <tbody id="feilmeldingerBody">
@@ -144,11 +154,16 @@
             foreach (var feilmelding in Model)
             {
                 <tr class="feilmelding-row" data-category="@feilmelding.Kategori" data-date="@feilmelding.Dato.ToString("yyyy-MM-dd")">
-                            <td>@feilmelding.Id</td>
-                                <td>@feilmelding.Kategori</td> <!-- Oppdatert til Kategori -->
-                                <td>@feilmelding.GeoJson</td>
-                                <td>@feilmelding.KommuneInfo</td>
-                                <td>@feilmelding.Dato.ToString("dd.MM.yyyy")</td> <!-- Formaterer datoen -->
+                    <td>@feilmelding.Id</td>
+                    <td>@feilmelding.Kategori</td> <!-- Oppdatert til Kategori -->
+                    <td>@feilmelding.Dato.ToString("dd.MM.yyyy")</td> <!-- Formaterer datoen -->
+                    <td>@feilmelding.KommuneInfo</td>
+                        <td>
+                            <!-- her kan feilmelding.GeoJson legges inn for å få opp på popup om det ønskes. -->
+                            <button class="view-button" onclick="openPopup('@feilmelding.Email', '@feilmelding.Dato.ToString("dd.MM.yyyy")', '@feilmelding.Kategori', '@feilmelding.Beskrivelse', '@feilmelding.KommuneInfo', '@feilmelding.GeoJson', '#')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td> <!-- Legger til knappen ved siden av datoen -->
 
                     <td>
                         <!-- Kode for å vise status og endre den for administrator -->
@@ -162,11 +177,6 @@
                         </form>
                     </td>
 
-                    <td>
-                        <button class="view-button" onclick="openPopup()">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </td>
 
                     <!-- Slette knapp -->
                     <td>
@@ -174,7 +184,7 @@
                             @Html.AntiForgeryToken()
                             <input type="hidden" name="id" value="@feilmelding.Id" />
                             <input type="hidden" name="viewName" value="Index" />
-                                    <button type="submit" class="btn btn-danger btn-sm">Slett</button>
+                            <button type="submit" class="btn btn-danger btn-sm">Slett</button>
                         </form>
                     </td>
                 </tr>
@@ -188,3 +198,86 @@
         }
     </tbody>
 </table>
+
+<!-- Pop-up Vindu -->
+<div id="popup" class="popup">
+    <div class="popup-content">
+        <span class="close" onclick="closePopup()">&times;</span>
+        <h3>Feilmelding Detaljer</h3>
+        <div class="popup-inner-content">
+            <!-- Venstre seksjon -->
+            <div class="left-section">
+                <p><strong>Email:</strong> <span id="popup-email"></span></p>
+                <p><strong>Dato:</strong> <span id="popup-date"></span></p>
+                <p><strong>Kategori:</strong> <span id="popup-category"></span></p>
+                <p><strong>Beskrivelse:</strong> <span id="popup-description"></span></p>
+                <p><strong>Kommune:</strong> <span id="popup-municipality"></span></p>
+                <p><strong>GeoJson:</strong> <span id="popup-geojson"></span></p>
+            </div>
+
+            <!-- Separator (strek i midten) -->
+            <div class="separator"></div>
+
+            <!-- Høyre seksjon -->
+            <div class="right-section">
+                <p><strong>Kartutsnitt:</strong></p>
+                <div class="map-placeholder">Kart kommer her</div>
+                <p><strong>Vedlegg:</strong></p>
+                <a href="#" id="popup-attachment">Last ned vedlegg</a> <!-- Ikke-fungerende lenke -->
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+        function openPopup(email, date, category, description, municipality, geoJsonString, attachmentUrl) {
+        document.getElementById('popup-email').innerText = email; // Oppdaterer email
+        document.getElementById('popup-date').innerText = date; // Oppdaterer dato
+        document.getElementById('popup-description').innerText = description; // Oppdaterer beskrivelse
+        document.getElementById('popup-category').innerText = category; // Oppdaterer kategori
+        document.getElementById('popup-municipality').innerText = municipality; // Oppdaterer kommune
+        document.getElementById('popup-geojson').innerText = geoJsonString; // Oppdaterer geojson
+        document.getElementById('popup-attachment').setAttribute('href', attachmentUrl); // Oppdaterer vedleggslenke
+
+        // initialiser kartet i pop-upen
+        var mapElement = document.getElementById("popup-map");
+        if (mapElement) {
+            // Sletter eksisterende kart hvis det finnes
+            mapElement.innerHTML = "";
+        }
+
+        // Hvis geoJsonString er tilgjengelig, vis kartet
+        if (geoJsonString) {
+
+            // var geoJson = JSON.parse(geoJsonString);
+
+            /* // Opprett et kart i pop-upen
+            var popupMap = L.map('popup-map').setView([58.164048, 8.004007], 13); // Sentrer kartet på et standard sted
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(popupMap);
+
+            // Legg til GeoJSON-laget på kartet
+            L.geoJSON(geoJson).addTo(popupMap); */
+        }
+
+        const popup = document.getElementById('popup');
+        popup.style.display = 'block'; // Viser popup
+        setTimeout(() => { popup.style.opacity = 1; }, 10); // Gjør popup synlig med en liten forsinkelse for animasjonseffekt
+    }
+
+    function closePopup() {
+        const popup = document.getElementById('popup');
+        popup.style.opacity = 0; // Skjuler popup med animasjon
+        setTimeout(() => { popup.style.display = 'none'; }, 300); // Forsinker fjerning fra visningen for å avslutte animasjonen
+    }
+
+    // Lukk pop-up når brukeren klikker utenfor innholdet
+    window.onclick = function (event) {
+        const popup = document.getElementById('popup');
+        if (event.target == popup) {
+            closePopup();
+        }
+    }
+</script>
+</body>
+</html>
