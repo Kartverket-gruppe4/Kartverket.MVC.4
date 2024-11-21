@@ -94,6 +94,20 @@ public class AccountController : Controller
                 return View(model);
             }
 
+            // Sjekk e-postformat (valgfritt hvis dette allerede håndteres av Identity)
+            if (!model.Email.Contains("@"))
+            {
+                ModelState.AddModelError("Email", "E-postadressen er ikke gyldig.");
+                return View(model);
+            }
+
+            // Sjekk passordlengde (valgfritt hvis dette allerede håndteres av Identity)
+            if (model.Password.Length < 6)
+            {
+                ModelState.AddModelError("Password", "Passordet må være minst 6 tegn.");
+                return View(model);
+            }
+
             var user = new IdentityUser
             {
                 UserName = model.Email,
@@ -111,9 +125,9 @@ public class AccountController : Controller
                 ModelState.AddModelError(string.Empty, error.Description);
             }
         }
-        // returnerer til registreringssiden hvis det er valideringsfeil
         return View(model);
     }
+
 
     // Hente bruker etter e-postadresse
     public IdentityUser? GetUserByEmail(string email)
