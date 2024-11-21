@@ -22,11 +22,7 @@ public class HomeController : Controller
    // Denne metoden håndterer GET-forespørsler til 'Home/Index' og returnerer visningen.
     public IActionResult Index()
     {
-        // Lager et nytt HomeViewModel objekt som brukes for å vise data på hjemmesiden.
-        var model = new HomeViewModel();
-        model.Message = "Det tar en time"; //Dette skal ikke være med.
-
-        return View("Index", model); // Returnerer visningen 'Index' og sender med HomeViewModel som modelldata. 
+        return View();
     }
     
     // Denne metoden håndterer POST-forespørsler når data sendes fra skjemaet på hjemmesiden.

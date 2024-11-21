@@ -43,9 +43,13 @@
             <i class="bi bi-info-circle"></i> Hjelp & Kontakt  <!-- Ikon og tekst for hjelp og kontakt -->
         </a>
         
-        <a href="@Url.Action("LoggUt", "LoggUt")" class="list-group-item list-group-item-action">  <!-- Link til logg ut -->
-            <i class="bi bi-box-arrow-right"></i> Logg ut  <!-- Ikon og tekst for logg ut -->
-        </a>
+        <form asp-action="LoggUt" asp-controller="Account" method="post" class="list-group-item list-group-item-action d-inline-block">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-link p-0 text-decoration-none">
+                <i class="bi bi-box-arrow-right"></i> Logg ut
+            </button>
+        </form>
+
     </div>
 </div>
 
