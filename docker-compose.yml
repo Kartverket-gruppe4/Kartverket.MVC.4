@@ -26,13 +26,11 @@ services:
       - "5001:8081"
     depends_on:
       - mariadb
-    entrypoint: [
-      "./wait-for-it.sh",
-      "mariadb:3306",
-      "--",
-      "dotnet", "Kartverk.Mvc.dll"]
     environment:
-      ConnectionStrings__DefaultConnection: "server=mariadb;database=kartverket;user=root;password=54321;"
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - ConnectionStrings__DefaultConnection=server=mariadb;database=kartverket;user=root;password=54321;
     networks:
       - backend
 
