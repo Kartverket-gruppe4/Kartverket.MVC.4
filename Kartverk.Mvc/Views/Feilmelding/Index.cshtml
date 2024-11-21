@@ -1,8 +1,7 @@
 @model Kartverk.Mvc.Models.MapCorrectionModel
 
-
 @{
-ViewData["Title"] = "Meld inn en feil";
+    ViewData["Title"] = "Meld inn en feil";
 }
 
 @section Styles {
@@ -29,8 +28,6 @@ ViewData["Title"] = "Meld inn en feil";
             <!-- Kommuneinformasjon vil vises her etter henting -->
         </div>
 
-
-
         <form asp-action="Save" method="post" enctype="multipart/form-data">
             @Html.ValidationSummary()
             @Html.HiddenFor(inputForm => inputForm.GeoJson, new { @id = "geoJsonHiddenInput" })
@@ -49,11 +46,15 @@ ViewData["Title"] = "Meld inn en feil";
             </div>
 
             <!-- Beskrivelse -->
+            <!-- Beskrivelse -->
             <div class="form-group">
                 <label for="Description"><strong>Beskrivelse:</strong></label>
-                <input id="Description" asp-for="Description" class="form-control" />
+                <textarea id="Description" asp-for="Description" class="form-control" rows="3"
+                          style="resize: none; overflow-y: auto;" maxlength="500"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
+                <small id="descriptionHelp" class="form-text text-muted">Maks 500 tegn.</small>
             </div>
+
 
             <!-- Vedlegg -->
             <div class="form-group" style="margin-bottom: 10px;">
@@ -72,103 +73,66 @@ ViewData["Title"] = "Meld inn en feil";
 
 @section Scripts {
     <script>
-    // Opprett kartet
-    var map = L.map('map').setView([58.164048, 8.004007], 13);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
+        // Kartoppsett og pop-up logikk
+        var map = L.map('map').setView([58.164048, 8.004007], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
 
-    // Geoman for å tegne på kartet
-    map.pm.addControls({
-        position: 'topleft',
-        drawCircleMarker: false,
-        rotateMode: false,
-        cutPolygon: false,
-        drawText: false
-    });
+        map.pm.addControls({
+            position: 'topleft',
+            drawCircleMarker: false,
+            rotateMode: false,
+            cutPolygon: false,
+            drawText: false
+        });
 
-    function getLayerGeoJSON(layer) {
-        const geojsonLayer = L.geoJSON(layer.toGeoJSON ? layer.toGeoJSON() : layer);
-        return geojsonLayer.toGeoJSON();
-    }
+        // Åpne modal
+        function openPopup() {
+            var layers = L.PM.Utils.findLayers(map);
+            if (layers.length <= 0)
+                throw new Error("Must select layer.");
 
-    function getFirstCoordinate(geoJson) {
+            var layer = layers[0];
+            var geoJson = JSON.stringify(layer.toGeoJSON());
+            document.getElementById('geoJsonHiddenInput').value = geoJson;
 
-        const { type, coordinates } = geoJson.features[0].geometry;
-        var coordinatesArray;
-        if (type === "Point") {
-            coordinatesArray = coordinates;
-        }
-        if (type === "LineString") {
-            coordinatesArray = coordinates[0];
-        }
-        if (type === "Polygon") {
-            coordinatesArray = coordinates[0][0];
-        }
+            fetch(`/api/feilmelding/kommuneinfo?nord=58.164048&ost=8.004007`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("kommuneInfoHiddenInput").value = JSON.stringify(data);
+                    document.getElementById("kommuneInfo").innerText =
+                        `Kommune: ${data.kommunenavn}, Kommunenummer: ${data.kommunenummer}`;
+                });
 
-        if(coordinatesArray.length > 0)
-            return {
-                longitude: coordinatesArray[0],
-                latitude: coordinatesArray[1],
-            };
-
-        console.warn("Unsupported GeoJSON geometry type");
-        return null;
-    }
-
-    // Funksjon for å hente koordinater og åpne pop-up skjemaet
-    function openPopup() {
-        var layers = L.PM.Utils.findLayers(map);
-        if (layers.length <= 0)
-            throw new Error("Must select layer.");
-
-        var layer = layers[0]; // For nå, tar vi kun det første laget
-        var geoJson = getLayerGeoJSON(layer);
-        var coordinates = getFirstCoordinate(geoJson);
-
-        if (!geoJson || !coordinates) {
-            alert("GeoJSON data er ikke gyldig.");
-            return;
+            document.getElementById("popupForm").style.display = "block";
+            document.getElementById("nesteKnapp").style.display = "none";
         }
 
-        var geoJsonString = JSON.stringify(geoJson);
-        // Kan legges inn hvis vi vil ha geojson på popup -> document.getElementById('geoJsonInput').textContent = geoJsonString;
-        document.getElementById('geoJsonHiddenInput').value = geoJsonString;
-           
-        // Send AJAX-forespørsel til backend for å hente kommuneinformasjon
-        fetch(`/api/feilmelding/kommuneinfo?nord=${coordinates.latitude}&ost=${coordinates.longitude}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Ingen kommuneinformasjon funnet for disse koordinatene.");
-                }
-                return response.json();
-            })
-            .then(data => {
-                document.getElementById("kommuneInfoHiddenInput").value = JSON.stringify(data);
-                document.getElementById("kommuneInfo").innerText =
-                    `Kommune: ${data.kommunenavn}, Kommunenummer: ${data.kommunenummer}`;
-            })
-            .catch(error => {
-                console.error("Feil ved henting av kommuneinformasjon:", error);
+        function closePopup() {
+            document.getElementById("popupForm").style.display = "none";
+            document.getElementById("nesteKnapp").style.display = "inline-block";
+        }
+
+        // Dynamisk tilpassing av textarea
+        document.addEventListener("DOMContentLoaded", () => {
+            const descriptionField = document.getElementById("Description");
+            const popupContent = document.querySelector(".popupForm-content");
+
+            descriptionField.addEventListener("input", function () {
+                this.style.height = "auto";
+                const maxHeight = popupContent.offsetHeight - 50;
+                this.style.height = `${Math.min(this.scrollHeight, maxHeight)}px`;
+                this.style.overflowY = this.scrollHeight > maxHeight ? "auto" : "hidden";
             });
+        });
 
-        // Åpne modal pop-up og skjul "Neste" knappen
-        document.getElementById("popupForm").style.display = "block";
-        document.getElementById("nesteKnapp").style.display = "none";
-    }
-
-    // Funksjon for å lukke pop-up skjemaet
-    function closePopup() {
-        document.getElementById("popupForm").style.display = "none";
-        document.getElementById("nesteKnapp").style.display = "inline-block";
-    }
-
-    // Lukk pop-up ved å klikke utenfor modal
-    window.onclick = function (event) {
-        var modal = document.getElementById("popupForm");
-        if (event.target == modal) {
-            closePopup();
+        window.onclick = function (event) {
+            var modal = document.getElementById("popupForm");
+            if (event.target == modal) {
+                closePopup();
+            }
         }
-    }
-</script>
+    </script>
 }
+
