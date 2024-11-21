@@ -1,0 +1,5 @@
+services:
+  kartverk.mvc:
+    volumes:
+      - $HOME/.microsoft/usersecrets:/home/app/.microsoft/usersecrets:ro
+      - $HOME/.aspnet/https:/home/app/.aspnet/https:ro

@@ -85,8 +85,35 @@ var app = builder.Build(); // Bygger applikasjonen
 // Kjør migrasjoner for EF ved applikasjonens oppstart
 using (var scope = app.Services.CreateScope())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    dbContext.Database.Migrate(); // Utfører migrasjoner på databasen
+    var errorCount = 0;
+
+    ApplyDatabaseMigrations();
+
+    void ApplyDatabaseMigrations() // tåler at databasen starter tregt
+
+    {
+        try
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            dbContext.Database.Migrate(); // Utfører migrasjoner på databasen
+        }
+        catch
+        {
+            errorCount++;
+            Console.WriteLine("Feil ved migrering av databasen. Forsøk" + errorCount);
+            if (errorCount < 5)
+            {
+                Thread.Sleep(2000); // Venter 2 sekunder før nytt forsøk
+
+                ApplyDatabaseMigrations();
+            }
+            else
+            {
+                Console.WriteLine($"Kunne ikke migrere databasen etter {errorCount} forsøk. Avslutter applikasjonen.");
+                throw;
+            }
+        }
+    }
 }
 
 // Konfigurerer HTTP-request pipeline (håndtering av forespørsler)

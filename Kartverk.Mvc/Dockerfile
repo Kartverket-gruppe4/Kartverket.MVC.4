@@ -19,21 +19,21 @@ WORKDIR /src
 COPY ["Kartverk.Mvc/Kartverk.Mvc.csproj", "Kartverk.Mvc/"]
 
 # Explicitly restore the project file
-RUN dotnet restore --project "Kartverk.Mvc/Kartverk.Mvc.csproj"
+RUN dotnet restore "Kartverk.Mvc/Kartverk.Mvc.csproj"
 
 # Copy the rest of the source code
 COPY . .
 
 # Change to the project directory and build the project
 WORKDIR "/src/Kartverk.Mvc"
-RUN dotnet build --project "Kartverk.Mvc.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "Kartverk.Mvc.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 
 # Explicitly publish the project file
-RUN dotnet publish --project "Kartverk.Mvc.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Kartverk.Mvc.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
