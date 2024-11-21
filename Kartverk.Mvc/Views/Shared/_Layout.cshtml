@@ -42,27 +42,42 @@
             <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
                 </ul>
+                    @if (!(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index")
+                    && !(ViewContext.RouteData.Values["controller"]?.ToString() == "Account" &&
+                    (ViewContext.RouteData.Values["action"]?.ToString() == "LoggInn" ||
+                    ViewContext.RouteData.Values["action"]?.ToString() == "Register")))
+                    {
 
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <!-- Bootstrap ikon til dropdown meny -->
-                            <i class="bi bi-three-dots"></i>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                            <li>
-                                <a class="dropdown-item" asp-controller="Home" asp-action="Index">Hjem</a>
+                        <ul class="navbar-nav ms-auto">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <!-- Bootstrap ikon til dropdown meny -->
+                                    <i class="bi bi-three-dots"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                    @if (!(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "AdminLogin")
+                                   && !(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminFeilmelding" && ViewContext.RouteData.Values["action"]?.ToString() == "Index"))
+                                    {
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="MinSide" asp-action="Index">Min Side</a>
+                                        </li>
+                                    }
+                                    <li>
+                                        <form asp-action="LoggUt" asp-controller="Account" method="post" class="dropdown-item m-0">
+                                            @Html.AntiForgeryToken() <!-- Ensure CSRF protection -->
+                                            <button type="submit" class="btn btn-link p-0 text-decoration-none w-100 text-start">
+                                                <i class="bi bi-box-arrow-right"></i> Logg ut
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
                             </li>
-                            <li>
-                                <a class="dropdown-item" asp-controller="MinSide" asp-action="Index">Min Side</a>
+
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Feilmelding" asp-action="Save"></a>
                             </li>
                         </ul>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Feilmelding" asp-action="Save"></a>
-                    </li>
-                </ul>
+                    }
             </div>
         </div>
     </nav>
