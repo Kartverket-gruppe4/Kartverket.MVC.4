@@ -21,23 +21,23 @@ public class MinSideController : Controller
     [HttpGet]
     public async Task<IActionResult> Index(string email)
     {
-        if (string.IsNullOrEmpty(email))
-        {
-            return RedirectToAction("LoggInn", "Account");
-        }
+        var userEmail = HttpContext.Request.Cookies["UserEmail"];
 
-        var user = await _userManager.FindByEmailAsync(email);
-
-        if (user != null)
+        if (!string.IsNullOrEmpty(userEmail))
         {
-            var model = new MinSideViewModel
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            if (user != null)
             {
-                Email = user.Email
-            };
-            
-            return View(model);
+                var model = new MinSideViewModel
+                {
+                    Email = user.Email
+                };
+
+                return View(model);
+            }
         }
-        
+
+        // If no valid cookie, redirect to login
         return RedirectToAction("LoggInn", "Account");
     }
 

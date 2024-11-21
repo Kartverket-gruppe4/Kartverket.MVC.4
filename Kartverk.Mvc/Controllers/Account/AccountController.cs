@@ -58,6 +58,22 @@ public class AccountController : Controller
         return View(model);
     }
 
+    // POST: Account/LoggUt
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> LoggUt()
+    {
+        await _signInManager.SignOutAsync();
+
+        // Clear cookies if needed (e.g., the custom UserEmail cookie)
+        if (HttpContext.Request.Cookies.ContainsKey("UserEmail"))
+        {
+            HttpContext.Response.Cookies.Delete("UserEmail");
+        }
+
+        return RedirectToAction("Index", "Home");
+    }
+
     // GET: Account/Register
     public ActionResult Register()
     {
