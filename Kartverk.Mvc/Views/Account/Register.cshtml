@@ -6,22 +6,28 @@
 
     @using (Html.BeginForm("Register", "Account", FormMethod.Post))
     {
+        <!-- Oppsummering av valideringsfeil -->
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
         <!-- E-postfelt -->
         <div class="form-group">
             @Html.LabelFor(m => m.Email, "E-post")
             @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
         </div>
 
         <!-- Passordfelt -->
         <div class="form-group">
             @Html.LabelFor(m => m.Password, "Passord")
             @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
         </div>
 
         <!-- Bekreft passordfelt -->
         <div class="form-group" style="margin-bottom: 10px;">
-            @Html.LabelFor(m => m.ConfirmPassword)
+            @Html.LabelFor(m => m.ConfirmPassword, "Bekreft passord")
             @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
         </div>
 
         <!-- Sendeknapp for skjema -->
@@ -71,6 +77,11 @@
             width: 100%;
             padding: 10px;
             font-size: 16px;
+        }
+
+        .text-danger {
+            color: red;
+            font-size: 12px;
         }
     </style>
 }
