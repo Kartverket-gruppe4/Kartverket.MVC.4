@@ -106,24 +106,23 @@ h3 {
         text-decoration: underline;
     }
 
-/* Oppdatert styling for pop-up */
+/* Oppdatert styling */
 .popupForm {
-    display: none; /* Skjuler pop-up som standard */
-    position: fixed; /* Sørger for at pop-up er plassert i forhold til vinduet */
-    top: 54%; /* Sentraliserer vertikalt */
-    left: 50%; /* Sentraliserer horisontalt */
-    transform: translate(-50%, -50%); /* Flytter midtpunktet til senter */
-    width: 70%; /* Sett bredden */
-    height: 510px; /* Sett høyden */
-    background-color: #fff; /* Hvit bakgrunn */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Myk skygge */
-    border-radius: 10px; /* Avrundede hjørner */
-    z-index: 1000; /* Sørger for at pop-up vises over alt annet */
+    display: none;
+    position: fixed;
+    top: 54%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70%;
+    height: 510px;
+    background-color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    z-index: 1000;
 }
 
-/* Innholdet i pop-up */
 .popupForm-content {
-    padding: 20px; /* Gjør innholdet litt luftig */
-    height: 100%; /* Sørger for at innholdet fyller pop-up-en */
-    overflow-y: auto; /* Lar innholdet være scrollbart hvis det overstiger høyden */
+    padding: 20px;
+    height: 100%;
+    overflow-y: auto;
 }
