@@ -12,6 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="~/css/popup.css"> <!-- Lenker til popup.css-filen -->
+    <link rel="stylesheet" href="~/css/table-style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Linker til Font Awesome for ikoner -->
 </head>
 <body>
@@ -141,9 +142,9 @@
     <thead class="thead-dark">
         <tr>
             <th>Nr</th>
-            <th>Kategori</th>
             <th>Dato</th>
-            <th>KommuneInfo</th>
+            <th>Kategori</th>
+            <th>Kommune</th>
             <th>Mer</th>
             <th>Status</th>
         </tr>
@@ -153,14 +154,24 @@
         {
             foreach (var feilmelding in Model)
             {
+                    var kommuneInfo = string.IsNullOrEmpty(feilmelding.KommuneInfo)
+                    ? null
+                    : Newtonsoft.Json.JsonConvert.DeserializeObject<Kartverk.Mvc.API_Models.KommuneInfo>(feilmelding.KommuneInfo);
+                    var kommunenavn = kommuneInfo?.Kommunenavn ?? "Ingen kommune";
+                    var kommunenummer = kommuneInfo?.Kommunenummer ?? "Ikke spesifisert";
+
                 <tr class="feilmelding-row" data-category="@feilmelding.Kategori" data-date="@feilmelding.Dato.ToString("yyyy-MM-dd")">
                     <td>@feilmelding.Id</td>
-                    <td>@feilmelding.Kategori</td> <!-- Oppdatert til Kategori -->
-                    <td>@feilmelding.Dato.ToString("dd.MM.yyyy")</td> <!-- Formaterer datoen -->
-                    <td>@feilmelding.KommuneInfo</td>
+                    <td>@feilmelding.Dato.ToString("dd.MM.yyyy")</td>
+                    <td>@feilmelding.Kategori</td>  
+                    <td>@kommunenavn (@kommunenummer)</td>
                         <td>
-                            <!-- her kan feilmelding.GeoJson legges inn for å få opp på popup om det ønskes. -->
-                            <button class="view-button" onclick="openPopup('@feilmelding.Email', '@feilmelding.Dato.ToString("dd.MM.yyyy")', '@feilmelding.Kategori', '@feilmelding.KommuneInfo', '@feilmelding.GeoJson', '#', '@feilmelding.Beskrivelse')">
+                            <button class="view-button"
+                                    data-geojson='@feilmelding.GeoJson'
+                                    data-kommuneinfo="@feilmelding.KommuneInfo"
+                                    data-kommunenavn="@kommunenavn"
+                                    data-kommunenummer="@kommunenummer"
+                                    onclick="openPopup('@feilmelding.Email', '@feilmelding.Dato.ToString("dd.MM.yyyy")', '@feilmelding.Kategori', this, '@feilmelding.Beskrivelse', '@feilmelding.GeoJson')">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </td> <!-- Legger til knappen ved siden av datoen -->
@@ -211,7 +222,7 @@
                 <p><strong>Dato:</strong> <span id="popup-date"></span></p>
                 <p><strong>Kategori:</strong> <span id="popup-category"></span></p>
                 <p><strong>Kommune:</strong> <span id="popup-municipality"></span></p>
-                <p><strong>GeoJson:</strong> <span id="popup-geojson"></span></p>
+                <p><strong>Beskrivelse:</strong> <span id="popup-description"></span></p>
             </div>
 
             <!-- Separator (strek i midten) -->
@@ -220,45 +231,86 @@
             <!-- Høyre seksjon -->
             <div class="right-section">
                 <p><strong>Kartutsnitt:</strong></p>
-                <div class="map-placeholder">Kart kommer her</div>
-                    <p><strong>Vedlegg:</strong><a href="#" id="popup-attachment">  Last ned vedlegg</a></p> <!-- Ikke-fungerende lenke -->
+                <div id="map" style="width: 100%; height: 200px;"></div>
                 <hr />
-                <p><strong>Beskrivelse:</strong></p><span id="popup-description"></span>
+                <p><strong>GeoJson-data:</strong></p>
+                <span id="popup-geojson"></span>
             </div>
         </div>
     </div>
 </div>
 <script>
-        function openPopup(email, date, category, municipality, geoJsonString, attachmentUrl, description) {
+        function openPopup(email, date, category, buttonElement, description, geoJsonData) {
         document.getElementById('popup-email').innerText = email; // Oppdaterer email
         document.getElementById('popup-date').innerText = date; // Oppdaterer dato
         document.getElementById('popup-category').innerText = category; // Oppdaterer kategori
-        document.getElementById('popup-municipality').innerText = municipality; // Oppdaterer kommune
-        document.getElementById('popup-geojson').innerText = geoJsonString; // Oppdaterer geojson
-        document.getElementById('popup-attachment').setAttribute('href', attachmentUrl); // Oppdaterer vedleggslenke
+
+        const kommunenavn = buttonElement.getAttribute('data-kommunenavn');
+        const kommunenummer = buttonElement.getAttribute('data-kommunenummer');
+        document.getElementById('popup-municipality').innerText = `${kommunenavn} (${kommunenummer})`;
+
         document.getElementById('popup-description').innerText = description; // Oppdaterer beskrivelse
 
-        // initialiser kartet i pop-upen
-        var mapElement = document.getElementById("popup-map");
-        if (mapElement) {
-            // Sletter eksisterende kart hvis det finnes
-            mapElement.innerHTML = "";
-        }
+            let geojsonData = buttonElement.getAttribute('data-geojson');
+            let kommuneInfo = buttonElement.getAttribute('data-kommuneinfo');
 
-        // Hvis geoJsonString er tilgjengelig, vis kartet
-        if (geoJsonString) {
+            document.getElementById('popup-geojson').innerText = geoJsonData;
 
-            // var geoJson = JSON.parse(geoJsonString);
+            try {
+                geojsonData = JSON.parse(geojsonData);
+                if (typeof geojsonData === "string") {
+                    geojsonData = JSON.parse(geojsonData); // Decode double-escaped string
+                }
+                if (!geojsonData || !geojsonData.features || !Array.isArray(geojsonData.features)) {
+                    throw new Error("Invalid GeoJSON structure.");
+                }
+            } catch (error) {
+                alert(`Failed to parse GeoJSON: ${error.message}`);
+                return;
+            }
 
-            /* // Opprett et kart i pop-upen
-            var popupMap = L.map('popup-map').setView([58.164048, 8.004007], 13); // Sentrer kartet på et standard sted
+            // Reset or initialize map
+            const mapContainer = document.getElementById('map');
+            if (window.mapInstance) {
+                window.mapInstance.remove(); // Remove the previous map instance
+            }
+
+            window.mapInstance = L.map(mapContainer);
+
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(popupMap);
+                maxZoom: 16,
+                attribution: '&copy; OpenStreetMap contributors',
+            }).addTo(window.mapInstance);
 
-            // Legg til GeoJSON-laget på kartet
-            L.geoJSON(geoJson).addTo(popupMap); */
-        }
+            // Add GeoJSON layer to the map
+            const geoJsonLayer = L.geoJSON(geojsonData).addTo(window.mapInstance);
+
+            // Get bounds of the GeoJSON layer
+            const bounds = geoJsonLayer.getBounds();
+            const boundsSize = bounds.getNorthEast().distanceTo(bounds.getSouthWest()); // Measure bounds size in meters
+
+            console.log("Bounds size (meters):", boundsSize);
+
+            // Set dynamic padding based on bounds size
+            let padding;
+            if (boundsSize > 2000) {
+                padding = [100, 100]; // Larger padding for larger polygons
+            } else if (boundsSize > 500) {
+                padding = [50, 50]; // Medium padding
+            } else {
+                padding = [20, 20]; // Small padding for small polygons
+            }
+
+            // Fit the map to the bounds with the calculated padding
+            window.mapInstance.fitBounds(bounds, {
+                padding: padding,
+                maxZoom: 14, // Prevent zooming in too much
+            });
+
+            // Ensure the map resizes correctly if it was hidden
+            setTimeout(() => {
+                window.mapInstance.invalidateSize(); // Force map redraw
+            }, 300);
 
         const popup = document.getElementById('popup');
         popup.style.display = 'block'; // Viser popup
