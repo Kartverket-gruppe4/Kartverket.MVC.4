@@ -93,6 +93,18 @@ namespace Kartverk.Mvc.Controllers.FeilMelding
             var userId = user.Id;
 
             var feilmeldinger = _feilmeldingService.GetAllFeilmeldinger(userId);
+
+            // Serialize GeoJson data for each feilmelding
+            foreach (var feilmelding in feilmeldinger)
+            {
+                // Ensure GeoJson is serialized as a string
+                if (feilmelding.GeoJson != null)
+                {
+                    // Ensure GeoJson is serialized as a proper string without extra escaping
+                    feilmelding.GeoJson = JsonConvert.SerializeObject(feilmelding.GeoJson);
+                }
+            }
+
             return View(feilmeldinger);
         }
 
