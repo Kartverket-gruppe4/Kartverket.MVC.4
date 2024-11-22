@@ -1,5 +1,6 @@
 @using Kartverk.Mvc.API_Models
 @using Kartverk.Mvc.Models.Feilmelding
+@using Newtonsoft.Json
 @model IEnumerable<Kartverk.Mvc.Models.Feilmelding.FeilmeldingViewModel>
 
 @{
@@ -15,6 +16,8 @@
     <link rel="stylesheet" href="~/css/popup.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
      <link rel="stylesheet" href="~/css/table-style.css"> <!-- Lenker til din CSS-fil -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </head>
 <body>
     <h2>Oversikt over feilmeldinger</h2>
@@ -54,11 +57,12 @@
                         <td>@feilmelding.Kategori</td>
                         <td>@kommunenavn (@kommunenummer)</td>
                         <td>
-                            <button class="view-button" 
+                            <button class="view-button"
+                                    data-geojson='@feilmelding.GeoJson'
                                     data-kommuneinfo="@feilmelding.KommuneInfo"
                                     data-kommunenavn="@kommunenavn"
                                     data-kommunenummer="@kommunenummer"
-                                    onclick="openPopup('@feilmelding.Email', '@feilmelding.Dato.ToString("dd.MM.yyyy")', '@feilmelding.Kategori', this, '@feilmelding.Beskrivelse')">
+                                        onclick="openPopup('@feilmelding.Email', '@feilmelding.Dato.ToString("dd.MM.yyyy")', '@feilmelding.Kategori', this, '@feilmelding.Beskrivelse')">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </td>
@@ -99,8 +103,7 @@
                 <div class="separator"></div>
                 <div class="right-section">
                     <p><strong>Kartutsnitt:</strong></p>
-                    <div class="map-placeholder">Kart kommer her</div>
-                    <p><strong>Vedlegg:</strong><a href="#" id="popup-attachment">  Last ned vedlegg</a></p>
+                    <div id="map" style="width: 100%; height: 200px;"></div>
                     <hr />
                     <p><strong>Status:</strong> <span id="popup-status">Pågående</span></p>
                 </div>
@@ -109,6 +112,7 @@
     </div>
 
     <script>
+        // Declare openPopup function in the global scope
         function openPopup(email, date, category, buttonElement, description, status) {
             document.getElementById('popup-email').innerText = email;
             document.getElementById('popup-date').innerText = date;
@@ -117,11 +121,71 @@
             var kommunenavn = buttonElement.getAttribute('data-kommunenavn');
             var kommunenummer = buttonElement.getAttribute('data-kommunenummer');
             document.getElementById('popup-municipality').innerText = `${kommunenavn} (${kommunenummer})`;
-            document.getElementById('popup-status').innerText = "Pågående";
             document.getElementById('popup-description').innerText = description;
-
             document.getElementById('popup-status').innerText = status || "Pågående";
 
+            let geojsonData = buttonElement.getAttribute('data-geojson');
+
+            try {
+                geojsonData = JSON.parse(geojsonData);
+                if (typeof geojsonData === "string") {
+                    geojsonData = JSON.parse(geojsonData);
+                }
+
+                if (!geojsonData || !geojsonData.features || !Array.isArray(geojsonData.features)) {
+                    throw new Error("Invalid GeoJSON structure.");
+                }
+            } catch (error) {
+                alert(`Failed to parse GeoJSON: ${error.message}`);
+                return;
+            }
+
+            // Reset or initialize map
+            const mapContainer = document.getElementById('map');
+
+            if (window.mapInstance) {
+                window.mapInstance.remove(); // Remove the previous map instance
+            }
+
+            // Initialize a new map instance
+            window.mapInstance = L.map(mapContainer);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 16,
+                attribution: '&copy; OpenStreetMap contributors',
+            }).addTo(window.mapInstance);
+
+            // Add GeoJSON layer to the map
+            const geoJsonLayer = L.geoJSON(geojsonData).addTo(window.mapInstance);
+
+            // Get bounds of the GeoJSON layer
+            const bounds = geoJsonLayer.getBounds();
+            const boundsSize = bounds.getNorthEast().distanceTo(bounds.getSouthWest()); // Measure bounds size in meters
+
+            console.log("Bounds size (meters):", boundsSize);
+
+            // Set dynamic padding based on bounds size
+            let padding;
+            if (boundsSize > 2000) {
+                padding = [100, 100]; // Larger padding for larger polygons
+            } else if (boundsSize > 500) {
+                padding = [50, 50]; // Medium padding
+            } else {
+                padding = [20, 20]; // Small padding for small polygons
+            }
+
+            // Fit the map to the bounds with the calculated padding
+            window.mapInstance.fitBounds(bounds, {
+                padding: padding,
+                maxZoom: 14, // Prevent zooming in too much
+            });
+
+            // Ensure the map resizes correctly if it was hidden
+            setTimeout(() => {
+                window.mapInstance.invalidateSize(); // Force map redraw
+            }, 300);
+
+            // Show the popup
             const popup = document.getElementById('popup');
             popup.style.display = 'block';
             setTimeout(() => { popup.style.opacity = 1; }, 10);
@@ -140,5 +204,6 @@
             }
         }
     </script>
+
 </body>
 </html>
