@@ -1,6 +1,5 @@
-- Dokumentasjon i Github om drift, systm arkitektur og testing scenarier og resultater, i tillegg til dokumentasjonen i selve koden.
-- Legg til link av oppgaven fra Kartverket
-- Legg til log in passord for admin hvis vi har det  
+- **Dokumentasjon** i Github om drift, systm arkitektur og testing scenarier og resultater, i tillegg til dokumentasjonen i selve koden.
+- Legg til log in passord for admin hvis vi har det her oppe. 
 
 # Project Title: Kartverket
 *Date: 25.11.24*  
@@ -14,7 +13,7 @@ This project aims to develop a 'Crowd Sourcing' solution that will assist Kartve
 ## Key Hightlights:
 - **Purpose**: To provide an easy-to-use platform where everyone regardless of their age or digital competence can easily send report errors or missiong information in Norway's map data. 
 - **Problems Solved**: The solution helps Kartverket quickly identify and correct issues in the map data. This leads to more accurate, up-to-date maps that can benefit both the public and businesses that rely on geographic data.
-- **Target Audience**: The general public, including people of all ages and technical background. Specially people who want to contribute to improving Norway's map data.  
+- **Target Audience**: The general public, including people of all ages and technical background. Caseworkers ad Kartverket, providing a tool to process reports and communicate feedback. 
 
 ## Use Scenarios
 ### Scenario 1: Submitting Map Correction 
@@ -26,10 +25,12 @@ Caseworkers can view and sort user-submitted corrections on the admin dashboard 
 ### Scenario 4: User-Friendly Interface and Mobile Access
 The platform is a user-friendly interface for both submitters and caseworkers. Both submitters and caseworkers can access the system on mobile and desktop devices, with a responsive design. 
 
-## Security and Authorization 
-?????
+## Expandable Structure (Er dette bra????????) 
+The project is designed with the potential to grow and evolve to meet future needs, and being open source allows for customization to suit specific requirements. 
 
-# Technical Requirements and Expectations
+Katrtverket. (2024).*Prosjektoppgave Kartverket.pdf*. https://uia.instructure.com/courses/16039/pages/group-project-guidelines
+
+# Technical Requirements and Fulfillment 
 To ensure the project's success, the following technologies and tools are implemented and fulfilled:
 - GitHub
 - ASP.NET Core
@@ -42,25 +43,53 @@ To ensure the project's success, the following technologies and tools are implem
 - SQL Server Management
 - Mariadb
 - Rider/Visual Studio
+- Leaflet
 
 ## Programming Language and Version 
-**Programming language:** C# (skal jeg skrive alle her, eller bare hoved?)
+**Programming language:** C#
 
-**Version:** .NET 8.0????
+**Version:** .NET 8.0
 
-## Developable and Expandable Structure (annen overskrift????) 
-Skiv at den kan bli viderutviklet ...
-Inkluder link til oppgaven se eksempel vi fikk 
+# NOE I MELLOM HER???
+- I eksempelet har de Constructor med
+    - Account controller
+        - Registration
+        - Login
+        - Logout
+    - Service
+       - Det vi har kanskje??
 
-# NOE I MELLOM HER???????
-- 
-- 
-- 
-
-## Used Technologis and Libraries 
-**LISTE MED ALLE PAKKER, INSTALASJONER OG AVHNEGIGHETER** 
+## Used Technologis and Libraries
+**LISTE MED ALLE PAKKER, INSTALASJONER OG AVHNEGIGHETER** ?????
+SKRIV BESKRIVELSE OG SJEKK MED DE ANDRE!!!!!!!!!!!!!!!!!!
 - ASP.NET Core Framework:
   - Framework used for .NET Core-based web applications.
+- Microsoft.AspNetCore.Identity.EntityFrameworkCore
+- Microsoft.EntityFrameworkCore
+- Microsoft.EntityFrameworkCore.Design
+- Microsoft.EntityFrameworkCore.Relational
+- Microsoft.EntityFrameworkCore.Tools
+- Microsoft.Extension.Http
+- Microsoft.Extensions.Looging.Abstractions
+- Microsoft.NET.Test.Sdk
+- Microdoft.VisualStudio.Azure.Containers.Tools
+- Newtonsoft.Json
+- xunit
+- xunit.runner.visualstudio
+- NSubstitute
+- Pomelo.EntityFrameworkCore
+- Dapper
+
+# Databse 
+The database is connected to the application through docker using MariaDB. The database is designed to efficiently store and manage the map error submissions and user information.  
+
+**(Skal dette være med?? er fra eksmepel)**
+- Database: SQL Server
+- Connecting Method: Entity Framework
+
+**I eksempelet har de også med:**????????
+- Project Configuration File Examples
+- Project Dependencies 
     
 
 # Architectural Structure: MVC Pattern
@@ -69,13 +98,12 @@ The application is build using the Model-View-Controller (MVC) pattern, which di
 
 ## Model
 
-FORKLARING I FORHOLD TIL VÅR  ... 
+Represents the application  s data structure  (ER DETTE BRA?)
  <pre> 
  ## Models 
  
 │   │   ├── **Account**
 │   │   ├── **AdminFeilmelding**
-│   │   ├── **AdminInnboks**
 │   │   ├── **Feilmelding**
 │   │   ├── **HjelpKontakt**
 │   │   ├── **Home**
@@ -89,17 +117,15 @@ FORKLARING I FORHOLD TIL VÅR  ...
 
 ## View
 
-FORKLARING I FORHOLD TIL VÅR  ... 
+Handles the user interface (UI), displaying data to the user (ER DETTE BRA?)
  <pre>
  ## Views 
 
 │   │   ├── **Account**
 │   │   ├── **AdminFeilmelding**
-│   │   ├── **AdminInnboks**
 │   │   ├── **Feilmelding**
 │   │   ├── **HjelpKontakt**
 │   │   ├── **Home**
-│   │   ├── **Innboks**
 │   │   ├── **MinSide**  
 │   │   ├── **Shared** 
 │   │   ├── ViewImports.cshtml        
@@ -109,27 +135,34 @@ FORKLARING I FORHOLD TIL VÅR  ...
 
 ## Controller
 
-FORKLARING I FORHOLD TIL VÅR ... 
+Manages user intercations, processes HTTP requests, and updates the model or view accordingly.  (ER DETTE BRA?)
  <pre>
 ## Controllers
 
 │   │   ├── **Account**
 │   │   ├── **AdminFeilmelding**
-│   │   ├── **AdminInnboks**
 │   │   ├── **Feilmelding**
 │   │   ├── **HjelpKontakt**
 │   │   ├── **Home**
-│   │   ├── **Innboks**
 │   │   ├── **MinSide**
 │   │   ├── MapCorrectionsController.cs
 
 </pre>
 
 
-# NOE I MELLOM HER???????
-- 
-- 
-- 
+# DETTE ER FRA EKSEMPEL (HVA SKAL VI HA HER??) 
+# Main Components and Interactions of the Application
+## Identity Service
+## Migration for Adding Identity Tables
+## Tables Created
+## How to Apply the Migration
+## How to Rollback the Migration
+## Database Connection
+## Docker
+## Swagger and Notyf Service
+## Email Sending Service
+## ServiceSkjemaService
+
 
 
 # Project Folders and file structures 
@@ -152,42 +185,59 @@ The directury structure below illustrates how the application project is organiz
 
 │   ├── ## Controllers      
 │   │   ├── **Account**
+│   │   │   ├── (files related to user accounts processes)
 │   │   ├── **AdminFeilmelding**
-│   │   ├── **AdminInnboks**
+│   │   │   ├── (files related to admin)
 │   │   ├── **Feilmelding**
+│   │   │   ├── (files related to 
 │   │   ├── **HjelpKontakt**
+│   │   │   ├── (files related to 
 │   │   ├── **Home**
-│   │   ├── **Innboks**
+│   │   │   ├── (files related to 
 │   │   ├── **MinSide**
+│   │   │   ├── (files related to 
 │   │   ├── MapCorrectionsController.cs
 
-│   ├── ## Migrations                      
+│   ├── ## Migrations  
+│   │   ├── (files related to 
 
 │   ├── ## Models  
 │   │   ├── **Account**
+│   │   │   ├── (files related to 
 │   │   ├── **AdminFeilmelding**
-│   │   ├── **AdminInnboks**
+│   │   │   ├── (files related to 
 │   │   ├── **Feilmelding**
+│   │   │   ├── (files related to 
 │   │   ├── **HjelpKontakt**
+│   │   │   ├── (files related to 
 │   │   ├── **Home**
+│   │   │   ├── (files related to 
 │   │   ├── **MinSide**
+│   │   │   ├── (files related to 
 │   │   ├── ApplicationDbContext.cs
 │   │   ├── ErrorViewModel.cs
 │   │   ├── KommuneInfoViewModel.cs
 │   │   ├── MapCorrectionModel.cs
 
-│   ├── ## Services         
+│   ├── ## Services   
+│   │   ├── (files related to 
 
 │   ├── ## Views 
 │   │   ├── **Account**
+│   │   │   ├── (files related to 
 │   │   ├── **AdminFeilmelding**
-│   │   ├── **AdminInnboks**
+│   │   │   ├── (files related to 
 │   │   ├── **Feilmelding**
+│   │   │   ├── (files related to 
 │   │   ├── **HjelpKontakt**
+│   │   │   ├── (files related to 
 │   │   ├── **Home**
-│   │   ├── **Innboks**
+│   │   │   ├── (files related to 
 │   │   ├── **MinSide**  
+│   │   │   ├── (files related to 
 │   │   ├── **Shared** 
+│   │   │   ├── Layout.cshtml
+│   │   │   ├── Error.cshtml
 │   │   ├── ViewImports.cshtml         
 
 │   ├── ## Shared  
@@ -206,40 +256,63 @@ The directury structure below illustrates how the application project is organiz
 │   ├── Program.cs
 </pre>
 
-# Used Dependencies and Libraries 
+# Dependencies and Installation 
+## Used Dependencies and Libraries 
 Below is a list of all the depencencies and packages used to run this project. 
 - Inkluder liste
-- Inkluder bilde av detet (Se eksempel) 
+- Inkluder bilde av detet (Se eksempel)
 
-
-# Installation Giude
+# Installation Giude ?????????
 To get start with this project, make sure to install all the required dependencies. Then, follow the instructions below:   
 ## 1. Clone the repository**  
-   Clone the project to your local machine by running the folloing command in your terminal: 
+  Clone the project to your local machine by running the folloing command in   your terminal: 
    git clone https://github.com/Kartverket-gruppe4/Kartverket.MVC.4.git
-## 2. Install Depencencies:????
-   ....
+## 2. Install Depencencies:???
+   dotnet restor 
 ## 3. Install Entity Framework Tool:????
-   ...
+   dotnet tool install --global dotnet-ef
 ## 4. Create Migrations:????
-   ...
+   dotnet ef migrations add InitialCreate 
 ## 5. Update Database:
    dotnet ef database update
 ## 6. Run the project:
    dotnet run 
 
 **VET IKKE OM DETTE ER RETT ELLER OM DET ER FLERE STEG!!!**
+- Configuration File
+- Descriptions
 
-# NOE I MELLOM HER???????
-- 
-- 
-- 
+# NOE I MELLOM HER??????? (FRA EKSEMPEK) 
+# Security and Authorization
+- Authentication and Authorization Mechanisms
+- User Registration (Register)
+- Login
+- Role-Based Control (Roles Controller)
+- CSRF Protection
+- XSS Protection
+- Error Tracking and Logging**
+
+**UTKAST** 
+## Security and Authorization (Skriv mer om hva vi har brukt)  
+- **CSRF Protection:** Ensures users' actions are secure during form submissions.
+- **XSS Mitigation:** Input fields are sanitized to prevent script injections.
+- **Authentication & Authorization:** Role-based access (e.g., caseworkers vs. public users). User registration and login functionality linked to the database.
+
+# Functionalities in the Application
+**User Registration & Authentication
+Dashboard Operations**
 
 
-# Contributors 
+# Testing 
+## Unit Test 
+Unit test are implemented using ... 
+**RESULTAT???**
+## Other Test 
+
+# Contributors !!!!!
 ### - Andrea Vågen (LINK TIL GITHUB)
 ### - Anna Martine Østmoen (LINK TIL GITHUB)
-### - Eline Widvey (LINK TIL GITHUB)
+### - Eline Widvey (https://github.com/ElineWi)
 ### - Olivia Fledsberg Petterøe (LINK TIL GITHUB)
 ### - Thea Svele Corneliussen (LINK TIL GITHUB)
 ### - Vilde Christensen (LINK TIL GITHUB)
@@ -248,13 +321,3 @@ To get start with this project, make sure to install all the required dependenci
 - **Bilde av contributors fra github (Se eksempel)!!!!**
 - **DOKUMENTASJON AV COMMITS (Se eksemepel)**
 - **TRAFFIC (SE EKSEMPEL)**
-
-
-
-
-
-
-
-
-
-
