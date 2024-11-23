@@ -30,7 +30,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 // konfigurer autentikasjon
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = "/Account/Lognn/";
+    options.LoginPath = "/Account/LogInn/";
     options.AccessDeniedPath = "/Account/AccessDenied/";
     options.Cookie.Name = "YourAppCookie";
 });
