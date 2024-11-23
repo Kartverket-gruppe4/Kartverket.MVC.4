@@ -5,156 +5,359 @@
     Layout = "_Layout";
 }
 
-<div class="container mt-4">
-    <h3>Innsendte Feilmeldinger</h3>
-    <p>Her kan du administrere feilmeldinger</p>
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/popup.css"> <!-- Lenker til popup.css-filen -->
+    <link rel="stylesheet" href="~/css/table-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Linker til Font Awesome for ikoner -->
+</head>
+<body>
 
-    <!-- Søk og filter-seksjon -->
-    <div class="search-filter-container">
-        <!-- Søkefelt -->
-        <input type="text" id="searchInput" placeholder="Søk på feilmeldinger..." class="form-control" style="width: 500px; display: inline-block;">
-        <button class="btn btn-success" id="searchBtn" onclick="filterReports()">Søk</button>
+    <!-- Success and Error Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
 
-        <!-- Filtrer knappen -->
-        <button class="btn btn-secondary" id="filterBtn" onclick="openFilterPopup()">Filtrer</button>
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <br />
+
+    <!-- Velkommen-seksjon -->
+    <div style="text-align: center;">
+        <div class="Admin-side">
+            <h2>Velkommen til admin-siden!</h2>
+            <p>Her kan du administrere feilmeldinger, bruke filtre for å finne spesifikke saker, og oppdatere status for pågående problemer.</p>
+        </div>
     </div>
 
-    <!-- Filtrerings pop-up (skjult til den åpnes) -->
-    <div id="filterPopup" class="filter-popup" style="display:none; position: absolute; background-color: white; border: 1px solid #ddd; padding: 15px;">
-        <h4>Filtrer feilmeldinger</h4>
+    <!-- Divider -->
+    <hr />
 
-        <!-- Kategori filter -->
-        <label for="category">Kategori:</label>
-        <select id="categoryFilter" class="form-control">
-            <option value="Alle">Alle</option>
-            <option value="Tursti">Tursti</option>
-            <option value="Vei">Vei</option>
-            <option value="Sjø">Sjø</option>
-            <option value="Stedsnavn">Stedsnavn</option>
-        </select>
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 0 20px;">
+        <h3 style="margin: 0;">Innsendte Feilmeldinger</h3>
+        <button class="btn btn-success" id="filterBtn" onclick="openFilterPopup()">Filtrer</button>
+    </div>
 
-        <!-- Dato filter -->
-        <label for="dateFilter">Dato:</label>
-        <input type="date" id="dateFilter" class="form-control">
 
-        <!-- Kommune filter -->
-        <label for="kommuneFilter">Kommune:</label>
-        <input type="text" id="kommuneFilter" class="form-control" placeholder="Skriv kommune...">
 
-        <!-- Status filter -->
-        <label for="statusFilter">Status:</label>
-        <select id="statusFilter" class="form-control">
-            <option value="Alle">Alle</option>
-            <option value="Ny">Ny</option>
-            <option value="Pågående">Pågående</option>
-            <option value="Ferdigbehandlet">Ferdigbehandlet</option>
-        </select>
+<!-- Filtrerings pop-up (skjult til den åpnes) -->
+<div id="filterPopup" class="filter-popup"
+         style="display:none; position: absolute; top: 230px; right: 10px; background-color: white; border: 1px solid #ddd; padding: 15px;">
+    <h4>Filtrer feilmeldinger</h4>
 
+    <!-- Kategori filter -->
+    <label for="category">Kategori:</label>
+    <select id="categoryFilter" class="form-control">
+        <option value="Alle">Alle</option>
+        <option value="Tursti">Tursti</option>
+        <option value="Vei">Vei</option>
+        <option value="Sjø">Sjø</option>
+        <option value="Stedsnavn">Stedsnavn</option>
+    </select>
+
+    <!-- Dato filter -->
+    <label for="dateFilter">Dato:</label>
+    <input type="date" id="dateFilter" class="form-control">
+
+    <!-- Kommune filter -->
+    <label for="kommuneFilter">Kommune:</label>
+    <input type="text" id="kommuneFilter" class="form-control" placeholder="Skriv kommune...">
+
+    <!-- Status filter -->
+    <label for="statusFilter">Status:</label>
+    <select id="statusFilter" class="form-control">
+        <option value="Alle">Alle</option>
+        <option value="Ny">Ny</option>
+        <option value="Pågående">Pågående</option>
+        <option value="Ferdigbehandlet">Ferdigbehandlet</option>
+    </select>
+
+    <div class="d-flex justify-content-end mt-3">
         <!-- Filtrer knapp -->
-        <button class="btn btn-success" onclick="applyFilters()">Bruk filter</button>
+        <button class="btn btn-success me-2" onclick="applyFilters()">Bruk filter</button>
+        <!-- Lukke knapp -->
+        <button class="btn btn-secondary" onclick="closeFilterPopup()">Lukk</button>
     </div>
 </div>
 
 <!-- Pop-up funksjonaliteter-->
 <script>
     // Funksjon for å åpne pop-upen
-        function openFilterPopup() {
+    function openFilterPopup() {
         document.getElementById("filterPopup").style.display = "block";
     }
 
-        // Funksjon for å lukke pop-upen
-        function closeFilterPopup() {
-            document.getElementById("filterPopup").style.display = "none";
-        }
+    // Funksjon for å lukke pop-upen
+    function closeFilterPopup() {
+        document.getElementById("filterPopup").style.display = "none";
+    }
 
-        // Funksjon for søk og filtrering
-        function filterReports() {
-            var searchTerm = document.getElementById("searchInput").value.toLowerCase();
-            var rows = document.querySelectorAll(".feilmelding-row");
+    // Funksjon for søk og filtrering
+    function filterReports() {
+        var searchTerm = document.getElementById("searchInput").value.toLowerCase();
+        var rows = document.querySelectorAll(".feilmelding-row");
 
-            rows.forEach(row => {
-                var text = row.textContent.toLowerCase();
-                row.style.display = text.includes(searchTerm) ? "" : "none";
-            });
-        }
+        rows.forEach(row => {
+            var text = row.textContent.toLowerCase();
+            row.style.display = text.includes(searchTerm) ? "" : "none";
+        });
+    }
 
-        // Funksjon for å bruke filtrering på tabellen
-        function applyFilters() {
-            var category = document.getElementById("categoryFilter").value;
-            var date = document.getElementById("dateFilter").value
-            var kommune = document.getElementById("kommuneFilter").value.toLowerCase();
-            var status = document.getElementById("statusFilter").value;
+    // Funksjon for å bruke filtrering på tabellen
+    function applyFilters() {
+        var category = document.getElementById("categoryFilter").value;
+        var date = document.getElementById("dateFilter").value
+        var kommune = document.getElementById("kommuneFilter").value.toLowerCase();
+        var status = document.getElementById("statusFilter").value;
 
-            var rows = document.querySelectorAll(".feilmelding-row");
+        var rows = document.querySelectorAll(".feilmelding-row");
 
-            rows.forEach(row => {
-                var match = true;
-                if (category !== "Alle" && row.dataset.category !== category) match = false;
-                if (date && !row.dataset.date.startsWith(date)) match = false;
-                if (kommune && !row.dataset.kommune.toLowerCase().includes(kommune)) match = false;
-                if (status !== "Alle" && row.dataset.status !== status) match = false;
+        rows.forEach(row => {
+            var match = true;
+            if (category !== "Alle" && row.dataset.category !== category) match = false;
+            if (date && !row.dataset.date.startsWith(date)) match = false;
+            if (kommune && !row.dataset.kommune.toLowerCase().includes(kommune)) match = false;
+            if (status !== "Alle" && row.dataset.status !== status) match = false;
 
-                row.style.display = match ? "" : "none";
-            });
+            row.style.display = match ? "" : "none";
+        });
 
-            closeFilterPopup();
-        }
+        closeFilterPopup();
+    }
 
-        // Kontrollsjekk for å se at scriptet er lastet
-        console.log("Popup script loaded correctly");
+    // Kontrollsjekk for å se at scriptet er lastet
+    console.log("Popup script loaded correctly");
 </script>
 
 <!-- Divider -->
 <hr />
 
 <!-- Tabell over feilmeldinger -->
-<table class="table table-striped table-bordered mt-3">
-    <thead class="thead-dark">
-    <tr>
-        <th>Nr</th>
-        <th>Kategori</th>
-        <th>Dato</th>
-        <th>KommuneInfo</th>
-        <th>Status</th>
-        <th>Mer</th>
-    </tr>
-    </thead>
-    <tbody id="feilmeldingerBody">
-    @if (Model.Any())
-    {
-        foreach (var feilmelding in Model)
-        {
-            <tr class="feilmelding-row" data-category="@feilmelding.Kategori" data-date="@feilmelding.Dato.ToString("yyyy-MM-dd")">
-                <td>@feilmelding.Id</td>
-                <td>@feilmelding.Kategori</td>
-                <td>@feilmelding.Dato.ToString("dd.MM.yyyy HH:mm:ss")</td>
-                <td>@feilmelding.KommuneInfo</td>
+    <div class="table-container">
+        <table class="table table-striped table-bordered mt-3">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Nr</th>
+                    <th>Dato</th>
+                    <th>Kategori</th>
+                    <th>Kommune</th>
+                    <th>Mer</th>
+                    <th>Status</th>
+                    <th>Rediger</th>
+                </tr>
+            </thead>
+            <tbody id="feilmeldingerBody">
+                @if (Model.Any())
+                {
+                    foreach (var feilmelding in Model)
+                    {
+                            var kommuneInfo = string.IsNullOrEmpty(feilmelding.KommuneInfo)
+                            ? null
+                            : Newtonsoft.Json.JsonConvert.DeserializeObject<Kartverk.Mvc.API_Models.KommuneInfo>(feilmelding.KommuneInfo);
+                            var kommunenavn = kommuneInfo?.Kommunenavn ?? "Ingen kommune";
+                            var kommunenummer = kommuneInfo?.Kommunenummer ?? "Ikke spesifisert";
 
-                <td>
-                    <!-- Kode for å vise status og endre den for administrator -->
-                    <form action="@Url.Action("EndreStatus", "AdminFeilmelding")" method="post">
-                        <input type="hidden" name="id" value="@feilmelding.Id"/>
-                        <select name="status" class="form-control" onchange="this.form.submit()">
-                            <option value="Ferdigbehandlet" selected="@((feilmelding.Status == "Ferdigbehandlet") ? "selected" : "")">Ferdigbehandlet</option>
-                            <option value="Pågående" selected="@((feilmelding.Status == "Pågående") ? "selected" : "")">Pågående</option>
-                            <option value="Ny" selected="@((feilmelding.Status == "Ny") ? "selected" : "")">Ny</option>
-                        </select>
-                    </form>
-                </td>
-                        
-                <td>
-                    <button class="view-button" onclick="openPopup()">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                </td>
-            </tr>
+                        <tr class="feilmelding-row" data-category="@feilmelding.Kategori" data-date="@feilmelding.Dato.ToString("yyyy-MM-dd")">
+                            <td>@feilmelding.Id</td>
+                            <td>@feilmelding.Dato.ToString("dd.MM.yyyy")</td>
+                            <td>@feilmelding.Kategori</td>  
+                            <td>@kommunenavn (@kommunenummer)</td>
+                                <td>
+                                    <button class="view-button"
+                                            data-geojson='@Html.Raw(feilmelding.GeoJson)'
+                                            data-kommuneinfo="@feilmelding.KommuneInfo"
+                                            data-kommunenavn="@kommunenavn"
+                                            data-kommunenummer="@kommunenummer"
+                                            onclick="openPopup('@feilmelding.Email', '@feilmelding.Dato.ToString("dd.MM.yyyy")', '@feilmelding.Kategori', this, '@feilmelding.Beskrivelse', '@feilmelding.GeoJson')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td> <!-- Legger til knappen ved siden av datoen -->
+
+                            <td>
+                                <!-- Kode for å vise status og endre den for administrator -->
+                                <form action="@Url.Action("EndreStatus", "AdminFeilmelding")" method="post">
+                                    <input type="hidden" name="id" value="@feilmelding.Id" />
+                                    <select name="status" class="form-control" onchange="this.form.submit()">
+                                        <option value="Ny" selected="@((feilmelding.Status == "Ny") ? "selected" : null)">Ny</option>
+                                        <option value="Pågående" selected="@((feilmelding.Status == "Pågående") ? "selected" : null)">Pågående</option>
+                                        <option value="Ferdigbehandlet" selected="@((feilmelding.Status == "Ferdigbehandlet") ? "selected" : null)">Ferdigbehandlet</option>
+                                    </select>
+                                </form>
+                            </td>
+
+
+                            <!-- Slette knapp -->
+                            <td>
+                                <form action="@Url.Action("Delete", "Feilmelding")" method="post" onsubmit="return confirm('Er du sikker på at du vil slette denne feilmeldingen?');">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@feilmelding.Id" />
+                                    <input type="hidden" name="viewName" value="Index" />
+                                    <button type="submit" class="btn btn-danger btn-sm">Slett</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7" class="text-center">Ingen feilmeldinger funnet.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+</div>
+
+<!-- Pop-up Vindu -->
+<div id="popup" class="popup">
+    <div class="popup-content">
+        <span class="close" onclick="closePopup()">&times;</span>
+        <h3>Feilmelding Detaljer</h3>
+        <div class="popup-inner-content">
+            <!-- Venstre seksjon -->
+            <div class="left-section">
+                <p><strong>Email:</strong> <span id="popup-email"></span></p>
+                <p><strong>Dato:</strong> <span id="popup-date"></span></p>
+                <p><strong>Kategori:</strong> <span id="popup-category"></span></p>
+                <p><strong>Kommune:</strong> <span id="popup-municipality"></span></p>
+                <p><strong>Beskrivelse:</strong> <span id="popup-description"></span></p>
+            </div>
+
+            <!-- Separator (strek i midten) -->
+            <div class="separator"></div>
+
+            <!-- Høyre seksjon -->
+            <div class="right-section">
+                <p><strong>Kartutsnitt:</strong></p>
+                <div id="map" style="width: 100%; height: 200px;"></div>
+                <hr />
+                <p><strong>GeoJson-data:</strong></p>
+                <span id="popup-geojson"></span>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+        function openPopup(email, date, category, buttonElement, description, geoJsonData) {
+        document.getElementById('popup-email').innerText = email; // Oppdaterer email
+        document.getElementById('popup-date').innerText = date; // Oppdaterer dato
+        document.getElementById('popup-category').innerText = category; // Oppdaterer kategori
+
+        const kommunenavn = buttonElement.getAttribute('data-kommunenavn');
+        const kommunenummer = buttonElement.getAttribute('data-kommunenummer');
+        document.getElementById('popup-municipality').innerText = `${kommunenavn} (${kommunenummer})`;
+
+        document.getElementById('popup-description').innerText = description; // Oppdaterer beskrivelse
+
+        let geojsonData = buttonElement.getAttribute('data-geojson');
+        console.log("GeoJSON passed to popup:", geojsonData);
+
+        geojsonData = geojsonData.replace(/\\"/g, '"');
+
+        try {
+            geojsonData = geojsonData.replace(/\\"/g, '"');
+
+            if (geojsonData.startsWith('"') && geojsonData.endsWith('"')) {
+                geojsonData = geojsonData.slice(1, -1);
+            }
+
+            geojsonData = JSON.parse(geojsonData);
+
+            if (!geojsonData) {
+                throw new Error("GeoJSON is null or undefined.");
+            }
+
+            if (geojsonData.type === "Feature") {
+                // Convert a single Feature to a FeatureCollection
+                geojsonData = {
+                    type: "FeatureCollection",
+                    features: [geojsonData]
+                };
+            } else if (geojsonData.type !== "FeatureCollection") {
+                throw new Error(`Unexpected GeoJSON type: ${geojsonData.type}`);
+            }
+        } catch (error) {
+            console.error("GeoJSON validation failed:", error);
+            alert(`Failed to parse GeoJSON: ${error.message}`);
+            return;
+        }
+
+        // Reset or initialize map
+        const mapContainer = document.getElementById('map');
+
+        if (window.mapInstance) {
+            window.mapInstance.remove(); // Remove the previous map instance
+        }
+
+        // Initialize a new map instance
+        window.mapInstance = L.map(mapContainer);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 16,
+            attribution: '&copy; OpenStreetMap contributors',
+        }).addTo(window.mapInstance);
+
+        // Add GeoJSON layer to the map
+        const geoJsonLayer = L.geoJSON(geojsonData).addTo(window.mapInstance);
+
+        // Get bounds of the GeoJSON layer
+        const bounds = geoJsonLayer.getBounds();
+        const boundsSize = bounds.getNorthEast().distanceTo(bounds.getSouthWest()); // Measure bounds size in meters
+
+        console.log("Bounds size (meters):", boundsSize);
+
+        // Set dynamic padding based on bounds size
+        let padding;
+        if (boundsSize > 2000) {
+            padding = [100, 100]; // Larger padding for larger polygons
+        } else if (boundsSize > 500) {
+            padding = [50, 50]; // Medium padding
+        } else {
+            padding = [20, 20]; // Small padding for small polygons
+        }
+
+        // Fit the map to the bounds with the calculated padding
+        window.mapInstance.fitBounds(bounds, {
+            padding: padding,
+            maxZoom: 14, // Prevent zooming in too much
+        });
+
+        // Ensure the map resizes correctly if it was hidden
+        setTimeout(() => {
+            window.mapInstance.invalidateSize(); // Force map redraw
+        }, 300);
+
+        const popup = document.getElementById('popup');
+        popup.style.display = 'block'; // Viser popup
+        setTimeout(() => { popup.style.opacity = 1; }, 10); // Gjør popup synlig med en liten forsinkelse for animasjonseffekt
+    }
+
+    function closePopup() {
+        const popup = document.getElementById('popup');
+        popup.style.opacity = 0; // Skjuler popup med animasjon
+        setTimeout(() => { popup.style.display = 'none'; }, 300); // Forsinker fjerning fra visningen for å avslutte animasjonen
+    }
+
+    // Lukk pop-up når brukeren klikker utenfor innholdet
+    window.onclick = function (event) {
+        const popup = document.getElementById('popup');
+        if (event.target == popup) {
+            closePopup();
         }
     }
-    else
-    {
-        <tr>
-            <td colspan="7" class="text-center">Ingen feilmeldinger funnet.</td>
-        </tr>
-    }
-    </tbody>
-</table>
+</script>
+</body>
+</html>

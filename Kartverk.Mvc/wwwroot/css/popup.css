@@ -1,3 +1,4 @@
+/* View button style */
 .view-button {
     background-color: #28a745; /* Grønn bakgrunn */
     border: none;
@@ -15,13 +16,12 @@
         color: #00008b; /* Mørkeblått øyeikon */
     }
 
-    /* Legg til hover-effekt for knappen */
+    /* Hover effect for the button */
     .view-button:hover {
         opacity: 0.8; /* Gjør knappen litt gjennomsiktig når man holder musen over den */
     }
 
-/* Kode for pop-up */
-
+/* Popup container */
 .popup {
     display: none;
     position: fixed;
@@ -39,13 +39,13 @@
     z-index: 1000;
 }
 
-/* For å sentrere overskriften */
+/* Popup title (h3) */
 h3 {
     text-align: center;
     margin-bottom: 20px;
 }
 
-/* Popup content */
+/* Popup content wrapper */
 .popup-content {
     position: relative;
 }
@@ -76,14 +76,14 @@ h3 {
     width: 45%;
 }
 
-/* Separator */
+/* Separator line between left and right sections */
 .separator {
     width: 2px;
     background-color: #ccc;
     margin: 0 10px;
 }
 
-/* Placeholder for map */
+/* Map Placeholder styling */
 .map-placeholder {
     background-color: #f0f0f0;
     width: 100%;
@@ -95,7 +95,7 @@ h3 {
     margin-bottom: 15px;
 }
 
-/* Vedleggslenke styling */
+/* Attachment link styling */
 #popup-attachment {
     color: #007bff;
     text-decoration: none;
@@ -105,3 +105,23 @@ h3 {
     #popup-attachment:hover {
         text-decoration: underline;
     }
+
+.popupForm {
+    display: none;
+    position: fixed;
+    top: 54%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70%;
+    height: 510px;
+    background-color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    z-index: 1000;
+}
+
+.popupForm-content {
+    padding: 20px;
+    height: 100%;
+    overflow-y: auto;
+}

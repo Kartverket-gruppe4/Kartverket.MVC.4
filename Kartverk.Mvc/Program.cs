@@ -2,6 +2,9 @@ using Kartverk.Mvc.Services;
 using Kartverk.Mvc.API_Models;
 using Microsoft.EntityFrameworkCore;
 using Kartverk.Mvc.Models.Feilmelding;
+using Microsoft.AspNetCore.Identity;
+using MySqlConnector;
+using System.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +13,38 @@ builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("ApiSet
 
 // Registrer tjenester og deres grensesnitt
 builder.Services.AddHttpClient<IKommuneInfoService, KommuneInfoService>();
+
+// legger til identity services
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 6;
+    options.User.RequireUniqueEmail = true;
+})
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders();
+
+// konfigurer autentikasjon
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Account/LogInn/";
+    options.AccessDeniedPath = "/Account/AccessDenied/";
+    options.Cookie.Name = "YourAppCookie";
+});
+
+// registrer IDbConnection for Dapper
+builder.Services.AddTransient<IDbConnection>((sp) =>
+{
+    var configuration = sp.GetRequiredService<IConfiguration>();
+    var connectionString = configuration.GetConnectionString("DefaultConnection");
+    return new MySqlConnection(connectionString);
+});
+
+// registrer feilmeldingsservice
+builder.Services.AddScoped<FeilmeldingService>();
 
 // Legger til session-tjenester for å støtte sesjonshåndtering
 builder.Services.AddDistributedMemoryCache(); // Kreves for at sesjonsstatusen skal fungere
@@ -50,8 +85,35 @@ var app = builder.Build(); // Bygger applikasjonen
 // Kjør migrasjoner for EF ved applikasjonens oppstart
 using (var scope = app.Services.CreateScope())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    dbContext.Database.Migrate(); // Utfører migrasjoner på databasen
+    var errorCount = 0;
+
+    ApplyDatabaseMigrations();
+
+    void ApplyDatabaseMigrations() // tåler at databasen starter tregt
+
+    {
+        try
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            dbContext.Database.Migrate(); // Utfører migrasjoner på databasen
+        }
+        catch
+        {
+            errorCount++;
+            Console.WriteLine("Feil ved migrering av databasen. Forsøk" + errorCount);
+            if (errorCount < 5)
+            {
+                Thread.Sleep(2000); // Venter 2 sekunder før nytt forsøk
+
+                ApplyDatabaseMigrations();
+            }
+            else
+            {
+                Console.WriteLine($"Kunne ikke migrere databasen etter {errorCount} forsøk. Avslutter applikasjonen.");
+                throw;
+            }
+        }
+    }
 }
 
 // Konfigurerer HTTP-request pipeline (håndtering av forespørsler)
@@ -67,7 +129,9 @@ app.UseStaticFiles(); // Gjør statiske filer (som bilder, CSS, JS) tilgjengelig
 
 app.UseRouting();  // Setter opp ruter for kontrollere
 // Bruk CORS-policyen definert tidligere
-app.UseCors("AllowSpecificOrigins"); 
+app.UseCors("AllowSpecificOrigins");
+
+app.UseAuthentication();
 app.UseAuthorization();  // Aktiverer autorisasjon (f.eks. for tilgangskontroll)
 
 // Kartlegger den grunnleggende ruten til MVC (standard controller og action)

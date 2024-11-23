@@ -2,6 +2,8 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Kartverk.Mvc.Models;
 using System.Text.Json;
+using Kartverk.Mvc.Services;
+using Microsoft.AspNetCore.Identity;
 
 namespace Kartverk.Mvc.Controllers.Home;
 
@@ -20,11 +22,7 @@ public class HomeController : Controller
    // Denne metoden håndterer GET-forespørsler til 'Home/Index' og returnerer visningen.
     public IActionResult Index()
     {
-        // Lager et nytt HomeViewModel objekt som brukes for å vise data på hjemmesiden.
-        var model = new HomeViewModel();
-        model.Message = "Det tar en time"; //Dette skal ikke være med.
-
-        return View("Index", model); // Returnerer visningen 'Index' og sender med HomeViewModel som modelldata. 
+        return View();
     }
     
     // Denne metoden håndterer POST-forespørsler når data sendes fra skjemaet på hjemmesiden.
@@ -64,6 +62,36 @@ public class HomeController : Controller
         // Henter sporings-ID (ReguestId) for feilen fra Activity eller HTTP-konteksten og sender det til feilsiden.
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
+
+    // GET: Home/AdminLogin
+    [HttpGet]
+    public IActionResult AdminLogin()
+    {
+        return View();
+    }
+
+    // POST: Home/AdminLogin
+    [HttpPost]
+    public IActionResult AdminLogin(string adminPassword)
+    {
+        const string predefinedPassword = "admin123"; // Predefinert passord for admin
+        if (adminPassword == predefinedPassword)
+        {
+            // Hvis passordet er riktig, omdiriger til admin-siden
+            return RedirectToAction("Index", "AdminFeilmelding");
+        }
+
+        // Hvis passordet er feil, vis feilmelding
+        ModelState.AddModelError("", "Feil admin-passord.");
+        return View();
+    }
+
+    // GET: Home/AdminDashboard
+    public IActionResult AdminDashboard()
+    {
+        return View(); // Dette er admin-siden
+    }
+
 }
 
 // Modell som representerer kartdata (f.eks. punkter og linjer på kartet)

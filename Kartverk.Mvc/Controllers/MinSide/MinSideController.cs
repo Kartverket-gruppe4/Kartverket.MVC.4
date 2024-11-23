@@ -1,60 +1,44 @@
 using Kartverk.Mvc.Models.MinSide;
 using Microsoft.AspNetCore.Mvc;
 using Kartverk.Mvc.Models.Feilmelding;
+using Kartverk.Mvc.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace Kartverk.Mvc.Controllers.MinSide;
 
-public class MinSideController(ApplicationDbContext context) : Controller
+public class MinSideController : Controller
 {
-    private readonly ApplicationDbContext _context = context;
+    private readonly UserManager<IdentityUser> _userManager;
+    private readonly SignInManager<IdentityUser> _signInManager;
+
+    public MinSideController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+    {
+        _userManager = userManager;
+        _signInManager = signInManager;
+    }
 
     // GET
     [HttpGet]
-    public IActionResult Index(string email)
+    public async Task<IActionResult> Index(string email)
     {
-        var accountController = new AccountController(_context);
-        var user = accountController.GetUserByEmail(email);
+        var userEmail = HttpContext.Request.Cookies["UserEmail"];
 
-        if (user != null)
+        if (!string.IsNullOrEmpty(userEmail))
         {
-            var model = new MinSideViewModel
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            if (user != null)
             {
-                Email = user.Email
-            };
-            
-            return View(model);
+                var model = new MinSideViewModel
+                {
+                    Email = user.Email
+                };
+
+                return View(model);
+            }
         }
-        
+
+        // If no valid cookie, redirect to login
         return RedirectToAction("LoggInn", "Account");
-    }
-    
-    // GET: MinSide/AdminLogin
-    [HttpGet]
-    public IActionResult AdminLogin()
-    {
-        return View();
-    }
-
-    // POST: MinSide/AdminLogin
-    [HttpPost]
-    public IActionResult AdminLogin(string adminPassword)
-    {
-        const string predefinedPassword = "admin123"; // Predefinert passord for admin
-        if (adminPassword == predefinedPassword)
-        {
-            // Hvis passordet er riktig, omdiriger til admin-siden
-            return RedirectToAction("AdminDashboard");
-        }
-
-        // Hvis passordet er feil, vis feilmelding
-        ModelState.AddModelError("", "Feil admin-passord.");
-        return View();
-    }
-
-    // GET: MinSide/AdminDashboard
-    public IActionResult AdminDashboard()
-    {
-        return View(); // Dette blir admin-siden
     }
 
     // GET: MinSide/MineInnmeldinger

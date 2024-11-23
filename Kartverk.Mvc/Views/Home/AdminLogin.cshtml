@@ -1,0 +1,61 @@
+@{
+    ViewBag.Title = "Admin Login";  // Setter tittelen på admin-innloggingssiden
+}
+
+<div class="adminlogin-container">
+    <h2 class="login-title">Admin-Innlogging</h2> <!-- Tittel for innloggingssiden -->
+    @using (Html.BeginForm("AdminLogin", "Home", FormMethod.Post))  @* Begynner et skjema som sender en POST-forespørsel til AdminLogin handlingen i MinSide-kontrolleren *@
+    {
+        <div class="form-group">
+            <!-- Form-gruppe for passordfeltet -->
+            @Html.Label("Admin Passord")  <!-- Label for passordfeltet -->
+            @Html.Password("adminPassword", null, new { @class = "form-control" })  <!-- Passordfelt for admin-brukeren med Bootstrap-klasser -->
+        </div>
+
+        <button type="submit" class="btn btn-success mt-3">Logg inn</button>  <!-- Send-knapp for skjemaet -->
+        <!-- Vist hvis modellen ikke er gyldig -->
+        @if (!ViewData.ModelState.IsValid)  @* Sjekker om skjemaet har valideringsfeil *@
+        {
+            <div class="alert alert-danger mt-3">
+                <!-- Feilmelding som vises i rød boks -->
+                @Html.ValidationSummary()  <!-- Vist som en liste med oppsummering av valideringsfeil -->
+            </div>
+        }
+    }
+</div>
+
+@section Styles {
+    <style>
+        .adminlogin-container {
+            width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .login-title {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        .btn-success {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
+}
+

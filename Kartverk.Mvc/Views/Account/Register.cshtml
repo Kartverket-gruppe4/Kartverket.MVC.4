@@ -1,27 +1,37 @@
-﻿@model RegisterViewModel 
+@model RegisterViewModel 
 
-<div class="container">
+@section Styles {
+    <link rel="stylesheet" type="text/css" href="~/css/Register.css" />
+}
+
+<div class="register-container">
     <!-- Tittel for registreringsskjemaet -->
-    <h2>Registrer deg</h2>
+    <h2 class="login-title">Registrer deg</h2>
 
     @using (Html.BeginForm("Register", "Account", FormMethod.Post))
     {
+        <!-- Oppsummering av valideringsfeil -->
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
         <!-- E-postfelt -->
         <div class="form-group">
             @Html.LabelFor(m => m.Email, "E-post")
             @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
         </div>
 
         <!-- Passordfelt -->
         <div class="form-group">
             @Html.LabelFor(m => m.Password, "Passord")
             @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
         </div>
 
         <!-- Bekreft passordfelt -->
         <div class="form-group" style="margin-bottom: 10px;">
-            @Html.LabelFor(m => m.ConfirmPassword)
+            @Html.LabelFor(m => m.ConfirmPassword, "Bekreft passord")
             @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
         </div>
 
         <!-- Sendeknapp for skjema -->
@@ -33,3 +43,10 @@
     <!-- Link til innloggingsside for eksisterende brukere -->
     <p>Har du allerede en konto? <a href="@Url.Action("LoggInn", "Account")">Logg inn her</a></p>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
