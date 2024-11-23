@@ -64,21 +64,16 @@ h3 {
     display: flex;
     justify-content: space-between;
     margin-top: 20px;
-    flex-wrap: wrap; /* Allows for wrapping when screen is smaller */
 }
 
 /* Left section */
 .left-section {
     width: 45%;
-    padding: 10px;
-    box-sizing: border-box;
 }
 
 /* Right section */
 .right-section {
     width: 45%;
-    padding: 10px;
-    box-sizing: border-box;
 }
 
 /* Separator line between left and right sections */
@@ -129,39 +124,4 @@ h3 {
     padding: 20px;
     height: 100%;
     overflow-y: auto;
-}
-
-/* Ensure text inside popup description wraps properly */
-#popup-description {
-    white-space: pre-wrap; /* Ensures the description text wraps */
-    word-wrap: break-word; /* Avoids overflow by breaking long words */
-    overflow: auto; /* Allows scrolling if content exceeds the box */
-    max-height: 300px; /* Sets a max height for the description box */
-    font-family: Arial, sans-serif;
-}
-
-/* Style for the map */
-#map {
-    width: 100%;
-    height: 200px;
-}
-
-/* Ensure text does not overflow inside popup text fields */
-#popup-email,
-#popup-date,
-#popup-category,
-#popup-municipality,
-#popup-description,
-#popup-status {
-    word-wrap: break-word; /* Break long words in the text fields */
-}
-
-/* Optional: Adjust padding and spacing for readability */
-.left-section p,
-.right-section p {
-    margin-bottom: 10px;
-}
-
-.popup-inner-content p {
-    margin: 0 0 10px; /* Adds spacing between paragraphs inside the popup */
 }
