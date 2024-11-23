@@ -1,41 +1,25 @@
-@using Kartverk.Mvc.API_Models
-@using Kartverk.Mvc.Models.Feilmelding
-@using Newtonsoft.Json
 @model IEnumerable<Kartverk.Mvc.Models.Feilmelding.FeilmeldingViewModel>
 
 @{
     ViewData["Title"] = "Mine feilmeldinger";
 }
 
-<!DOCTYPE html>
-<html lang="no">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewData["Title"]</title>
-    <link rel="stylesheet" href="~/css/popup.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-     <link rel="stylesheet" href="~/css/table-style.css"> <!-- Lenker til din CSS-fil -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-</head>
-<body>
-    <br />
-    <div style="text-align: center;">
-        <h2>Mine feilmeldinger</h2>
-    </div>
-    <hr />
+<br />
+<div style="text-align: center;">
+    <h2>Mine feilmeldinger</h2>
+</div>
+<hr />
 
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
-    }
-    @if (TempData["ErrorMessage"] != null)
-    {
-        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
-    }
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
 
-    <div class="table-container">
+<div class="table-container">
     <table class="table table-striped table-bordered">
         <thead class="thead-dark">
             <tr>
@@ -47,76 +31,90 @@
             </tr>
         </thead>
         <tbody>
-            @if (Model.Any())
+        @if (Model.Any())
+        {
+            foreach (var feilmelding in Model.Distinct())
             {
-                foreach (var feilmelding in Model.Distinct())
-                {
-                    var kommuneInfo = string.IsNullOrEmpty(feilmelding.KommuneInfo)
-                        ? null
-                        : Newtonsoft.Json.JsonConvert.DeserializeObject<Kartverk.Mvc.API_Models.KommuneInfo>(feilmelding.KommuneInfo);
-                    var kommunenavn = kommuneInfo?.Kommunenavn ?? "Ingen kommune";
-                    var kommunenummer = kommuneInfo?.Kommunenummer ?? "Ikke spesifisert";
+                var kommuneInfo = string.IsNullOrEmpty(feilmelding.KommuneInfo)
+                    ? null
+                    : Newtonsoft.Json.JsonConvert.DeserializeObject<Kartverk.Mvc.API_Models.KommuneInfo>(feilmelding.KommuneInfo);
+                var kommunenavn = kommuneInfo?.Kommunenavn ?? "Ingen kommune";
+                var kommunenummer = kommuneInfo?.Kommunenummer ?? "Ikke spesifisert";
 
-                    <tr>
-                        <td>@feilmelding.Dato.ToString("dd.MM.yyyy")</td>
-                        <td>@feilmelding.Kategori</td>
-                        <td>@kommunenavn (@kommunenummer)</td>
-                        <td>
-                            <button class="view-button"
-                                    data-geojson='@feilmelding.GeoJson'
-                                    data-kommuneinfo="@feilmelding.KommuneInfo"
-                                    data-kommunenavn="@kommunenavn"
-                                    data-kommunenummer="@kommunenummer"
-                                        onclick="openPopup('@feilmelding.Email', '@feilmelding.Dato.ToString("dd.MM.yyyy")', '@feilmelding.Kategori', this, '@feilmelding.Beskrivelse')">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </td>
-                        <td>
-                            <form action="@Url.Action("Delete", "Feilmelding")" method="post" onsubmit="return confirm('Er du sikker på at du vil slette denne feilmeldingen?');">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="id" value="@feilmelding.Id" />
-                                <input type="hidden" name="viewName" value="Oversikt" />
-                                <button type="submit" class="btn btn-danger btn-sm">Slett</button>
-                            </form>
-                        </td>
-                    </tr>
-                }
-            }
-            else
-            {
                 <tr>
-                    <td colspan="5" class="text-center">Ingen feilmeldinger funnet.</td>
+                    <td>@feilmelding.Dato.ToString("dd.MM.yyyy")</td>
+                    <td>@feilmelding.Kategori</td>
+                    <td>@kommunenavn (@kommunenummer)</td>
+                    <td>
+                        <button class="view-button"
+                                data-geojson='@feilmelding.GeoJson'
+                                data-kommuneinfo="@feilmelding.KommuneInfo"
+                                data-kommunenavn="@kommunenavn"
+                                data-kommunenummer="@kommunenummer"
+                                onclick="openPopup('@feilmelding.Email', '@feilmelding.Dato.ToString("dd.MM.yyyy")', '@feilmelding.Kategori', this, '@feilmelding.Beskrivelse')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                    <td>
+                        <form action="@Url.Action("Delete", "Feilmelding")" method="post" onsubmit="return confirm('Er du sikker på at du vil slette denne feilmeldingen?');">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@feilmelding.Id"/>
+                            <input type="hidden" name="viewName" value="Oversikt"/>
+                            <button type="submit" class="btn btn-danger btn-sm">Slett</button>
+                        </form>
+                    </td>
                 </tr>
             }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5" class="text-center">Ingen feilmeldinger funnet.</td>
+            </tr>
+        }
         </tbody>
     </table>
 </div>
 
 
-    <div id="popup" class="popup">
-        <div class="popup-content">
-            <span class="close" onclick="closePopup()">&times;</span>
-            <h3>Feilmelding Detaljer</h3>
-            <div class="popup-inner-content">
-                <div class="left-section">
-                    <p><strong>Email:</strong> <span id="popup-email"></span></p>
-                    <p><strong>Dato:</strong> <span id="popup-date"></span></p>
-                    <p><strong>Kategori:</strong> <span id="popup-category"></span></p>
-                    <p><strong>Kommune:</strong> <span id="popup-municipality"></span></p>
-                    <p><strong>Beskrivelse:</strong> <span id="popup-description"></span></p>
-                </div>
-                <div class="separator"></div>
-                <div class="right-section">
-                    <p><strong>Kartutsnitt:</strong></p>
-                    <div id="map" style="width: 100%; height: 200px;"></div>
-                    <hr />
-                    <p><strong>Status:</strong> <span id="popup-status">Pågående</span></p>
-                </div>
+<div id="popup" class="popup">
+    <div class="popup-content">
+        <span class="close" onclick="closePopup()">&times;</span>
+        <h3>Feilmelding Detaljer</h3>
+        <div class="popup-inner-content">
+            <div class="left-section">
+                <p>
+                    <strong>Email:</strong> <span id="popup-email"></span>
+                </p>
+                <p>
+                    <strong>Dato:</strong> <span id="popup-date"></span>
+                </p>
+                <p>
+                    <strong>Kategori:</strong> <span id="popup-category"></span>
+                </p>
+                <p>
+                    <strong>Kommune:</strong> <span id="popup-municipality"></span>
+                </p>
+                <p>
+                    <strong>Beskrivelse:</strong> <span id="popup-description"></span>
+                </p>
+            </div>
+            <div class="separator"></div>
+            <div class="right-section">
+                <p>
+                    <strong>Kartutsnitt:</strong>
+                </p>
+                <div id="map" style="width: 100%; height: 200px;"></div>
+                <hr/>
+                <p>
+                    <strong>Status:</strong> <span id="popup-status">Pågående</span>
+                </p>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
+<script>
         // Declare openPopup function in the global scope
         function openPopup(email, date, category, buttonElement, description, status) {
             document.getElementById('popup-email').innerText = email;
@@ -209,6 +207,3 @@
             }
         }
     </script>
-
-</body>
-</html>
