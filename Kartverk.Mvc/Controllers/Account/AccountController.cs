@@ -47,6 +47,11 @@ public class AccountController : Controller
                         Expires = DateTimeOffset.Now.AddDays(30)
                     });
 
+                    if (await _userManager.IsInRoleAsync(user, "Administrator"))
+                    {
+                        return RedirectToAction("Index", "AdminFeilmelding");
+                    }
+
                     return RedirectToAction("Index", "MinSide", new { email = user.Email });
                 }
             }

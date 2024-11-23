@@ -116,6 +116,34 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
+// Opprett roller og admin-bruker ved oppstart
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+
+    string[] roles = { "Administrator", "User" };
+
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+        {
+            await roleManager.CreateAsync(new IdentityRole(role));
+        }
+    }
+
+    var adminEmail = "admin@mail.com";
+    var adminUser = await userManager.FindByEmailAsync(adminEmail);
+    if (adminUser == null)
+    {
+        adminUser = new IdentityUser { UserName = adminEmail, Email = adminEmail };
+        await userManager.CreateAsync(adminUser, "admin123"); // Adjust password as needed
+        await userManager.AddToRoleAsync(adminUser, "Administrator");
+    }
+}
+
+
 // Konfigurerer HTTP-request pipeline (håndtering av forespørsler)
 if (!app.Environment.IsDevelopment())  // Hvis applikasjonen ikke er i utviklingsmodus
 {

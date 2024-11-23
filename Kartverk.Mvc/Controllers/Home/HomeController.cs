@@ -4,6 +4,7 @@ using Kartverk.Mvc.Models;
 using System.Text.Json;
 using Kartverk.Mvc.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Kartverk.Mvc.Controllers.Home;
 
@@ -63,30 +64,8 @@ public class HomeController : Controller
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 
-    // GET: Home/AdminLogin
-    [HttpGet]
-    public IActionResult AdminLogin()
-    {
-        return View();
-    }
-
-    // POST: Home/AdminLogin
-    [HttpPost]
-    public IActionResult AdminLogin(string adminPassword)
-    {
-        const string predefinedPassword = "admin123"; // Predefinert passord for admin
-        if (adminPassword == predefinedPassword)
-        {
-            // Hvis passordet er riktig, omdiriger til admin-siden
-            return RedirectToAction("Index", "AdminFeilmelding");
-        }
-
-        // Hvis passordet er feil, vis feilmelding
-        ModelState.AddModelError("", "Feil admin-passord.");
-        return View();
-    }
-
     // GET: Home/AdminDashboard
+    [Authorize(Roles = "Administrator")]
     public IActionResult AdminDashboard()
     {
         return View(); // Dette er admin-siden
