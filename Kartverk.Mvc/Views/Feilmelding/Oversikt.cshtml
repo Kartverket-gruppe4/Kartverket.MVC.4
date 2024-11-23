@@ -4,7 +4,7 @@
 @model IEnumerable<Kartverk.Mvc.Models.Feilmelding.FeilmeldingViewModel>
 
 @{
-    ViewData["Title"] = "Oversikt over feilmeldinger";
+    ViewData["Title"] = "Mine feilmeldinger";
 }
 
 <!DOCTYPE html>
@@ -20,7 +20,11 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </head>
 <body>
-    <h2>Oversikt over feilmeldinger</h2>
+    <br />
+    <div style="text-align: center;">
+        <h2>Mine feilmeldinger</h2>
+    </div>
+    <hr />
 
     @if (TempData["SuccessMessage"] != null)
     {
@@ -39,6 +43,7 @@
                 <th>Kategori</th>
                 <th>Kommune</th>
                 <th>Mer</th>
+                <th>Rediger</th>
             </tr>
         </thead>
         <tbody>

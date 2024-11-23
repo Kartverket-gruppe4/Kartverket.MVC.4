@@ -32,23 +32,30 @@
         </div>
     }
 
+    <br />
+
     <!-- Velkommen-seksjon -->
-    <div class="Admin-side">
-        <h2>Velkommen til admin-siden!</h2>
-        <p>Her kan du administrere feilmeldinger, bruke filtre for å finne spesifikke saker, og oppdatere status for pågående problemer.</p>
+    <div style="text-align: center;"
+        <div class="Admin-side">
+            <h2>Velkommen til admin-siden!</h2>
+            <p>Her kan du administrere feilmeldinger, bruke filtre for å finne spesifikke saker, og oppdatere status for pågående problemer.</p>
+        </div>
     </div>
 
     <!-- Divider -->
     <hr />
 
-    <h3 style="text-align: left;">Innsendte Feilmeldinger</h3>
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 0 20px;">
+        <h3 style="margin: 0;">Innsendte Feilmeldinger</h3>
+        <button class="btn btn-success" id="filterBtn" onclick="openFilterPopup()">Filtrer</button>
+    </div>
 
-    <!-- Filtrer knappen -->
-    <button class="btn btn-success" id="filterBtn" onclick="openFilterPopup()">Filtrer</button>
 
 
 <!-- Filtrerings pop-up (skjult til den åpnes) -->
-<div id="filterPopup" class="filter-popup" style="display:none; position: absolute; background-color: white; border: 1px solid #ddd; padding: 15px;">
+<div id="filterPopup" class="filter-popup"
+         style="display:none; position: absolute; top: 230px; right: 10px; background-color: white; border: 1px solid #ddd; padding: 15px;">
     <h4>Filtrer feilmeldinger</h4>
 
     <!-- Kategori filter -->
@@ -79,10 +86,11 @@
     </select>
 
     <div class="d-flex justify-content-end mt-3">
-    <!-- Filtrer knapp -->
-    <button class="btn btn-success" onclick="applyFilters()">Bruk filter</button>
-    <button class="btn btn-secondary" onclick="closeFilterPopup()">Lukk</button>
-</div>
+        <!-- Filtrer knapp -->
+        <button class="btn btn-success me-2" onclick="applyFilters()">Bruk filter</button>
+        <!-- Lukke knapp -->
+        <button class="btn btn-secondary" onclick="closeFilterPopup()">Lukk</button>
+    </div>
 </div>
 
 <!-- Pop-up funksjonaliteter-->
@@ -138,77 +146,80 @@
 <hr />
 
 <!-- Tabell over feilmeldinger -->
-<table class="table table-striped table-bordered mt-3">
-    <thead class="thead-dark">
-        <tr>
-            <th>Nr</th>
-            <th>Dato</th>
-            <th>Kategori</th>
-            <th>Kommune</th>
-            <th>Mer</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody id="feilmeldingerBody">
-        @if (Model.Any())
-        {
-            foreach (var feilmelding in Model)
-            {
-                    var kommuneInfo = string.IsNullOrEmpty(feilmelding.KommuneInfo)
-                    ? null
-                    : Newtonsoft.Json.JsonConvert.DeserializeObject<Kartverk.Mvc.API_Models.KommuneInfo>(feilmelding.KommuneInfo);
-                    var kommunenavn = kommuneInfo?.Kommunenavn ?? "Ingen kommune";
-                    var kommunenummer = kommuneInfo?.Kommunenummer ?? "Ikke spesifisert";
-
-                <tr class="feilmelding-row" data-category="@feilmelding.Kategori" data-date="@feilmelding.Dato.ToString("yyyy-MM-dd")">
-                    <td>@feilmelding.Id</td>
-                    <td>@feilmelding.Dato.ToString("dd.MM.yyyy")</td>
-                    <td>@feilmelding.Kategori</td>  
-                    <td>@kommunenavn (@kommunenummer)</td>
-                        <td>
-                            <button class="view-button"
-                                    data-geojson='@feilmelding.GeoJson'
-                                    data-kommuneinfo="@feilmelding.KommuneInfo"
-                                    data-kommunenavn="@kommunenavn"
-                                    data-kommunenummer="@kommunenummer"
-                                    onclick="openPopup('@feilmelding.Email', '@feilmelding.Dato.ToString("dd.MM.yyyy")', '@feilmelding.Kategori', this, '@feilmelding.Beskrivelse', '@feilmelding.GeoJson')">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </td> <!-- Legger til knappen ved siden av datoen -->
-
-                    <td>
-                        <!-- Kode for å vise status og endre den for administrator -->
-                        <form action="@Url.Action("EndreStatus", "AdminFeilmelding")" method="post">
-                            <input type="hidden" name="id" value="@feilmelding.Id" />
-                            <select name="status" class="form-control" onchange="this.form.submit()">
-                                <option value="Ny" selected="@((feilmelding.Status == "Ny") ? "selected" : null)">Ny</option>
-                                <option value="Pågående" selected="@((feilmelding.Status == "Pågående") ? "selected" : null)">Pågående</option>
-                                <option value="Ferdigbehandlet" selected="@((feilmelding.Status == "Ferdigbehandlet") ? "selected" : null)">Ferdigbehandlet</option>
-                            </select>
-                        </form>
-                    </td>
-
-
-                    <!-- Slette knapp -->
-                    <td>
-                        <form action="@Url.Action("Delete", "Feilmelding")" method="post" onsubmit="return confirm('Er du sikker på at du vil slette denne feilmeldingen?');">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="id" value="@feilmelding.Id" />
-                            <input type="hidden" name="viewName" value="Index" />
-                            <button type="submit" class="btn btn-danger btn-sm">Slett</button>
-                        </form>
-                    </td>
+    <div class="table-container">
+        <table class="table table-striped table-bordered mt-3">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Nr</th>
+                    <th>Dato</th>
+                    <th>Kategori</th>
+                    <th>Kommune</th>
+                    <th>Mer</th>
+                    <th>Status</th>
+                    <th>Rediger</th>
                 </tr>
-            }
-        }
-        else
-        {
-            <tr>
-                <td colspan="7" class="text-center">Ingen feilmeldinger funnet.</td>
-            </tr>
-        }
-    </tbody>
-</table>
+            </thead>
+            <tbody id="feilmeldingerBody">
+                @if (Model.Any())
+                {
+                    foreach (var feilmelding in Model)
+                    {
+                            var kommuneInfo = string.IsNullOrEmpty(feilmelding.KommuneInfo)
+                            ? null
+                            : Newtonsoft.Json.JsonConvert.DeserializeObject<Kartverk.Mvc.API_Models.KommuneInfo>(feilmelding.KommuneInfo);
+                            var kommunenavn = kommuneInfo?.Kommunenavn ?? "Ingen kommune";
+                            var kommunenummer = kommuneInfo?.Kommunenummer ?? "Ikke spesifisert";
+
+                        <tr class="feilmelding-row" data-category="@feilmelding.Kategori" data-date="@feilmelding.Dato.ToString("yyyy-MM-dd")">
+                            <td>@feilmelding.Id</td>
+                            <td>@feilmelding.Dato.ToString("dd.MM.yyyy")</td>
+                            <td>@feilmelding.Kategori</td>  
+                            <td>@kommunenavn (@kommunenummer)</td>
+                                <td>
+                                    <button class="view-button"
+                                            data-geojson='@feilmelding.GeoJson'
+                                            data-kommuneinfo="@feilmelding.KommuneInfo"
+                                            data-kommunenavn="@kommunenavn"
+                                            data-kommunenummer="@kommunenummer"
+                                            onclick="openPopup('@feilmelding.Email', '@feilmelding.Dato.ToString("dd.MM.yyyy")', '@feilmelding.Kategori', this, '@feilmelding.Beskrivelse', '@feilmelding.GeoJson')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td> <!-- Legger til knappen ved siden av datoen -->
+
+                            <td>
+                                <!-- Kode for å vise status og endre den for administrator -->
+                                <form action="@Url.Action("EndreStatus", "AdminFeilmelding")" method="post">
+                                    <input type="hidden" name="id" value="@feilmelding.Id" />
+                                    <select name="status" class="form-control" onchange="this.form.submit()">
+                                        <option value="Ny" selected="@((feilmelding.Status == "Ny") ? "selected" : null)">Ny</option>
+                                        <option value="Pågående" selected="@((feilmelding.Status == "Pågående") ? "selected" : null)">Pågående</option>
+                                        <option value="Ferdigbehandlet" selected="@((feilmelding.Status == "Ferdigbehandlet") ? "selected" : null)">Ferdigbehandlet</option>
+                                    </select>
+                                </form>
+                            </td>
+
+
+                            <!-- Slette knapp -->
+                            <td>
+                                <form action="@Url.Action("Delete", "Feilmelding")" method="post" onsubmit="return confirm('Er du sikker på at du vil slette denne feilmeldingen?');">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@feilmelding.Id" />
+                                    <input type="hidden" name="viewName" value="Index" />
+                                    <button type="submit" class="btn btn-danger btn-sm">Slett</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7" class="text-center">Ingen feilmeldinger funnet.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+</div>
 
 <!-- Pop-up Vindu -->
 <div id="popup" class="popup">

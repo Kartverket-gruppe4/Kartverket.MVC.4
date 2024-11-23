@@ -1,4 +1,24 @@
-/* Table container adjustments */
+/* Table container */
+.centered-header {
+    text-align: center; /* Centers the text horizontally */
+    margin: 20px auto; /* Adds space around the header and centers it */
+}
+
+    .centered-header h2 {
+        font-size: 2em; /* Larger font size */
+        color: #333; /* Dark gray text color */
+        margin-bottom: 10px; /* Add some space below the heading */
+        font-family: Arial, sans-serif; /* Modern and clean font */
+    }
+
+    .centered-header hr {
+        width: 50%; /* Shorten the width of the line */
+        margin: 0 auto; /* Center the line */
+        border: 0; /* Remove default border */
+        border-top: 2px solid #007bff; /* Custom color and thickness */
+    }
+
+
 .table-container {
     padding-left: 20px;
     padding-right: 20px;
