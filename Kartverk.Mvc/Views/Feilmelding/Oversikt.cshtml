@@ -1,10 +1,14 @@
 @model IEnumerable<Kartverk.Mvc.Models.Feilmelding.FeilmeldingViewModel>
 
 @{
-    ViewData["Title"] = "Oversikt over feilmeldinger";
+    ViewData["Title"] = "Mine feilmeldinger";
 }
 
-<h2>Oversikt over feilmeldinger</h2>
+<br />
+<div style="text-align: center;">
+    <h2>Mine feilmeldinger</h2>
+</div>
+<hr />
 
 @if (TempData["SuccessMessage"] != null)
 {
@@ -18,12 +22,13 @@
 <div class="table-container">
     <table class="table table-striped table-bordered">
         <thead class="thead-dark">
-        <tr>
-            <th>Dato</th>
-            <th>Kategori</th>
-            <th>Kommune</th>
-            <th>Mer</th>
-        </tr>
+            <tr>
+                <th>Dato</th>
+                <th>Kategori</th>
+                <th>Kommune</th>
+                <th>Mer</th>
+                <th>Rediger</th>
+            </tr>
         </thead>
         <tbody>
         @if (Model.Any())
