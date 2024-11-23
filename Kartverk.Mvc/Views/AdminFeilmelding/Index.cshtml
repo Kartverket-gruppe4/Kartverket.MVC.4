@@ -177,7 +177,7 @@
                             <td>@kommunenavn (@kommunenummer)</td>
                                 <td>
                                     <button class="view-button"
-                                            data-geojson='@feilmelding.GeoJson'
+                                            data-geojson='@Html.Raw(feilmelding.GeoJson)'
                                             data-kommuneinfo="@feilmelding.KommuneInfo"
                                             data-kommunenavn="@kommunenavn"
                                             data-kommunenummer="@kommunenummer"
@@ -262,66 +262,83 @@
 
         document.getElementById('popup-description').innerText = description; // Oppdaterer beskrivelse
 
-            let geojsonData = buttonElement.getAttribute('data-geojson');
-            let kommuneInfo = buttonElement.getAttribute('data-kommuneinfo');
+        let geojsonData = buttonElement.getAttribute('data-geojson');
+        console.log("GeoJSON passed to popup:", geojsonData);
 
-            document.getElementById('popup-geojson').innerText = geoJsonData;
+        geojsonData = geojsonData.replace(/\\"/g, '"');
 
-            try {
-                geojsonData = JSON.parse(geojsonData);
-                if (typeof geojsonData === "string") {
-                    geojsonData = JSON.parse(geojsonData); // Decode double-escaped string
-                }
-                if (!geojsonData || !geojsonData.features || !Array.isArray(geojsonData.features)) {
-                    throw new Error("Invalid GeoJSON structure.");
-                }
-            } catch (error) {
-                alert(`Failed to parse GeoJSON: ${error.message}`);
-                return;
+        try {
+            geojsonData = geojsonData.replace(/\\"/g, '"');
+
+            if (geojsonData.startsWith('"') && geojsonData.endsWith('"')) {
+                geojsonData = geojsonData.slice(1, -1);
             }
 
-            // Reset or initialize map
-            const mapContainer = document.getElementById('map');
-            if (window.mapInstance) {
-                window.mapInstance.remove(); // Remove the previous map instance
+            geojsonData = JSON.parse(geojsonData);
+
+            if (!geojsonData) {
+                throw new Error("GeoJSON is null or undefined.");
             }
 
-            window.mapInstance = L.map(mapContainer);
-
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 16,
-                attribution: '&copy; OpenStreetMap contributors',
-            }).addTo(window.mapInstance);
-
-            // Add GeoJSON layer to the map
-            const geoJsonLayer = L.geoJSON(geojsonData).addTo(window.mapInstance);
-
-            // Get bounds of the GeoJSON layer
-            const bounds = geoJsonLayer.getBounds();
-            const boundsSize = bounds.getNorthEast().distanceTo(bounds.getSouthWest()); // Measure bounds size in meters
-
-            console.log("Bounds size (meters):", boundsSize);
-
-            // Set dynamic padding based on bounds size
-            let padding;
-            if (boundsSize > 2000) {
-                padding = [100, 100]; // Larger padding for larger polygons
-            } else if (boundsSize > 500) {
-                padding = [50, 50]; // Medium padding
-            } else {
-                padding = [20, 20]; // Small padding for small polygons
+            if (geojsonData.type === "Feature") {
+                // Convert a single Feature to a FeatureCollection
+                geojsonData = {
+                    type: "FeatureCollection",
+                    features: [geojsonData]
+                };
+            } else if (geojsonData.type !== "FeatureCollection") {
+                throw new Error(`Unexpected GeoJSON type: ${geojsonData.type}`);
             }
+        } catch (error) {
+            console.error("GeoJSON validation failed:", error);
+            alert(`Failed to parse GeoJSON: ${error.message}`);
+            return;
+        }
 
-            // Fit the map to the bounds with the calculated padding
-            window.mapInstance.fitBounds(bounds, {
-                padding: padding,
-                maxZoom: 14, // Prevent zooming in too much
-            });
+        // Reset or initialize map
+        const mapContainer = document.getElementById('map');
 
-            // Ensure the map resizes correctly if it was hidden
-            setTimeout(() => {
-                window.mapInstance.invalidateSize(); // Force map redraw
-            }, 300);
+        if (window.mapInstance) {
+            window.mapInstance.remove(); // Remove the previous map instance
+        }
+
+        // Initialize a new map instance
+        window.mapInstance = L.map(mapContainer);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 16,
+            attribution: '&copy; OpenStreetMap contributors',
+        }).addTo(window.mapInstance);
+
+        // Add GeoJSON layer to the map
+        const geoJsonLayer = L.geoJSON(geojsonData).addTo(window.mapInstance);
+
+        // Get bounds of the GeoJSON layer
+        const bounds = geoJsonLayer.getBounds();
+        const boundsSize = bounds.getNorthEast().distanceTo(bounds.getSouthWest()); // Measure bounds size in meters
+
+        console.log("Bounds size (meters):", boundsSize);
+
+        // Set dynamic padding based on bounds size
+        let padding;
+        if (boundsSize > 2000) {
+            padding = [100, 100]; // Larger padding for larger polygons
+        } else if (boundsSize > 500) {
+            padding = [50, 50]; // Medium padding
+        } else {
+            padding = [20, 20]; // Small padding for small polygons
+        }
+
+        // Fit the map to the bounds with the calculated padding
+        window.mapInstance.fitBounds(bounds, {
+            padding: padding,
+            maxZoom: 14, // Prevent zooming in too much
+        });
+
+        // Ensure the map resizes correctly if it was hidden
+        setTimeout(() => {
+            window.mapInstance.invalidateSize(); // Force map redraw
+        }, 300);
 
         const popup = document.getElementById('popup');
         popup.style.display = 'block'; // Viser popup

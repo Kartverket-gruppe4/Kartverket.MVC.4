@@ -47,7 +47,7 @@
                     <td>@kommunenavn (@kommunenummer)</td>
                     <td>
                         <button class="view-button"
-                                data-geojson='@feilmelding.GeoJson'
+                                data-geojson='@Html.Raw(feilmelding.GeoJson)'
                                 data-kommuneinfo="@feilmelding.KommuneInfo"
                                 data-kommunenavn="@kommunenavn"
                                 data-kommunenummer="@kommunenummer"
@@ -128,17 +128,34 @@
             document.getElementById('popup-status').innerText = status || "Pågående";
 
             let geojsonData = buttonElement.getAttribute('data-geojson');
+            console.log("GeoJSON passed to popup:", geojsonData);
+
+            geojsonData = geojsonData.replace(/\\"/g, '"');
 
             try {
-                geojsonData = JSON.parse(geojsonData);
-                if (typeof geojsonData === "string") {
-                    geojsonData = JSON.parse(geojsonData);
+                geojsonData = geojsonData.replace(/\\"/g, '"');
+
+                if (geojsonData.startsWith('"') && geojsonData.endsWith('"')) {
+                    geojsonData = geojsonData.slice(1, -1);
                 }
 
-                if (!geojsonData || !geojsonData.features || !Array.isArray(geojsonData.features)) {
-                    throw new Error("Invalid GeoJSON structure.");
+                geojsonData = JSON.parse(geojsonData);
+
+                if (!geojsonData) {
+                    throw new Error("GeoJSON is null or undefined.");
+                }
+
+                if (geojsonData.type === "Feature") {
+                    // Convert a single Feature to a FeatureCollection
+                    geojsonData = {
+                        type: "FeatureCollection",
+                        features: [geojsonData]
+                    };
+                } else if (geojsonData.type !== "FeatureCollection") {
+                    throw new Error(`Unexpected GeoJSON type: ${geojsonData.type}`);
                 }
             } catch (error) {
+                console.error("GeoJSON validation failed:", error);
                 alert(`Failed to parse GeoJSON: ${error.message}`);
                 return;
             }
