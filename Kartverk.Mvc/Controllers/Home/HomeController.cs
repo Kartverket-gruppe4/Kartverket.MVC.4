@@ -89,7 +89,7 @@ public class HomeController : Controller
     // GET: Home/AdminDashboard
     public IActionResult AdminDashboard()
     {
-        return View(); // Dette blir admin-siden
+        return View(); // Dette er admin-siden
     }
 
 }
