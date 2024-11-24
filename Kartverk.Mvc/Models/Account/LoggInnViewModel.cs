@@ -2,11 +2,10 @@ using System.ComponentModel.DataAnnotations;
 
 public class LogginnViewModel
 {
-    [Required] // Gjør at feltet er påkrevd, kan ikke være tomt. 
-    [EmailAddress] // Validerer at e-posten er i et gyldig format. 
+    [Required(ErrorMessage = "E-post er påkrevd.")]
     public string? Email { get; set; }
 
-    [Required] // Gjør at feltet er påkrevd, kan ikke være tomt.
+    [Required(ErrorMessage = "Passord er påkrevd.")]
     [DataType(DataType.Password)] // Indikerer at dette feltet er et passord. 
     public string? Password { get; set; }
 }

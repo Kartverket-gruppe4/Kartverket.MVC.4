@@ -5,33 +5,42 @@
 }
 
 <div class="login-wrapper">
-<div class="login-container">
-    <!-- Tittel for innloggingsskjemaet -->
-    <h2 class="login-title">Logg Inn</h2>
+    <div class="login-container">
+        <!-- Tittel for innloggingsskjemaet -->
+        <h2 class="login-title">Logg Inn</h2>
 
-    @using (Html.BeginForm("LoggInn", "Account", FormMethod.Post))
-    {
-        <!-- E-postfelt -->
-        <div class="form-group">
-            @Html.LabelFor(m => m.Email, "E-post")
-            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-        </div>
+        @using (Html.BeginForm("LoggInn", "Account", FormMethod.Post))
+        {
+            <!-- E-postfelt -->
+            <div class="form-group">
+                @Html.LabelFor(m => m.Email, "E-post")
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+            </div>
 
-        <!-- Passordfelt -->
-        <div class="form-group" style="margin-bottom: 10px;">
-            @Html.LabelFor(m => m.Password, "Passord")
-            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-            @Html.ValidationMessage("Password")
-        </div>
+            <!-- Passordfelt -->
+            <div class="form-group" style="margin-bottom: 10px;">
+                @Html.LabelFor(m => m.Password, "Passord")
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                
+                <!-- Feilmelding for både feil e-post og passord -->
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <span class="text-danger">
+                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            @error.ErrorMessage
+                        }
+                    </span>
+                }
+            </div>
 
-        <!-- Sendeknapp for skjema -->
-        <button type="submit" class="btn btn-success" style="margin-bottom: 10px;">
-            Logg inn
-        </button>
-    }
+            <!-- Sendeknapp for skjema -->
+            <button type="submit" class="btn btn-success" style="margin-bottom: 10px;">
+                Logg inn
+            </button>
+        }
 
-    <!-- Link til registreringssiden -->
-    <p>Har du ikke en konto? <a href="@Url.Action("Register", "Account")">Registrer deg</a></p>
+        <!-- Link til registreringssiden -->
+        <p>Har du ikke en konto? <a href="@Url.Action("Register", "Account")">Registrer deg</a></p>
+    </div>
 </div>
-</div>
-
