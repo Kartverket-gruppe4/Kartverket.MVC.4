@@ -26,42 +26,46 @@ public class AccountController : Controller
     [HttpPost]
     public async Task<IActionResult> LoggInn(LogginnViewModel model)
     {
-        if (ModelState.IsValid)
+        // Sjekk om e-posten og passordet er tomme
+        if (string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password))
         {
-            var user = await _userManager.FindByEmailAsync(model.Email);
-
-            if (user != null)
-            {
-                var result = await _signInManager.PasswordSignInAsync(
-                    userName: user.Email,
-                    password: model.Password,
-                    isPersistent: false,
-                    lockoutOnFailure: false);
-
-                if (result.Succeeded)
-                {
-                    HttpContext.Response.Cookies.Append("UserEmail", user.Email, new CookieOptions
-                    {
-                        HttpOnly = true,
-                        Secure = true,
-                        Expires = DateTimeOffset.Now.AddDays(30)
-                    });
-
-                    if (await _userManager.IsInRoleAsync(user, "Administrator"))
-                    {
-                        return RedirectToAction("Index", "AdminFeilmelding");
-                    }
-
-                    return RedirectToAction("Index", "MinSide", new { email = user.Email });
-                }
-            }
-
-            ModelState.AddModelError("", "Invalid login attempt.");
+            ModelState.AddModelError("", "Feil e-post eller passord.");
+            return View(model);
         }
 
-        // Returnerer view med valideringsfeil
-        return View(model);
+        // Sjekk om e-posten er gyldig (enkel validering, f.eks. inneholder '@')
+        if (!model.Email.Contains("@"))
+        {
+            ModelState.AddModelError("", "Feil e-post eller passord.");
+            return View(model);
+        }
+
+        // Hent bruker fra databasen basert på e-posten
+        var user = await _userManager.FindByEmailAsync(model.Email);
+        if (user == null)
+        {
+            ModelState.AddModelError("", "Feil e-post eller passord.");
+            return View(model);
+        }
+
+        // Forsøk å logge inn med brukerens e-post og passord
+        var result = await _signInManager.PasswordSignInAsync(
+            userName: user.Email,
+            password: model.Password,
+            isPersistent: false,
+            lockoutOnFailure: false);
+
+        // Hvis påloggingen feiler
+        if (!result.Succeeded)
+        {
+            ModelState.AddModelError("", "Feil e-post eller passord.");
+            return View(model);
+        }
+
+        // Hvis påloggingen lykkes, send brukeren videre
+        return RedirectToAction("Index", "MinSide");
     }
+
 
     // POST: Account/LoggUt
     [HttpPost]
