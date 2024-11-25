@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Kartverk.Mvc.Models.Feilmelding;
 using Microsoft.AspNetCore.Identity;
-using Kartverk.Mvc.Models;
 
 public class AccountController : Controller
 {
