@@ -1,5 +1,3 @@
-- **Dokumentasjon** i Github om drift, systm arkitektur og testing scenarier og resultater, i tillegg til dokumentasjonen i selve koden.
-
 # Admin Access Credentials:
 ## username: admin@mail.com
 ## password: admin123
@@ -8,7 +6,7 @@
 *Date: 25.11.24*  
 
 # Demonstration of the Application: 
-Linke her (Den vi brukte i Deliverable 4 eller en ny som viser alle oppdateringen!!!!)
+https://youtu.be/ivGk9-J2QOk
 
 ## Project Description  
 This project aims to develop a 'Crowd Sourcing' solution that will assist Kartverket in updating and improving map data. The solution allows users to submit error reports related to geographic locations, such as missing or incorrect information about roads, hiking trails, and place names. These reports are stored securely in a MariaDB database and processed by caseworkers at Kartverket. The database structure is designed for efficient querying, and to provide valuable insights into user submissions, caseworker performance, and map data.
@@ -157,9 +155,10 @@ Serves as the intermediary between the model and the view. Manages user intercat
 
 # Project Folders and file structures 
 The directory structure below illustrates how the application project is organized. Each folder and file serves a distinct purpose, ensuring an organized project management.  
-**Mapstructure for Kartverket.MVC.4**
 
 <pre>
+Mapstructure for Kartverket.MVC.4
+  
 │   ├── ## wwwroot         
 │   │   ├── **css** 
 │   │   │   ├── Logginn.css
@@ -249,27 +248,38 @@ The directory structure below illustrates how the application project is organiz
 Follow the instructions below:   
 ## 1. Clone the repository**  
   Clone the project to your local machine by running the folloing command in your terminal: 
-   git clone https://github.com/Kartverket-gruppe4/Kartverket.MVC.4.git
-## 2. Install Dependencies
-## 3. Install Entity Framework Tool
-## 4. Update Database
+  git clone https://github.com/Kartverket-gruppe4/Kartverket.MVC.4.git
+## 2. Update Database
    dotnet ef database update
-## 5. Run the project:
+## 3. Run the project:
    dotnet run 
+## 4. Start with Docker:
+  You can run the project with the appropriate docker-compose file:
+  
+  **Windows:** docker-compose -f docker-compose.yml -f docker-compose.override.windows.yml up
+  
+  **Mac:** docker-compose -f docker-compose.yml -f docker-compose.override.mac.yml up
 
+# Security and Authorization  
+**CSRF Protection**
+- To prevent CSRF attacks, we use ASP.NET Core’s built-in support, including CSRF tokens ([ValidateAntiForgeryToken]) for all forms and POST requests, validated on the server.
 
-## Security and Authorization  
-- **CSRF Protection:** Ensures users' actions are secure during form submissions.
-- **XSS Mitigation:** Input fields are sanitized to prevent script injections.
-- **Authentication & Authorization:** Role-based access (e.g., caseworkers vs. public users). User registration and login functionality linked to the database.
+**XSS Protection**
+- Input Validation: User input is validated using annotations like [RegularExpression], [Required], and [EmailAddress] to ensure only allowed characters are accepted.
+- HTML Encoding: ASP.NET Core automatically encodes data shown in views to prevent malicious scripts from executing.
+- Example: Email addresses are validated using regex and [EmailAddress], rejecting any attempts to inject scripts.
 
+**Authentication and Authorization**
+- Authentication: We use ASP.NET Core Identity for user registration and login, with securely hashed passwords.
+- Authorization: Role-based access distinguishes between regular users (who can submit reports) and administrators (who can manage and process reports). Currently, there is only one admin role with no functionality for assigning caseworker roles, but this can be expanded in the future.
 
-# Testing 
-## Unit Test 
-Unit test are implemented using ... 
-**RESULTAT???**
-## Other Test 
-### Dashboard Operations
+**HTTPS**
+- HTTPS is required for all connections, ensuring encrypted data transfer between the client and server.
+
+# Unit Test 
+Unit tests were implemented using NSubstitute, xUnit, and Moq. These tools allowed us to isolate components and validate their functionality under different scenarios. The figure below illustrates the results from the unit tests executed for the application. 
+
+<img width="602" alt="Skjermbilde 2024-11-25 kl  13 04 52" src="https://github.com/user-attachments/assets/4c9924d2-f73b-4629-b102-e60a2384b90f">
 
 # Contributors
 ### - Andrea Vågen (https://github.com/andreavaagen)
