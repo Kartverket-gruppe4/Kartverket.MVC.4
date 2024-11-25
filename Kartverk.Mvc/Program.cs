@@ -14,7 +14,7 @@ builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("ApiSet
 // Registrer tjenester og deres grensesnitt
 builder.Services.AddHttpClient<IKommuneInfoService, KommuneInfoService>();
 
-// legger til identity services
+// Legger til identity services
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
     options.Password.RequireDigit = false;
@@ -27,7 +27,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
-// konfigurer autentikasjon
+// Konfigurerer autentikasjon og tilgangsbeskyttelse
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/LogInn/";
@@ -35,7 +35,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.Cookie.Name = "YourAppCookie";
 });
 
-// registrer IDbConnection for Dapper
+// Registrerer IDbConnection for Dapper
 builder.Services.AddTransient<IDbConnection>((sp) =>
 {
     var configuration = sp.GetRequiredService<IConfiguration>();
@@ -47,36 +47,38 @@ builder.Services.AddTransient<IDbConnection>((sp) =>
 builder.Services.AddScoped<FeilmeldingService>();
 
 // Legger til session-tjenester for å støtte sesjonshåndtering
-builder.Services.AddDistributedMemoryCache(); // Kreves for at sesjonsstatusen skal fungere
+builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30); // Setter sesjonens timeout (valgfritt)
-    options.Cookie.HttpOnly = true; // Sikrer at sesjons-cookie kun er tilgjengelig via HTTP
-    options.Cookie.IsEssential = true; // Gjør at cookien er essensiell for appen
+    options.IdleTimeout = TimeSpan.FromMinutes(30); 
+    options.Cookie.HttpOnly = true; 
+    options.Cookie.IsEssential = true; 
 });
 
-builder.Services.AddControllersWithViews(); // Legger til støtte for MVC-kontrollere og visninger
+// Legger til støtte for MVC-kontrollere og visninger
+builder.Services.AddControllersWithViews();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection"); 
-Console.WriteLine("ConnectionString: " + connectionString); // Skriver ut til konsollen for debugging
+Console.WriteLine("ConnectionString: " + connectionString); 
 
 // Konfigurerer Entity Framework (EF) med MariaDB som database
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(connectionString, 
-    new MySqlServerVersion(new Version(10, 5, 9)))  // Versjonen av MariaDB som skal brukes
-        .LogTo(Console.WriteLine, LogLevel.Information));  // Logger SQL-spørringer for debugging
+    new MySqlServerVersion(new Version(10, 5, 9))) 
+        .LogTo(Console.WriteLine, LogLevel.Information));  
 
-builder.Services.AddControllersWithViews();  // Legger til MVC-støtte (som en ekstra sikkerhet)
+builder.Services.AddControllersWithViews();  
 
+// Konfigurerer CORS for å tillate spesifikke opprinnelser
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigins", 
         builder =>
         {
             // Angir hvilke opprinnelser som er tillatt for CORS
-            builder.WithOrigins("https://unpkg.com")  // Eksempel på tillatt opprinnelse
-                .AllowAnyHeader()  // Tillater alle headers
-                .AllowAnyMethod(); // Tillater alle HTTP-metoder
+            builder.WithOrigins("https://unpkg.com")  
+                .AllowAnyHeader()  
+                .AllowAnyMethod(); 
         });
 });
 
@@ -116,7 +118,7 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// Opprett roller og admin-bruker ved oppstart
+// Opprett roller og admin-bruker ved applikasjonens oppstart
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -125,6 +127,7 @@ using (var scope = app.Services.CreateScope())
 
     string[] roles = { "Administrator", "User" };
 
+    // Oppretter roller hvis de ikke eksisterer
     foreach (var role in roles)
     {
         if (!await roleManager.RoleExistsAsync(role))
@@ -147,17 +150,16 @@ using (var scope = app.Services.CreateScope())
 // Konfigurerer HTTP-request pipeline (håndtering av forespørsler)
 if (!app.Environment.IsDevelopment())  // Hvis applikasjonen ikke er i utviklingsmodus
 {
-    app.UseExceptionHandler("/Home/Error");  // Bruker en global feilhåndteringsside
-    // Standard HSTS-verdi er 30 dager. Endre dette i produksjonsmiljøet hvis nødvendig
-    app.UseHsts();  // Aktivere HSTS (HTTP Strict Transport Security) for ekstra sikkerhet
+    app.UseExceptionHandler("/Home/Error");  
+    app.UseHsts();  
 }
 
 app.UseHttpsRedirection(); // Tvinger HTTPS-forbindelse
 app.UseStaticFiles(); // Gjør statiske filer (som bilder, CSS, JS) tilgjengelige
 
 app.UseRouting();  // Setter opp ruter for kontrollere
-// Bruk CORS-policyen definert tidligere
-app.UseCors("AllowSpecificOrigins");
+
+app.UseCors("AllowSpecificOrigins"); // Bruk CORS-policyen definert tidligere
 
 app.UseAuthentication();
 app.UseAuthorization();  // Aktiverer autorisasjon (f.eks. for tilgangskontroll)
