@@ -52,12 +52,12 @@ namespace Kartverk.Mvc.Controllers.FeilMelding
                 {
                     var feilmelding = new FeilmeldingViewModel
                     {
-                        GeoJson = model.GeoJson,
-                        KommuneInfo = model.KommuneInfo,
-                        Email = user.Email, 
+                        GeoJson = model.GeoJson ?? string.Empty,
+                        KommuneInfo = model.KommuneInfo ?? string.Empty,
+                        Email = user.Email ?? string.Empty, 
                         UserId = user.Id,
-                        Beskrivelse = model.Description,
-                        Kategori = model.Category,
+                        Beskrivelse = model.Description ?? string.Empty,
+                        Kategori = model.Category ?? string.Empty,
                         Status = "Ny"
                     };
 

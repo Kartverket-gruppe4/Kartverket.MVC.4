@@ -42,13 +42,6 @@ public class HomeController : Controller
         
         return View("Index", model);
     }
-    
-    // GET: Home/Privacy
-    // Viser personvern-siden.
-    public IActionResult Privacy()
-    {
-        return View();
-    }
 
     // GET: Home/Error
     // Viser feilside med sporings-ID.

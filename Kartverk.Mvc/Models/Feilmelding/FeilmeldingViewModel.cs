@@ -4,41 +4,41 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Kartverk.Mvc.Models.Feilmelding
 {
-    // Attributtet Table spesifiserer hvilket navn tabellen skal ha i databasen.
+    // Angir tabellnavnet i databasen.
     [Table("feilmeldinger")] 
     public class FeilmeldingViewModel
     {
-        // Unik identifikator for feilmeldingen i databasen (primærnøkkel).
+        // Primærnøkkel for feilmeldingen.
         [Key]
         public int Id { get; set; }
 
-        // Brukerens e-postadresse
+        // Brukerens e-postadresse.
         [Required]
-        public string? Email { get; set; }
+        public string Email { get; set; } = string.Empty;
 
-        // Beskrivelse av feilmeldingen
+        // Beskrivelse av feilmeldingen.
         [Required]
         public string? Beskrivelse { get; set; } 
         
-        // Når feilmeldingen ble sendt (standardverdi er dagens dato).
+        // Dato feilmeldingen ble sendt.
         public DateTime Dato { get; set; } = DateTime.Now;
 
-        // Geometrisk data i GeoJSON-format (kan ikke være null).
+        // Geometrisk data (GeoJSON-format).
         [Required]
-        public string GeoJson { get; set; }
+        public string GeoJson { get; set; } = string.Empty;
         
-        // Kategori som feilmeldingen tilhører (kan ikke være null).
-        public string Kategori { get; set; }
+        // Kategori for feilmeldingen.
+        public string Kategori { get; set; } = string.Empty;
 
-        // Kommuneinfo relatert til feilmeldingen, kan være null.
-        [Column("KommuneInfo")] // Spesifiserer kolonnenavnet i databasen.
-        public string KommuneInfo { get; set; }
+        // Kommuneinfo relatert til feilmeldingen.
+        [Column("KommuneInfo")]
+        public string KommuneInfo { get; set; } = string.Empty;
         
-        // Status på feilmeldingen, kan være null.
+        // Status på feilmeldingen.
         public string? Status { get; set; }
 
-        // UserId som blir forhindra til at den bindes automatisk fra brukerens input
+        // Forhindrer binding av UserId for brukerens input.
         [BindNever]
-        public string UserId {  get; set; }
+        public string UserId {  get; set; } = string.Empty;
     }
 }
