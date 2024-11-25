@@ -69,6 +69,7 @@ public class AccountController : Controller
         return View(model);
     }
 
+
     // POST: Account/LoggUt
     // Logger ut brukeren og sletter eventuelle cookies.
     [HttpPost]
