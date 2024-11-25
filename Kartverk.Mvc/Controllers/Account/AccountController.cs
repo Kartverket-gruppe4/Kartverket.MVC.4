@@ -2,13 +2,18 @@ using Microsoft.AspNetCore.Mvc;
 using Kartverk.Mvc.Models.Feilmelding;
 using Microsoft.AspNetCore.Identity;
 
+// Controller for brukerhåndtering.
 public class AccountController : Controller
 {
     private readonly ApplicationDbContext _context;
     private readonly UserManager<IdentityUser> _userManager;
     private readonly SignInManager<IdentityUser> _signInManager;
 
-    public AccountController(ApplicationDbContext context, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+    // Konstruktør for å initialiser database og identitetshåndtering.
+    public AccountController(
+        ApplicationDbContext context,
+        UserManager<IdentityUser> userManager,
+        SignInManager<IdentityUser> signInManager)
     {
         _context = context;
         _userManager = userManager;
@@ -16,63 +21,63 @@ public class AccountController : Controller
     }
 
     // GET: Account/LoggInn
+    // Viser innlogginssiden.
     public ActionResult LoggInn()
     {
         return View();
     }
 
-    // For post request handling of login
+    // POST: Account/LoggInn
+    // Håndterer innlogginsforespørsel.
     [HttpPost]
     public async Task<IActionResult> LoggInn(LogginnViewModel model)
     {
         if (ModelState.IsValid)
         {
-            var user = await _userManager.FindByEmailAsync(model.Email);
+            var user = await _userManager.FindByEmailAsync(model.Email!);
 
             if (user != null)
             {
                 var result = await _signInManager.PasswordSignInAsync(
-                    userName: user.Email,
-                    password: model.Password,
+                    userName: user.Email!,
+                    password: model.Password!,
                     isPersistent: false,
                     lockoutOnFailure: false);
 
                 if (result.Succeeded)
                 {
-                    HttpContext.Response.Cookies.Append("UserEmail", user.Email, new CookieOptions
+                    // Setter cookie for brukers e-post.
+                    HttpContext.Response.Cookies.Append("UserEmail", user.Email!, new CookieOptions
                     {
                         HttpOnly = true,
                         Secure = true,
                         Expires = DateTimeOffset.Now.AddDays(30)
                     });
 
-                    // Check the user's roles
+                    // Sjekker om brukeren er administrator og omdirigerer deretter.
                     if (await _userManager.IsInRoleAsync(user, "Administrator"))
                     {
-                        // Redirect to Saksbehandler for administrators
                         return RedirectToAction("Index", "AdminFeilmelding");
                     }
 
-                    // Redirect non-admin users to their default page
                     return RedirectToAction("Index", "MinSide", new { email = user.Email });
                 }
             }
-
+            // Feilmelding for ugyldig innlogging.
             ModelState.AddModelError("", "Invalid login attempt.");
         }
-
-        // Return the login view with validation errors
         return View(model);
     }
 
     // POST: Account/LoggUt
+    // Logger ut brukeren og sletter eventuelle cookies.
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> LoggUt()
     {
         await _signInManager.SignOutAsync();
 
-        // Clear cookies if needed (e.g., the custom UserEmail cookie)
+        // Clear cookies if needed (e.g., the custom UserEmail cookie).
         if (HttpContext.Request.Cookies.ContainsKey("UserEmail"))
         {
             HttpContext.Response.Cookies.Delete("UserEmail");
@@ -82,34 +87,36 @@ public class AccountController : Controller
     }
 
     // GET: Account/Register
+    // Viser registreringssiden.
     public ActionResult Register()
     {
         return View();
     }
 
     // POST: Account/Register
+    // Håndterer registreringsforespørsel.
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Register(RegisterViewModel model)
     {
         if (ModelState.IsValid)
         {
-            var existingUser = await _userManager.FindByEmailAsync(model.Email);
+            var existingUser = await _userManager.FindByEmailAsync(model.Email!);
             if (existingUser != null)
             {
                 ModelState.AddModelError(string.Empty, "Brukeren eksisterer allerede.");
                 return View(model);
             }
 
-            // Sjekk e-postformat (valgfritt hvis dette allerede håndteres av Identity)
-            if (!model.Email.Contains("@"))
+            // Validerer e-postformat.
+            if (model.Email!.Contains("@"))
             {
                 ModelState.AddModelError("Email", "E-postadressen er ikke gyldig.");
                 return View(model);
             }
 
-            // Sjekk passordlengde (valgfritt hvis dette allerede håndteres av Identity)
-            if (model.Password.Length < 6)
+            // Validerer passordlengde.
+            if (model.Password!.Length < 6)
             {
                 ModelState.AddModelError("Password", "Passordet må være minst 6 tegn.");
                 return View(model);
@@ -127,6 +134,7 @@ public class AccountController : Controller
                 return RedirectToAction("LoggInn");
             }
 
+            // Legger til feil fra opprettelsesprosessen.
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError(string.Empty, error.Description);
@@ -135,12 +143,11 @@ public class AccountController : Controller
         return View(model);
     }
 
-
-    // Hente bruker etter e-postadresse
+    // GET: Account/GetUserByEmail
+    // Hente bruker etter e-postadresse.
     public IdentityUser? GetUserByEmail(string email)
     {
         return _context.Users.FirstOrDefault(u => u.Email == email);
     }
-
 
 }
