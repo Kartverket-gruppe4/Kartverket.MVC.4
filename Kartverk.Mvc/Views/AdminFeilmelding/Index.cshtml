@@ -251,104 +251,111 @@
     </div>
 </div>
 <script>
+        // Funksjon for å åpne popup og fylle den med data.
         function openPopup(email, date, category, buttonElement, description, geoJsonData) {
-        document.getElementById('popup-email').innerText = email; // Oppdaterer email
-        document.getElementById('popup-date').innerText = date; // Oppdaterer dato
-        document.getElementById('popup-category').innerText = category; // Oppdaterer kategori
+            // Oppdaterer popup-elementene med den angitte dataen.
+            document.getElementById('popup-email').innerText = email; // Oppdaterer email
+            document.getElementById('popup-date').innerText = date; // Oppdaterer dato
+            document.getElementById('popup-category').innerText = category; // Oppdaterer kategori
 
-        const kommunenavn = buttonElement.getAttribute('data-kommunenavn');
-        const kommunenummer = buttonElement.getAttribute('data-kommunenummer');
-        document.getElementById('popup-municipality').innerText = `${kommunenavn} (${kommunenummer})`;
+            // Henter og viser kommuneinformasjon fra knappens attributer.
+            const kommunenavn = buttonElement.getAttribute('data-kommunenavn');
+            const kommunenummer = buttonElement.getAttribute('data-kommunenummer');
+            document.getElementById('popup-municipality').innerText = `${kommunenavn} (${kommunenummer})`;
 
-        document.getElementById('popup-description').innerText = description; // Oppdaterer beskrivelse
+            // Oppdaterer opup-beskrivelsen med den angitte teksten.
+            document.getElementById('popup-description').innerText = description; // Oppdaterer beskrivelse
 
-        let geojsonData = buttonElement.getAttribute('data-geojson');
-        console.log("GeoJSON passed to popup:", geojsonData);
+            // Henter og forbereder GeoJSON-data for kartet.
+            let geojsonData = buttonElement.getAttribute('data-geojson');
+            console.log("GeoJSON passed to popup:", geojsonData);
 
-        geojsonData = geojsonData.replace(/\\"/g, '"');
-
-        try {
+            // Sørger for at GeoJSON-strengen er riktig formatert.
             geojsonData = geojsonData.replace(/\\"/g, '"');
 
-            if (geojsonData.startsWith('"') && geojsonData.endsWith('"')) {
-                geojsonData = geojsonData.slice(1, -1);
+            // Parsing.
+            try {
+                geojsonData = geojsonData.replace(/\\"/g, '"');
+
+                if (geojsonData.startsWith('"') && geojsonData.endsWith('"')) {
+                    geojsonData = geojsonData.slice(1, -1);
+                }
+
+                geojsonData = JSON.parse(geojsonData);
+
+                if (!geojsonData) {
+                    throw new Error("GeoJSON is null or undefined.");
+                }
+
+                if (geojsonData.type === "Feature") {
+                    geojsonData = {
+                        type: "FeatureCollection",
+                        features: [geojsonData]
+                    };
+                } else if (geojsonData.type !== "FeatureCollection") {
+                    throw new Error(`Unexpected GeoJSON type: ${geojsonData.type}`);
+                }
+            } catch (error) {
+                console.error("GeoJSON validation failed:", error);
+                alert(`Failed to parse GeoJSON: ${error.message}`);
+                return;
             }
 
-            geojsonData = JSON.parse(geojsonData);
+            // Initialiserer kart-containeren
+            const mapContainer = document.getElementById('map');
 
-            if (!geojsonData) {
-                throw new Error("GeoJSON is null or undefined.");
+            if (window.mapInstance) {
+                window.mapInstance.remove(); // Remove the previous map instance
             }
 
-            if (geojsonData.type === "Feature") {
-                // Convert a single Feature to a FeatureCollection
-                geojsonData = {
-                    type: "FeatureCollection",
-                    features: [geojsonData]
-                };
-            } else if (geojsonData.type !== "FeatureCollection") {
-                throw new Error(`Unexpected GeoJSON type: ${geojsonData.type}`);
+            // Oppretter en ny Leaflet kart-instans.
+            window.mapInstance = L.map(mapContainer);
+
+            // OpenStreetMap
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 16,
+                attribution: '&copy; OpenStreetMap contributors',
+            }).addTo(window.mapInstance);
+
+            // Legger til parsed GeoJSON-data
+            const geoJsonLayer = L.geoJSON(geojsonData).addTo(window.mapInstance);
+
+            // Henter grensene for GeoJSON-laget.
+            const bounds = geoJsonLayer.getBounds();
+            const boundsSize = bounds.getNorthEast().distanceTo(bounds.getSouthWest()); // Measure bounds size in meters
+
+            console.log("Bounds size (meters):", boundsSize);
+
+            // Justerer dynamisk padding på kartet.
+            let padding;
+            if (boundsSize > 2000) {
+                padding = [100, 100]; 
+            } else if (boundsSize > 500) {
+                padding = [50, 50]; 
+            } else {
+                padding = [20, 20]; 
             }
-        } catch (error) {
-            console.error("GeoJSON validation failed:", error);
-            alert(`Failed to parse GeoJSON: ${error.message}`);
-            return;
-        }
 
-        // Reset or initialize map
-        const mapContainer = document.getElementById('map');
+            // Juster kartet for å passe til grensene.
+            window.mapInstance.fitBounds(bounds, {
+                padding: padding,
+                maxZoom: 14, 
+            });
 
-        if (window.mapInstance) {
-            window.mapInstance.remove(); // Remove the previous map instance
-        }
-
-        // Initialize a new map instance
-        window.mapInstance = L.map(mapContainer);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 16,
-            attribution: '&copy; OpenStreetMap contributors',
-        }).addTo(window.mapInstance);
-
-        // Add GeoJSON layer to the map
-        const geoJsonLayer = L.geoJSON(geojsonData).addTo(window.mapInstance);
-
-        // Get bounds of the GeoJSON layer
-        const bounds = geoJsonLayer.getBounds();
-        const boundsSize = bounds.getNorthEast().distanceTo(bounds.getSouthWest()); // Measure bounds size in meters
-
-        console.log("Bounds size (meters):", boundsSize);
-
-        // Set dynamic padding based on bounds size
-        let padding;
-        if (boundsSize > 2000) {
-            padding = [100, 100]; // Larger padding for larger polygons
-        } else if (boundsSize > 500) {
-            padding = [50, 50]; // Medium padding
-        } else {
-            padding = [20, 20]; // Small padding for small polygons
-        }
-
-        // Fit the map to the bounds with the calculated padding
-        window.mapInstance.fitBounds(bounds, {
-            padding: padding,
-            maxZoom: 14, // Prevent zooming in too much
-        });
-
-        // Ensure the map resizes correctly if it was hidden
-        setTimeout(() => {
-            window.mapInstance.invalidateSize(); // Force map redraw
-        }, 300);
+            // Sørger for at kartet resizes riktig dersom det har vært skjult.
+            setTimeout(() => {
+                window.mapInstance.invalidateSize(); 
+            }, 300);
 
         const popup = document.getElementById('popup');
         popup.style.display = 'block'; // Viser popup
-        setTimeout(() => { popup.style.opacity = 1; }, 10); // Gjør popup synlig med en liten forsinkelse for animasjonseffekt
+        setTimeout(() => { popup.style.opacity = 1; }, 10); 
     }
-
+    // Funksjon for å lukke popup når brukeren klikker på lukkeknappen.
     function closePopup() {
         const popup = document.getElementById('popup');
         popup.style.opacity = 0; // Skjuler popup med animasjon
-        setTimeout(() => { popup.style.display = 'none'; }, 300); // Forsinker fjerning fra visningen for å avslutte animasjonen
+        setTimeout(() => { popup.style.display = 'none'; }, 300); 
     }
 
     // Lukk pop-up når brukeren klikker utenfor innholdet

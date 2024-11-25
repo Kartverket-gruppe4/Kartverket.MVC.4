@@ -11,10 +11,10 @@ namespace Kartverk.Mvc.Services
         // HttpClient for å gjøre API-anrop.
         private readonly HttpClient _httpClient;
         
-        // Logger for logging av informasjon og feil.
+        // Logger for informasjon og feil.
         private readonly ILogger<KommuneInfoService> _logger;
         
-        // API-innstillinger for å hente basen URL fra konfigurasjonsfilene.
+        // API-innstillinger fra konfigurasjonsfilene.
         private readonly ApiSettings _apiSettings;
 
         // Konstruktør som initialiserer de nødvendige tjenestene.
@@ -25,37 +25,36 @@ namespace Kartverk.Mvc.Services
             _apiSettings = apiSettings.Value; // Leser inn API-innstillinger fra konfigurasjonen.
         }
 
-        // Asynkron metode for å hente kommuneinformasjon basert på geografiske koordinater.
-        public async Task<KommuneInfo> GetKommuneInfoAsync(double latitude, double longitude)
+        // Henter kommuneinfo basert på koordinater.
+        public async Task<KommuneInfo?> GetKommuneInfoAsync(double latitude, double longitude)
         {
             try
             {
-                // Bygger URL-en for API-anropet ved å bruke base URL og koordinater.
-                // "nord" representerer breddegrad og "ost" representerer lengdegrad.
+                // Bygger URL for API-anrop med koordinater.
                 var url = $"{_apiSettings.KommuneInfoApiBaseUrl}/punkt?nord={latitude.ToString(CultureInfo.InvariantCulture)}&ost={longitude.ToString(CultureInfo.InvariantCulture)}&koordsys=4326";
 
-                // Utfører et asynkront GET-anrop til API-et.
+                // Utfører GET-anrop.
                 var response = await _httpClient.GetAsync(url);
                 
-                // Forsikrer at API-anropet var vellykket (statuskode 2xx).
+                // Forsikrer at anropet er vellykket.
                 response.EnsureSuccessStatusCode();
 
-                // Leser svarinnholdet som en streng (JSON-format).
+                // Leser og logger JSON-responsen.
                 var json = await response.Content.ReadAsStringAsync();
                 _logger.LogInformation($"KommuneInfo Response: {json}"); // Logger svaret for debugging.
 
-                // Deserialiserer JSON-responsen til et KommuneInfo-objekt.
+                // Deserialiserer JSON til KommuneInfo.
                 var kommuneInfo = JsonSerializer.Deserialize<KommuneInfo>(json);
                 
-                // Returnerer den deserialiserte kommuneinformasjonen.
+                // Returnerer kommuneinformasjonen.
                 return kommuneInfo;
             }
             catch (Exception ex)
             {
-                // Logger eventuelle feil som oppstår under API-anropet.
+                // Logger feil ved API-anrop.
                 _logger.LogError($"Error fetching KommuneInfo for coordinates ({latitude}, {longitude}): {ex.Message}");
                 
-                // Returnerer null hvis det oppstår en feil.
+                // Returnerer null ved feil.
                 return null;
             }
         }

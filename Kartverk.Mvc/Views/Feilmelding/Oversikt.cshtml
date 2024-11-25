@@ -115,8 +115,9 @@
 </div>
 
 <script>
-        // Declare openPopup function in the global scope
+        // Funksjon for å åpne popup og fylle den med data.
         function openPopup(email, date, category, buttonElement, description, status) {
+            // Oppdaterer popup-elementene med den angitte dataen.
             document.getElementById('popup-email').innerText = email;
             document.getElementById('popup-date').innerText = date;
             document.getElementById('popup-category').innerText = category;
@@ -127,11 +128,14 @@
             document.getElementById('popup-description').innerText = description;
             document.getElementById('popup-status').innerText = status || "Pågående";
 
+            // Henter og forbereder GeoJSON-data for kartet.
             let geojsonData = buttonElement.getAttribute('data-geojson');
             console.log("GeoJSON passed to popup:", geojsonData);
-
+    
+            // Sørger for at GeoJSON-strengen er riktig formatert.
             geojsonData = geojsonData.replace(/\\"/g, '"');
 
+            // Parsing.
             try {
                 geojsonData = geojsonData.replace(/\\"/g, '"');
 
@@ -146,7 +150,6 @@
                 }
 
                 if (geojsonData.type === "Feature") {
-                    // Convert a single Feature to a FeatureCollection
                     geojsonData = {
                         type: "FeatureCollection",
                         features: [geojsonData]
@@ -160,63 +163,64 @@
                 return;
             }
 
-            // Reset or initialize map
+            // Initialiserer kart-containeren
             const mapContainer = document.getElementById('map');
 
             if (window.mapInstance) {
-                window.mapInstance.remove(); // Remove the previous map instance
+                window.mapInstance.remove();
             }
 
-            // Initialize a new map instance
+            // Oppretter en ny Leaflet kart-instans.
             window.mapInstance = L.map(mapContainer);
 
+            // OpenStreetMap
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 16,
                 attribution: '&copy; OpenStreetMap contributors',
             }).addTo(window.mapInstance);
 
-            // Add GeoJSON layer to the map
+            // Legger til parsed GeoJSON-data
             const geoJsonLayer = L.geoJSON(geojsonData).addTo(window.mapInstance);
 
-            // Get bounds of the GeoJSON layer
+            // Henter grensene for GeoJSON-laget.
             const bounds = geoJsonLayer.getBounds();
             const boundsSize = bounds.getNorthEast().distanceTo(bounds.getSouthWest()); // Measure bounds size in meters
 
             console.log("Bounds size (meters):", boundsSize);
 
-            // Set dynamic padding based on bounds size
+            // Justerer dynamisk padding på kartet.
             let padding;
             if (boundsSize > 2000) {
-                padding = [100, 100]; // Larger padding for larger polygons
+                padding = [100, 100]; 
             } else if (boundsSize > 500) {
-                padding = [50, 50]; // Medium padding
+                padding = [50, 50];
             } else {
-                padding = [20, 20]; // Small padding for small polygons
+                padding = [20, 20]; 
             }
 
-            // Fit the map to the bounds with the calculated padding
+            // Juster kartet for å passe til grensene.
             window.mapInstance.fitBounds(bounds, {
                 padding: padding,
-                maxZoom: 14, // Prevent zooming in too much
+                maxZoom: 14, 
             });
 
-            // Ensure the map resizes correctly if it was hidden
+            // Sørger for at kartet resizes riktig dersom det har vært skjult.
             setTimeout(() => {
-                window.mapInstance.invalidateSize(); // Force map redraw
+                window.mapInstance.invalidateSize(); 
             }, 300);
 
-            // Show the popup
+            
             const popup = document.getElementById('popup');
             popup.style.display = 'block';
             setTimeout(() => { popup.style.opacity = 1; }, 10);
         }
-
+        // Funksjon for å lukke popup når brukeren klikker på lukkeknappen.
         function closePopup() {
             const popup = document.getElementById('popup');
             popup.style.opacity = 0;
             setTimeout(() => { popup.style.display = 'none'; }, 300);
         }
-
+        // Lukk pop-up når brukeren klikker utenfor innholdet
         window.onclick = function (event) {
             const popup = document.getElementById('popup');
             if (event.target == popup) {
