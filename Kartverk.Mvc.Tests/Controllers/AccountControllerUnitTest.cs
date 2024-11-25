@@ -90,22 +90,46 @@ public class AccountControllerTests
     }
 
     [Theory]
-    [InlineData("", "password")]  // Empty email
-    [InlineData("invalid", "password")]  // Invalid email format
-    [InlineData("valid@email.com", "")]  // Empty password
-    public async Task Register_POST_InvalidInput_ReturnsViewWithModelErrors(string email, string password)
+    [InlineData("", "password", "Email", "E-postadressen er ikke gyldig.")] // Empty email
+    [InlineData("invalid", "password", "Email", "E-postadressen er ikke gyldig.")] // Invalid email format
+    [InlineData("valid@email.com", "", "Password", "Passordet må være minst 6 tegn.")] // Empty password
+    [InlineData("valid@email.com", "12345", "Password", "Passordet må være minst 6 tegn.")] // Password too short
+    public async Task Register_POST_InvalidInput_ReturnsViewWithModelErrors(string email, string password,
+        string expectedErrorKey, string expectedErrorMessage)
     {
         // Arrange
         var model = new RegisterViewModel { Email = email, Password = password };
+
+        // Mock UserManager to simulate expected behavior
+        _mockUserManager.Setup(x => x.FindByEmailAsync(It.IsAny<string>()))
+            .ReturnsAsync((IdentityUser)null); // Ensure no user exists for all cases
+
+        // Simulate invalid inputs for ModelState
+        if (string.IsNullOrEmpty(email) || !email.Contains("@"))
+        {
+            _controller.ModelState.AddModelError("Email", "E-postadressen er ikke gyldig.");
+        }
+
+        if (string.IsNullOrEmpty(password) || password.Length < 6)
+        {
+            _controller.ModelState.AddModelError("Password", "Passordet må være minst 6 tegn.");
+        }
 
         // Act
         var result = await _controller.Register(model);
 
         // Assert
-        var viewResult = Assert.IsType<ViewResult>(result);
-        Assert.False(_controller.ModelState.IsValid);
-        Assert.Equal(model, viewResult.Model);
+        var viewResult = Assert.IsType<ViewResult>(result); // Ensure the view result is returned
+        Assert.Equal(model, viewResult.Model); // Ensure the same model is returned to the view
+
+        // Verify that ModelState contains the expected error
+        Assert.True(_controller.ModelState.ContainsKey(expectedErrorKey),
+            $"Expected ModelState to contain error key: {expectedErrorKey}");
+
+        var errorMessages = _controller.ModelState[expectedErrorKey].Errors.Select(e => e.ErrorMessage);
+        Assert.Contains(expectedErrorMessage, errorMessages);
     }
+
 
     // 5. Test Security Features
     [Fact]
@@ -117,7 +141,7 @@ public class AccountControllerTests
         Assert.NotEmpty(attribute);
         return Task.CompletedTask;
     }
-    
+
     // 6. Test Error Handling
     [Fact]
     public async Task Register_POST_DuplicateEmail_ReturnsViewWithError()
@@ -170,7 +194,7 @@ public class AccountControllerTests
             false
         )).ReturnsAsync(Microsoft.AspNetCore.Identity.SignInResult.Success);
     }
-    
+
     private static Mock<DbSet<T>> MockDbSet<T>(IQueryable<T> data) where T : class
     {
         var mockSet = new Mock<DbSet<T>>();

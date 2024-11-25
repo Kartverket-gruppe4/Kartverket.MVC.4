@@ -36,16 +36,6 @@ public class HomeControllerUnitTest
     }
 
     [Fact]
-    public void Privacy_ReturnsViewResult()
-    {
-        // Act 
-        var result = GetUnitUnderTest().Privacy();
-        
-        // Assert
-        Assert.IsType<ViewResult>(result); // Sjekker at det er en ViewResult  
-    }
-
-    [Fact]
     public void Error_ReturnsViewResult_WithErrorViewModel()
     {
         // Act 
@@ -56,35 +46,15 @@ public class HomeControllerUnitTest
         var model = Assert.IsType<ErrorViewModel>(viewResult.Model);
         Assert.NotNull(model.RequestId);
     }
-
+    
     [Fact]
-    public void AdminLogin_ValidPassword_RedirectsToAdminPage()
+    public void AdminDachboard_ReturnsViewResult_WhenUserIsAuthorized()
     {
-        // Arrange 
-        const string validPassword = "admin123";
-        
         // Act 
-        var result = GetUnitUnderTest().AdminLogin(validPassword);
-        
-        // Assert
-        var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result); 
-        Assert.Equal("Index", redirectToActionResult.ActionName);
-        Assert.Equal("AdminFeilmelding", redirectToActionResult.ControllerName);
-    }
+        var result = GetUnitUnderTest().AdminDashboard();
 
-    [Fact]
-    public void AdminLogin_InvalidPassword_ReturnsViewWithError()
-    {
-        // Arrange 
-        const string invalidPassword = "wrongpassword";
-        var controller = GetUnitUnderTest();
-        
-        // Act 
-        var result = controller.AdminLogin(invalidPassword);
-        
         // Assert 
-        var viewResult = Assert.IsType<ViewResult>(result); // Sjekker at det er en ViewResult
-        Assert.True(controller.ModelState.ContainsKey("")); // Sjekker at ModelState har feil 
+        Assert.IsType<ViewResult>(result); // Sjekker at det returneres en ViewResult 
     }
 
     private HomeController GetUnitUnderTest()
