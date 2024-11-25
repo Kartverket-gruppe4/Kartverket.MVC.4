@@ -1,46 +1,46 @@
 @model Kartverk.Mvc.Models.MinSide.MinSideViewModel
 
 @{
-    ViewBag.Title = "Min Side";  // Setter tittelen på "Min Side"-siden
-    Layout = "_Layout";  // Bruker "_Layout" som layout for denne visningen
+    ViewBag.Title = "Min Side";  
+    Layout = "_Layout";
 }
 
-<!-- Main container -->
-<div class="container mt-4">  <!-- Hovedcontainer for innholdet på siden -->
+<!-- Hoved container -->
+<div class="container mt-4"> 
 
-    <!-- Profile Section -->
+    <!-- Profil seksjon -->
     <div class="row">
         <div class="col-12 d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
-                <span class="fs-4">Velkommen til Din Side, @Model.Email!</span>  <!-- Vist velkomstmelding med brukerens e-post -->
+                <span class="fs-4">Velkommen til Din Side, @Model.Email!</span> 
             </div>
-            <!-- Placeholder for user status (like 'No Errors') -->
-            <a href="@Url.Action("Index", "Feilmelding")" class="btn btn-success">  <!-- Knapp for å sende inn en feilmelding -->
+            <!-- Placeholder for bruker status (f.eks 'Ingen feil') -->
+            <a href="@Url.Action("Index", "Feilmelding")" class="btn btn-success"> 
                 <strong>Meld inn en feil</strong>  <!-- Tekst for knappen -->
             </a>
         </div>
     </div>
 
     <!-- Divider -->
-    <hr />  <!-- Horisontal linje for visuell adskillelse -->
+    <hr /> 
 
-    <!-- User Information -->
+    <!-- Bruker informasjon -->
     <div class="row">
         <div class="col-12">
-            <h5>Din informasjon:</h5>  <!-- Seksjon for brukerens informasjon -->
-            <p><strong>Email:</strong> @Model.Email</p>  <!-- Vist e-postadresse til brukeren -->
+            <h5>Din informasjon:</h5> 
+            <p><strong>Email:</strong> @Model.Email</p> 
         </div>
     </div>
 
-    <!-- Menu -->
-    <div class="list-group">  <!-- Liste med navigasjonslenker -->
-        <!-- Submissions Link -->
-        <a href="@Url.Action("MineInnmeldinger", "MinSide")" class="list-group-item list-group-item-action">  <!-- Link til brukerens innmeldte feilmeldinger -->
-            <i class="bi bi-pencil-square"></i> Mine Feilmeldinger  <!-- Ikon og tekst for feilmeldinger -->
+    <!-- Meny -->
+    <div class="list-group"> 
+        <!-- Link til brukerens innsednte feilmeldinger -->
+        <a href="@Url.Action("MineInnmeldinger", "MinSide")" class="list-group-item list-group-item-action">  
+            <i class="bi bi-pencil-square"></i> Mine Feilmeldinger 
         </a>
 
-        <a href="@Url.Action("Index", "HjelpKontakt")" class="list-group-item list-group-item-action">  <!-- Link til hjelp og kontakt -->
-            <i class="bi bi-info-circle"></i> Hjelp & Kontakt  <!-- Ikon og tekst for hjelp og kontakt -->
+        <a href="@Url.Action("Index", "HjelpKontakt")" class="list-group-item list-group-item-action"> 
+            <i class="bi bi-info-circle"></i> Hjelp & Kontakt 
         </a>
         
         <form asp-action="LoggUt" asp-controller="Account" method="post" class="list-group-item list-group-item-action d-inline-block">
