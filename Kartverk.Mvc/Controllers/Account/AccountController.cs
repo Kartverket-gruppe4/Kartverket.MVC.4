@@ -109,13 +109,6 @@ public class AccountController : Controller
                 return View(model);
             }
 
-            // Validerer e-postformat.
-            if (model.Email!.Contains("@"))
-            {
-                ModelState.AddModelError("Email", "E-postadressen er ikke gyldig.");
-                return View(model);
-            }
-
             // Validerer passordlengde.
             if (model.Password!.Length < 6)
             {
@@ -143,7 +136,7 @@ public class AccountController : Controller
         }
         return View(model);
     }
-
+    
     // GET: Account/GetUserByEmail
     // Hente bruker etter e-postadresse.
     public IdentityUser? GetUserByEmail(string email)
