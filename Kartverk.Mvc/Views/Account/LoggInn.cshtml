@@ -25,13 +25,12 @@
                 @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
 
                 <!-- Feilmelding for feil e-post eller passord -->
-                @if (!ViewData.ModelState.IsValid)
+                @if (!ViewData.ModelState.IsValid && 
+                     (ViewData.ModelState["Email"]?.Errors.Any() == false && 
+                      ViewData.ModelState["Password"]?.Errors.Any() == false))
                 {
                     <span class="text-danger">
-                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-                        {
-                            @error.ErrorMessage
-                        }
+                        Feil e-post eller passord.
                     </span>
                 }
             </div>
