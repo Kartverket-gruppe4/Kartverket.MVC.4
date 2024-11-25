@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
+// Modell for kartkorreksjon.
 namespace Kartverk.Mvc.Models
 {
     public class MapCorrectionModel
