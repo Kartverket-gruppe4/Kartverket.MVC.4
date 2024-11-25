@@ -58,12 +58,14 @@ public class AccountController : Controller
                 }
             }
 
-            ModelState.AddModelError("", "Invalid login attempt.");
+            // Oppdatert feilmelding
+            ModelState.AddModelError("", "Feil e-post eller passord.");
         }
 
         // Return the login view with validation errors
         return View(model);
     }
+
 
     // POST: Account/LoggUt
     [HttpPost]
