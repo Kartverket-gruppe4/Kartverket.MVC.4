@@ -1,12 +1,16 @@
 using System.ComponentModel.DataAnnotations;
 
+// Modell for de nødvendige feltene for innlogging.
 public class LogginnViewModel
 {
-    [Required] // Gjør at feltet er påkrevd, kan ikke være tomt. 
-    [EmailAddress] // Validerer at e-posten er i et gyldig format. 
+    // E-postfelt som er påkrevd for innlogging.
+    [Required(ErrorMessage = "E-post er påkrevd.")]
+    [RegularExpression(@"^[a-zA-Z0-9@._\-]+$", ErrorMessage = "Ugyldig e-postadresse.")]
     public string? Email { get; set; }
 
-    [Required] // Gjør at feltet er påkrevd, kan ikke være tomt.
-    [DataType(DataType.Password)] // Indikerer at dette feltet er et passord. 
+    // Passordfelt som er påkrevd for innlogging.
+    [Required(ErrorMessage = "Passord er påkrevd.")]
+    [DataType(DataType.Password)]  
+    [RegularExpression(@"^[a-zA-Z0-9._\-]+$", ErrorMessage = "Feil e-post eller passord.")]
     public string? Password { get; set; }
 }

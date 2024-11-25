@@ -1,32 +1,29 @@
-using Microsoft.AspNetCore.Mvc; // Importerer MVC-biblioteket for å håndtere HTTP-forespørsler og -svar
-using Kartverk.Mvc.Models.Feilmelding; // Importerer modellen for feilmeldinger
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Kartverk.Mvc.Models.Feilmelding; 
 
-// Brukes til å håndtere feilmeldinger i administrasjonsdelen av applikasjonen
 namespace Kartverk.Mvc.Controllers.AdminFeilmelding
 {
-    // Controller for administrasjon av feilmeldinger
+    // Controller for administrasjon av feilmeldinger.
     public class AdminFeilmeldingController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        // Konstruktør som tar inn ApplicationDbContext for å få tilgang til databasen
+        // Konstruktør for å initialisere databasen.
         public AdminFeilmeldingController(ApplicationDbContext context)
         {
-            _context = context; // Initialiserer databasen som controlleren skal bruke
+            _context = context;
         }
 
-        // Denne metoden håndterer GET-forespørsler til 'AdminFeilmelding/Index' og henter ut feilmeldinger fra databasen
+        // GET: AdminFeilmelding/Index
+        // Henter og viser alle feilmeldinger.
         public IActionResult Index()
         {
-            // Henter alle feilmeldinger fra databasen og konverterer til en liste
             var feilmeldinger = _context.feilmeldinger.ToList();
-
-            // Sender listen med feilmeldinger til viewen for visning på websiden
             return View(feilmeldinger);
         }
 
-        // Denne metoden håndterer POST-forespørsler og brukes til å oppdatere status på en feilmelding
+        // POST: AdminFeilmelding/EndreStatus
+        // Oppdaterer status for en feilmelding.
         [HttpPost]
         public IActionResult EndreStatus(int id, string status)
         {
@@ -34,8 +31,8 @@ namespace Kartverk.Mvc.Controllers.AdminFeilmelding
 
             if (feilmelding != null)
             {
-                feilmelding.Status = status; // Oppdaterer statusen
-                _context.SaveChanges(); // Lagre endringen i databasen
+                feilmelding.Status = status;
+                _context.SaveChanges();
                 TempData["SuccessMessage"] = "Status oppdatert.";
             }
             else

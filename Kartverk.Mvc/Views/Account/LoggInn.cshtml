@@ -5,33 +5,43 @@
 }
 
 <div class="login-wrapper">
-<div class="login-container">
-    <!-- Tittel for innloggingsskjemaet -->
-    <h2 class="login-title">Logg Inn</h2>
+    <div class="login-container">
+        <!-- Tittel for innloggingsskjemaet -->
+        <h2 class="login-title">Logg Inn</h2>
 
-    @using (Html.BeginForm("LoggInn", "Account", FormMethod.Post))
-    {
-        <!-- E-postfelt -->
-        <div class="form-group">
-            @Html.LabelFor(m => m.Email, "E-post")
-            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-        </div>
+        @using (Html.BeginForm("LoggInn", "Account", FormMethod.Post))
+        {
+            <!-- E-postfelt -->
+            <div class="form-group">
+                @Html.LabelFor(m => m.Email, "E-post")
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+            </div>
 
-        <!-- Passordfelt -->
-        <div class="form-group" style="margin-bottom: 10px;">
-            @Html.LabelFor(m => m.Password, "Passord")
-            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-            @Html.ValidationMessage("Password")
-        </div>
+            <!-- Passordfelt -->
+            <div class="form-group" style="margin-bottom: 10px;">
+                @Html.LabelFor(m => m.Password, "Passord")
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
 
-        <!-- Sendeknapp for skjema -->
-        <button type="submit" class="btn btn-success" style="margin-bottom: 10px;">
-            Logg inn
-        </button>
-    }
+                <!-- Feilmelding for feil e-post eller passord -->
+                @if (!ViewData.ModelState.IsValid && 
+                     (ViewData.ModelState["Email"]?.Errors.Any() == false && 
+                      ViewData.ModelState["Password"]?.Errors.Any() == false))
+                {
+                    <span class="text-danger">
+                        Feil e-post eller passord.
+                    </span>
+                }
+            </div>
 
-    <!-- Link til registreringssiden -->
-    <p>Har du ikke en konto? <a href="@Url.Action("Register", "Account")">Registrer deg</a></p>
+            <!-- Sendeknapp for skjema -->
+            <button type="submit" class="btn btn-success" style="margin-bottom: 10px;">
+                Logg inn
+            </button>
+        }
+
+        <!-- Link til registreringssiden -->
+        <p>Har du ikke en konto? <a href="@Url.Action("Register", "Account")">Registrer deg</a></p>
+    </div>
 </div>
-</div>
-
