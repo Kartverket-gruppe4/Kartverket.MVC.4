@@ -63,7 +63,7 @@ public class AccountController : Controller
         }
 
         // Hvis påloggingen lykkes, send brukeren videre
-        return RedirectToAction("Index", "MinSide");
+        return RedirectToAction("Index", "AdminFeilmelding");
     }
 
 
