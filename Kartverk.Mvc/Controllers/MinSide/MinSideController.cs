@@ -1,11 +1,10 @@
 using Kartverk.Mvc.Models.MinSide;
 using Microsoft.AspNetCore.Mvc;
-using Kartverk.Mvc.Models.Feilmelding;
-using Kartverk.Mvc.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace Kartverk.Mvc.Controllers.MinSide;
 
+// Controller for MinSide som håndterer brukerens side og relaterte funksjoner
 public class MinSideController : Controller
 {
     private readonly UserManager<IdentityUser> _userManager;
@@ -17,7 +16,8 @@ public class MinSideController : Controller
         _signInManager = signInManager;
     }
 
-    // GET
+    // GET: MinSide/Index
+    // Viser brukerens MinSide basert på e-post fra cookie.
     [HttpGet]
     public async Task<IActionResult> Index(string email)
     {
@@ -33,19 +33,17 @@ public class MinSideController : Controller
                     Email = user.Email
                 };
 
-                return View(model);
+                return View(model); // Returnerer visning med brukerinformasjon.
             }
         }
-
-        // If no valid cookie, redirect to login
         return RedirectToAction("LoggInn", "Account");
     }
 
     // GET: MinSide/MineInnmeldinger
+    // Omdirigerer til oversikt over brukerens feilmeldinger.
     [HttpGet]
     public IActionResult MineInnmeldinger()
     {
-        // Her kan vi hente innmeldinger fra databasen, for n� er det tomt
         return RedirectToAction("Oversikt", "Feilmelding");
     }
 }

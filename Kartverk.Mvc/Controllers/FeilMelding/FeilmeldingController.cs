@@ -4,22 +4,26 @@ using Kartverk.Mvc.Models.Feilmelding;
 using Kartverk.Mvc.Services;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
-using Microsoft.AspNetCore.Authorization; // Import for IKommuneInfoService.
+using Microsoft.AspNetCore.Authorization; 
 
 namespace Kartverk.Mvc.Controllers.FeilMelding
 {
+    // Kontroller for håndtering av feilmeldinger.
     public class FeilmeldingController : Controller
     {
-        // EF
         private readonly ApplicationDbContext _context;
-
         private readonly IKommuneInfoService _kommuneInfoService;
         private readonly ILogger<FeilmeldingController> _logger;
-
         private readonly FeilmeldingService _feilmeldingService;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public FeilmeldingController(ApplicationDbContext context, IKommuneInfoService kommuneInfoService, ILogger<FeilmeldingController> logger, FeilmeldingService feilmeldingService, UserManager<IdentityUser> userManager)
+        // Konstruktør for initialisering.
+        public FeilmeldingController(
+            ApplicationDbContext context,
+            IKommuneInfoService kommuneInfoService,
+            ILogger<FeilmeldingController> logger,
+            FeilmeldingService feilmeldingService,
+            UserManager<IdentityUser> userManager)
         {
             _context = context;
             _kommuneInfoService = kommuneInfoService;
@@ -28,56 +32,51 @@ namespace Kartverk.Mvc.Controllers.FeilMelding
             _userManager = userManager;
         }
 
-        // GET: Feilmelding
+        // GET: Feilmelding/Index
+        // Viser hovedsiden for feilmeldinger.
         public IActionResult Index()
         {
-            return View(); // Returnerer visningen for Feilmelding
+            return View();
         }
 
         // POST: Feilmelding/Opprett
+        // Oppretter en ny feilmelding.
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Save(MapCorrectionModel model)
         {
             if (ModelState.IsValid)
             {
-                // Get the current logged-in user
                 var user = await _userManager.GetUserAsync(User);
-
                 if (user != null)
                 {
                     var feilmelding = new FeilmeldingViewModel
                     {
                         GeoJson = model.GeoJson,
                         KommuneInfo = model.KommuneInfo,
-                        Email = user.Email, // Get the user's email from Identity
+                        Email = user.Email, 
                         UserId = user.Id,
                         Beskrivelse = model.Description,
                         Kategori = model.Category,
                         Status = "Ny"
                     };
 
-                    // Add the feilmelding to the database
                     _context.feilmeldinger.Add(feilmelding);
                     await _context.SaveChangesAsync();
 
-                    // Return Confirmation view
                     return View("Confirmation");
                 }
-
-                // If no user is found, handle accordingly
                 ModelState.AddModelError("", "User not found.");
                 return View("Index", model);
             }
             else
             {
-                // Handle model validation failure
                 return View("Index", model);
             }
         }
 
-
         // GET: Feilmelding/Oversikt
+        // Viser oversikt over brukerens feilmeldinger.
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> Oversikt()
@@ -91,23 +90,20 @@ namespace Kartverk.Mvc.Controllers.FeilMelding
             }
 
             var userId = user.Id;
-
             var feilmeldinger = _feilmeldingService.GetAllFeilmeldinger(userId);
 
-            // Serialize GeoJson data for each feilmelding
             foreach (var feilmelding in feilmeldinger)
             {
-                // Ensure GeoJson is serialized as a string
                 if (feilmelding.GeoJson != null)
                 {
-                    // Ensure GeoJson is serialized as a proper string without extra escaping
                     feilmelding.GeoJson = JsonConvert.SerializeObject(feilmelding.GeoJson);
                 }
             }
-
             return View(feilmeldinger);
         }
 
+        // GET: Feilmelding/Edit
+        // Oppdaterer oversikten over feilmeldinger og returnerer riktig view.
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> UpdateOverview(string viewName = "Oversikt")
@@ -115,6 +111,13 @@ namespace Kartverk.Mvc.Controllers.FeilMelding
             try
             {
                 var user = await _userManager.GetUserAsync(User);
+
+                if (user == null)
+                {
+                    ModelState.AddModelError("", "Bruker ikke funnet.");
+                    return RedirectToAction("Logginn", "Account");
+                }
+
                 var userId = user.Id;
 
                 var feilmeldinger = _feilmeldingService.GetAllFeilmeldinger(userId);
@@ -131,6 +134,8 @@ namespace Kartverk.Mvc.Controllers.FeilMelding
             }
         }
 
+        // GET: Feilmelding/Edit
+        // Henter en feilmelding for redigering.
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
@@ -138,6 +143,12 @@ namespace Kartverk.Mvc.Controllers.FeilMelding
             _logger.LogInformation($"Edit GET action called with id={id}");
 
             var user = await _userManager.GetUserAsync(User);
+
+            if (user == null) 
+            {
+                return RedirectToAction("Logginn", "Account");
+            }
+
             var userId = user.Id;
 
             var feilmeldinger = _feilmeldingService.GetFeilmeldingById(id, userId);
@@ -149,6 +160,8 @@ namespace Kartverk.Mvc.Controllers.FeilMelding
             return View(feilmeldinger);
         }
 
+        // POST: Feilmelding/Edit
+        // Oppdaterer en feilmelding.
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> Edit(FeilmeldingViewModel model)
@@ -157,13 +170,26 @@ namespace Kartverk.Mvc.Controllers.FeilMelding
 
             var user = await _userManager.GetUserAsync(User);
 
+            if (user == null) 
+            {
+                return RedirectToAction("Logginn", "Account");
+            }
+
             model.UserId = user.Id;
 
             if (ModelState.IsValid)
             {
                 _logger.LogInformation("Modelstate is valid. Updating feilmelding.");
 
-                _feilmeldingService.UpdateFeilmelding(model.Email, model.Beskrivelse, DateTime.Now.ToString("yyyy-MM-dd"), model.GeoJson, model.KommuneInfo, model.Status, user.Id);
+                _feilmeldingService.UpdateFeilmelding(
+                    model.Email!,
+                    model.Beskrivelse!,
+                    DateTime.Now.ToString("yyyy-MM-dd"),
+                    model.GeoJson,
+                    model.KommuneInfo,
+                    model.Status!,
+                    user.Id);
+
                 return RedirectToAction("UpdateOverview");
             }
             else
@@ -180,11 +206,19 @@ namespace Kartverk.Mvc.Controllers.FeilMelding
             return View(model);
         }
 
+        // GET: Feilmelding/Delete
+        // Viser detaljene til en feilmelding for bekreftelse av sletting.
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
             var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return RedirectToAction("Logginn", "Account");
+            }
+
             var userId = user.Id;
 
             var feilmeldinger = _feilmeldingService.GetFeilmeldingById(id, userId);
@@ -195,12 +229,20 @@ namespace Kartverk.Mvc.Controllers.FeilMelding
             return View(feilmeldinger);
         }
 
+        // POST: Feilmelding/Delete
+        // Sletter en feilmelding.
         [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id, string viewName)
         {
             var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return RedirectToAction("Logginn", "Account");
+            }
+
             var userId = user.Id;
 
             try
@@ -223,12 +265,12 @@ namespace Kartverk.Mvc.Controllers.FeilMelding
             }
             else
             {
-                // Default fallback
                 return RedirectToAction("Index", "AdminFeilmelding");
             }
         }
 
         // GET: Feilmelding/MineInnmeldinger
+        // Viser alle feilmeldinger registrert av innlogget bruker.
         public async Task<IActionResult> MineInnmeldinger()
         {
             var email = HttpContext.Request.Cookies["UserEmail"];
@@ -239,7 +281,6 @@ namespace Kartverk.Mvc.Controllers.FeilMelding
             }
 
             var user = await _userManager.FindByEmailAsync(email);
-
             if (user == null)
             {
                 return RedirectToAction("Oversikt", "Feilmelding");
@@ -247,14 +288,14 @@ namespace Kartverk.Mvc.Controllers.FeilMelding
 
             var userId = user.Id;
 
-            // finner brukers feilmeldinger fra databasen
             var brukerFeilmeldinger = _context.feilmeldinger
                 .Where(f => f.Email == email)
                 .ToList();
             return View("Oversikt", brukerFeilmeldinger);
         }
 
-        // Ny GET-metode for å hente kommuneinfo basert på koordinater
+        // GET: api/Feilmelding/Kommuneinfo
+        // Henter kommuneinformasjon basert på koordinater.
         [HttpGet("api/feilmelding/kommuneinfo")]
         public async Task<IActionResult> GetKommuneInfo(double nord, double ost)
         {
